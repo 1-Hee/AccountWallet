@@ -5,6 +5,7 @@ import java.util.Date
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("com.google.android.gms.oss-licenses-plugin")
     kotlin("kapt")// 사용하는 코틀린 버전에 맞게 해주어야함!
 }
 
@@ -27,8 +28,8 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["ADMOB_APP_KEY"] = getApiKey("ADMOB_APP_KEY")
     }
 
     signingConfigs {
@@ -59,18 +60,22 @@ android {
 
     buildTypes {
         debug {
-            // manifestPlaceholders["ADMOB_APP_KEY"] = getApiKey("ADMOB_TEST_APP_KEY")
-            // buildConfigField("String", "ADMOB_SDK_KEY", getApiKey("ADMOB_TEST_BANNER_SDK_KEY"))
+            buildConfigField("boolean", "IS_DEBUG", "false")
+            resValue("string", "admob_banner_sdk_key", getApiKey("ADMOB_TEST_BANNER_SDK_KEY"))
+            buildConfigField("String", "ADMOB_SCREEN_SDK_KEY", getApiKey("ADMOB_TEST_SCREEN_SDK_KEY"))
+            buildConfigField("String", "ADMOB_BANNER_SDK_KEY", getApiKey("ADMOB_TEST_BANNER_SDK_KEY"))
+            // signingConfig = signingConfigs
         }
         release {
-            // manifestPlaceholders["ADMOB_APP_KEY"] = getApiKey("ADMOB_APP_KEY")
-            // buildConfigField("String", "ADMOB_SDK_KEY", getApiKey("ADMOB_BANNER_SDK_KEY"))
+            buildConfigField("boolean", "IS_DEBUG", "false")
+            resValue("string", "admob_banner_sdk_key", getApiKey("ADMOB_BANNER_SDK_KEY"))
+            buildConfigField("String", "ADMOB_SCREEN_SDK_KEY", getApiKey("ADMOB_SCREEN_SDK_KEY"))
+            buildConfigField("String", "ADMOB_BANNER_SDK_KEY", getApiKey("ADMOB_BANNER_SDK_KEY"))
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -118,6 +123,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    // implementation(libs.androidx.navigation.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -178,10 +184,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-oss-licenses:$oss_version")
 
     // admobs
-    /*
     val admob_version = "22.6.0"
     implementation("com.google.android.gms:play-services-ads:$admob_version")
-     */
 
     val app_update_version = "2.1.0"
     implementation("com.google.android.play:app-update:$app_update_version")

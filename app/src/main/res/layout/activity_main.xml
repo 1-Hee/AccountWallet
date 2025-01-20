@@ -10,23 +10,29 @@
         <import type="android.view.View"/>
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/main_fragment_host"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
+
+        <include
+            android:id="@+id/main_app_bar"
+            layout="@layout/main_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!--
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:defaultNavHost="true"
-            app:navGraph="@navigation/navigation_main"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:background="@color/white"
+            app:headerLayout="@layout/nav_header_main"
+            app:menu="@menu/main_drawer" />
+           -->
+    </androidx.drawerlayout.widget.DrawerLayout>
 </layout>

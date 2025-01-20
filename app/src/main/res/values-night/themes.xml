@@ -2,6 +2,26 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.AccountWallet" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="colorPrimary">@color/brown900</item>
+        <item name="colorSecondary">@color/brown800</item>
+    </style>
+    <style name="baseTextStyle">
+        <item name="android:fontFamily">@font/noto_sans_kr_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="boldTextStyle">
+        <item name="android:fontFamily">@font/noto_sans_kr_semibold</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="lightTextStyle">
+        <item name="android:fontFamily">@font/noto_sans_kr_light</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="Theme.AccountToolbar" parent="Base.Theme.AccountWallet">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorSecondary">@color/brown800</item>
     </style>
 </resources>

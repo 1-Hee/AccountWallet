@@ -9,5 +9,36 @@
         android:id="@+id/startFragment"
         android:name="com.aiden.accountwallet.ui.fragment.StartFragment"
         android:label="startFragment"
+        >
+        <action
+            android:id="@+id/action_move_home"
+            app:destination="@id/homeFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.HomeFragment"
+        android:label="homeFragment"
+        >
+        <action
+            android:id="@+id/action_move_add_account"
+            app:destination="@id/addAccountFragment" />
+        <action
+            android:id="@+id/action_move_list_account"
+            app:destination="@id/listAccountFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addAccountFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.AddAccountFragment"
+        android:label="addAccountFragment"
         />
+
+    <fragment
+        android:id="@+id/listAccountFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.ListAccountFragment"
+        android:label="listAccountFragment"
+        />
+
+
 </navigation>

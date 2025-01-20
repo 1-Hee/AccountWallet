@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">AccountWallet</string>
+    <string name="str_start_wallet">Account Wallet</string>
+    <string name="str_start_description">Easy way to managing your account!</string>
+    <string name="btn_start_app">Start Managing Account</string>
+    <string name="hint_enter_nick_name">Please Enter Your Nickname.</string>
+    <string name="str_card_description1">In this App,</string>
+    <string name="str_card_description2">You manage</string>
+    <string name="str_card_description3">accounts!</string>
+    <string name="str_card_tail">stored by your device</string>
+    <string name="btn_add_account">Add Your Account (New)</string>
+    <string name="btn_see_account">See Your Accounts</string>
+    <string name="str_info_type">Information Type</string>
+    <string name="str_form_input">Input Your Information</string>
+    <string name="btn_save_account">Save Your Account</string>
+    <string name="hint_search_account">Search Account…</string>
+    <string name="cb_account_only">계정 정보만 보기</string>
+    <string name="h_site_name">*사이트 명</string>
+    <string name="hint_site_name">Enter Site Name</string>
+    <string name="hint_personal_account">Enter Your Account ID ( or Email )</string>
+    <string name="h_personal_account">*계정 정보</string>
+    <string name="hint_password">Enter Your Password…</string>
+    <string name="h_password">*비밀번호</string>
+    <string name="h_create_date">생성 일자</string>
+    <string name="hint_create_date">날짜 선택</string>
+    <string name="h_site_url">공식 사이트</string>
+    <string name="hint_site_url">Enter Official Site URL</string>
+    <string name="h_memo">메모 사항</string>
+    <string name="hint_memo">Enter Memo...</string>
 </resources>
