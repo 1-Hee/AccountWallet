@@ -1,6 +1,8 @@
 package com.aiden.accountwallet.ui.fragment
 
+import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.NavHostFragment
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
@@ -21,7 +23,12 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(), ViewClickL
 
     override fun initView() {
 
+        val navController = (childFragmentManager
+            .findFragmentById(R.id.fragment_add_form) as NavHostFragment).navController
+
+        // navController.navigate(R.id.productFormFragment)
     }
+
 
     override fun onViewClick(view: View) {
         when(view.id){

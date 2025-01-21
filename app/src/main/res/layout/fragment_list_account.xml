@@ -10,6 +10,9 @@
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+        <variable
+            name="accountList"
+            type="java.util.List&lt;com.aiden.accountwallet.data.vo.AccountInfo>" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -53,17 +56,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
-            <LinearLayout
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/l_search_contents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 >
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_account_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:accountList="@{accountList}"
+                    app:vClick="@{click}"
+                    android:layout_marginVertical="8dp"
                     />
-            </LinearLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
         </ScrollView>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

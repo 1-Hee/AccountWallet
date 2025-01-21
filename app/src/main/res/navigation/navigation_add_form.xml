@@ -11,4 +11,11 @@
         android:label="accountFormFragment"
         >
     </fragment>
+
+    <fragment
+        android:id="@+id/productFormFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.ProductFormFragment"
+        android:label="productFormFragment"
+        >
+    </fragment>
 </navigation>
