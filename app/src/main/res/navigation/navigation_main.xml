@@ -38,7 +38,32 @@
         android:id="@+id/listAccountFragment"
         android:name="com.aiden.accountwallet.ui.fragment.ListAccountFragment"
         android:label="listAccountFragment"
+        >
+        <action
+            android:id="@+id/action_move_view_account"
+            app:destination="@id/viewAccountFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/viewAccountFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.ViewAccountFragment"
+        android:label="viewAccountFragment"
+        >
+        <action
+            android:id="@+id/action_move_edit_account"
+            app:destination="@id/editAccountFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editAccountFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.EditAccountFragment"
+        android:label="editAccountFragment"
         />
 
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.SettingFragment"
+        android:label="settingFragment"
+        />
 
 </navigation>

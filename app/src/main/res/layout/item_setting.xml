@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="settingInfo"
+            type="com.aiden.accountwallet.data.dto.SettingItem" />
+        <variable
+            name="click"
+            type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_setting_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@{settingInfo.dangerFlag ? @drawable/bg_danger_line : @drawable/bg_common_line}"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
+        android:tag="@{settingInfo.name}"
+        android:onClick="@{(v)->click.onViewClick(v)}"
+        tools:background="@drawable/bg_danger_line"
+        android:layout_marginVertical="4dp"
+        >
+        <!-- Setting Name  -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_setting_name"
+            style="@style/baseTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{settingInfo.name}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="16sp"
+            android:textColor="@{settingInfo.dangerFlag ? @color/red400 : @color/mono600}"
+            tools:text="header"
+            tools:textColor="@color/red400"
+            />
+
+        <!-- Setting Value -->
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_setting_value"
+            style="@style/baseTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="@id/iv_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@{settingInfo.value}"
+            android:textColor="@{settingInfo.dangerFlag ? @color/red400 : @color/mono600}"
+            android:textSize="16sp"
+            android:layout_marginEnd="12dp"
+            tools:text="value"
+            tools:textColor="@color/red400"
+            />
+
+        <!-- Button Indicator -->
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_next"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_forward"
+            android:tint="@{settingInfo.dangerFlag ? @color/red400 : @color/mono600}"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:tint="@color/red400"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

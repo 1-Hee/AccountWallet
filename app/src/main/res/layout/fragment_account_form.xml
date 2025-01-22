@@ -34,11 +34,12 @@
             style="@style/boldTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/h_site_name"
+            android:text="@{String.format(`*%s`, @string/h_site_name)}"
             android:textSize="18sp"
             app:layout_constraintTop_toTopOf="@id/et_site_name"
             app:layout_constraintBottom_toBottomOf="@id/et_site_name"
             app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/h_site_name"
             />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -60,12 +61,13 @@
             style="@style/boldTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/h_personal_account"
+            android:text="@{String.format(`*%s`, @string/h_personal_account)}"
             android:textSize="18sp"
             android:textAlignment="center"
             app:layout_constraintTop_toTopOf="@id/et_personal_account"
             app:layout_constraintBottom_toBottomOf="@id/et_personal_account"
             app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/h_personal_account"
             />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -87,12 +89,13 @@
             style="@style/boldTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/h_password"
+            android:text="@{String.format(`*%s`, @string/h_password)}"
             android:textSize="18sp"
             android:textAlignment="center"
             app:layout_constraintTop_toTopOf="@id/et_password"
             app:layout_constraintBottom_toBottomOf="@id/et_password"
             app:layout_constraintStart_toStartOf="parent"
+            tools:text="@string/h_password"
             />
 
         <androidx.appcompat.widget.AppCompatEditText

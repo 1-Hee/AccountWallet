@@ -1,6 +1,7 @@
 package com.aiden.accountwallet.ui.fragment
 
 import android.view.View
+import android.widget.Toast
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
@@ -43,6 +44,15 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(), ViewClic
     }
 
     override fun onViewClick(view: View) {
+
+        when(view.id){
+            R.id.mcv_account_info -> {
+                nav().navigate(R.id.action_move_view_account)
+            }
+            else ->{
+
+            }
+        }
 
     }
 }

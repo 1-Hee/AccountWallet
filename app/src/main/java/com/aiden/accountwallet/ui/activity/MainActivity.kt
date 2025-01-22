@@ -5,8 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.navigation.fragment.NavHostFragment
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.ui.BaseActivity
@@ -57,8 +59,9 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         val id = item.itemId
         return when(id) {
             R.id.action_settings -> {
-                // val intent = Intent(this, SettingActivity::class.java)
-                // launcher.launch(intent)
+                val navController = (supportFragmentManager
+                    .findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment).navController
+                navController.navigate(R.id.settingFragment)
                 true
             }
             else -> {
