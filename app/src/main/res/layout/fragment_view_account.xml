@@ -25,13 +25,36 @@
             android:orientation="vertical"
             >
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_info_type"
-                style="@style/boldTextStyle"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/str_info_type"
-                />
+                >
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_info_type"
+                    style="@style/boldTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/str_info_type"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:scaleType="fitCenter"
+                    android:tint="@color/red400"
+                    android:src="@drawable/ic_delete"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

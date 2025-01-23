@@ -7,7 +7,9 @@ import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
+import com.aiden.accountwallet.data.dto.AlertInfo
 import com.aiden.accountwallet.databinding.FragmentViewAccountBinding
+import com.aiden.accountwallet.ui.dialog.AlertDialog
 
 class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     ViewClickListener {
@@ -33,7 +35,24 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
             R.id.btn_edit_account -> {
                 nav().navigate(R.id.action_move_edit_account)
             }
+            R.id.iv_delete -> {
 
+                val tempInfo = AlertInfo(
+                    "Title", "Content...", dangerFlag = true
+                )
+
+                val dialog = AlertDialog(
+                    tempInfo,
+                    object : AlertDialog.OnDialogClickListener {
+                        override fun onOk(view: View) {
+                        }
+
+                        override fun onCancel(view: View) {
+                        }
+                    }
+                )
+                dialog.show(requireActivity().supportFragmentManager, null)
+            }
             else -> {
 
             }

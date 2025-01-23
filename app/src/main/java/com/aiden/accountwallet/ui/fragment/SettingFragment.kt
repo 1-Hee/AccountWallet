@@ -26,10 +26,12 @@ import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
+import com.aiden.accountwallet.data.dto.AlertInfo
 import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.databinding.FragmentSettingBinding
+import com.aiden.accountwallet.ui.dialog.ProgressDialog
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>() {
@@ -209,6 +211,22 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
                 settingArray[2] -> { // 오픈 소스 라이선스 ...
                     val intent = Intent(requireActivity(), OssLicensesMenuActivity::class.java)
                     launcher.launch(intent)
+                }
+                settingArray[3] -> { // 데이터 백업 하기
+
+                }
+                settingArray[4] -> { // 데이터 불러오기
+                    val alertInfo = AlertInfo(
+                        "Title", "Install Data..."
+                    )
+                    val dialog = ProgressDialog(
+                        alertInfo,
+                        object : ProgressDialog.OnProgressListener {
+                            override fun onOk(view: View) {
+                            }
+                        }
+                    )
+                    dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 else -> {
 
