@@ -5,5 +5,5 @@ data class AlertInfo (
     val alertContent:String = "",
     val txtCancel:String = "Cancel",
     val txtOk:String = "OK",
-    var dangerFlag:Boolean = false
+    var flag:Boolean = false
 )

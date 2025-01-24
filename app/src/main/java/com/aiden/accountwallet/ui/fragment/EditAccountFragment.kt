@@ -1,6 +1,7 @@
 package com.aiden.accountwallet.ui.fragment
 
 import android.view.View
+import android.widget.ArrayAdapter
 import androidx.navigation.fragment.NavHostFragment
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
@@ -13,8 +14,16 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     ViewClickListener {
 
     override fun getDataBindingConfig(): DataBindingConfig {
+
+        // 타입 배열
+        val items = resources.getStringArray(R.array.spinner_info_type)
+        // ArrayAdapter에 커스텀 레이아웃 적용
+        val adapter = ArrayAdapter(requireContext(), R.layout.custom_spinner_item, items)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         return DataBindingConfig(R.layout.fragment_edit_account)
             .addBindingParam(BR.click, this)
+            .addBindingParam(BR.spinnerAdapter, adapter)
     }
 
     override fun initViewModel() {

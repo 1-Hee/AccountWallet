@@ -63,4 +63,13 @@
     <string name="txt_guide_modify_permission"><![CDATA[애플리케이션 정보 > 권한 에서 설정을 변경해주세요]]></string>
     <string name="app_play_store_url">https://play.google.com/store/apps/details?id=kr.co.devicechecker</string>
     <string name="msg_invalid_vending">플레이 스토어로 이동할 수 없습니다.</string>
+    <string name="h_item_tag">태그 색상</string>
+    <string name="btn_select">Select</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="title_select_tag">Select Tag Color</string>
+
+    <string-array name="spinner_info_type">
+        <item>개인 계정</item>
+        <item>제품 키</item>
+    </string-array>
 </resources>

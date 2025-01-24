@@ -83,7 +83,7 @@
                     android:text="@{alertInfo.txtOk}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@{alertInfo.dangerFlag ? @color/red400 : @color/sky_blue600}"
+                    android:textColor="@{alertInfo.flag ? @color/red400 : @color/sky_blue600}"
                     android:background="@color/none"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"

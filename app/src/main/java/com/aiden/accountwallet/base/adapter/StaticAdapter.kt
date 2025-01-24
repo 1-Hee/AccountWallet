@@ -3,12 +3,10 @@ package com.aiden.accountwallet.base.adapter
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
+import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ViewClickListener
-import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.data.vo.AccountInfo

@@ -195,4 +195,10 @@ dependencies {
     val swiperefresh_version = "0.24.7-alpha"
     implementation("com.google.accompanist:accompanist-swiperefresh:$swiperefresh_version")
 
+    // Color Picker
+    // val color_picker_version = 2.3
+    // implementation("com.github.Dhaval2404:ColorPicker:$color_picker_version")
+    implementation("com.github.skydoves:colorpickerview:2.3.0")
+
+
 }

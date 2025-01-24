@@ -31,7 +31,9 @@ import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.databinding.FragmentSettingBinding
+import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.dialog.ProgressDialog
+import com.aiden.accountwallet.ui.dialog.SelectDialog
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>() {
@@ -213,9 +215,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
                     launcher.launch(intent)
                 }
                 settingArray[3] -> { // 데이터 백업 하기
-
-                }
-                settingArray[4] -> { // 데이터 불러오기
                     val alertInfo = AlertInfo(
                         "Title", "Install Data..."
                     )
@@ -226,6 +225,52 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
                             }
                         }
                     )
+                    dialog.show(requireActivity().supportFragmentManager, null)
+                }
+                settingArray[4] -> { // 데이터 불러오기
+
+                    val alertInfo = AlertInfo(
+                        "Title", "Content..."
+                    )
+
+                    val dialog = SelectDialog (
+                        alertInfo,
+                        object : SelectDialog.OnSelectListener {
+                            override fun onSelect(position: Int) {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "user select idx = $position",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            override fun onCancel() {
+
+                            }
+                        }
+                    )
+                    dialog.show(requireActivity().supportFragmentManager, null)
+
+                }
+                settingArray[5] -> { // 데이터 초기화
+                    val alertInfo = AlertInfo(
+                        "Title", "Content...", flag = true
+                    )
+
+                    val dialog = AlertDialog(
+                        alertInfo,
+                        object : AlertDialog.OnDialogClickListener {
+                            override fun onOk(view: View) {
+
+                            }
+
+                            override fun onCancel(view: View) {
+
+                            }
+
+                        }
+                    )
+
                     dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 else -> {

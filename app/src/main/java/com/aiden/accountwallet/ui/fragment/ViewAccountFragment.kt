@@ -38,7 +38,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
             R.id.iv_delete -> {
 
                 val tempInfo = AlertInfo(
-                    "Title", "Content...", dangerFlag = true
+                    "Title", "Content...", flag = true
                 )
 
                 val dialog = AlertDialog(

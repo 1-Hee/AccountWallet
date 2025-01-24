@@ -14,6 +14,10 @@
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+
+        <variable
+            name="spinnerAdapter"
+            type="android.widget.ArrayAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -51,18 +55,35 @@
                     tools:text="Title"
                     />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_alert_content"
-                    style="@style/baseTextStyle"
-                    android:text="@{alertInfo.alertContent}"
-                    android:textSize="18sp"
-                    android:layout_width="0dp"
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/l_select_type"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_all_line"
                     app:layout_constraintTop_toBottomOf="@id/tv_alert_title"
-                    app:layout_constraintBottom_toTopOf="@id/btn_cancel"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:text="contents..."
+                    >
+                    <androidx.appcompat.widget.AppCompatSpinner
+                        android:id="@+id/sp_select_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adapter="@{spinnerAdapter}"
+                        />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_select_status"
+                    style="@style/lightTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    app:layout_constraintTop_toBottomOf="@id/l_select_type"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="@id/l_select_type"
+                    android:text="@{alertInfo.alertContent}"
+                    tools:text="now install data..."
                     />
 
                 <!-- right button -->
