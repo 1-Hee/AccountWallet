@@ -123,14 +123,14 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    // implementation(libs.androidx.navigation.fragment)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
 
     // multi dex
-    implementation("androidx.multidex:multidex:2.0.1")
+    val multi_dex_version = "2.0.1"
+    implementation("androidx.multidex:multidex:$multi_dex_version")
 
     // room implements
     val room_version = "2.5.0"
