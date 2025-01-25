@@ -8,21 +8,26 @@ import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentProductFormBinding
+import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 
-class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(), ViewClickListener {
+class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
+    ViewClickListener {
+
+    private lateinit var productFormViewModel: ProductFormViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_product_form)
+        return DataBindingConfig(R.layout.fragment_product_form, BR.vm, productFormViewModel)
             .addBindingParam(BR.click, this)
     }
 
     override fun initViewModel() {
-
+        productFormViewModel = getFragmentScopeViewModel(ProductFormViewModel::class.java)
     }
 
     override fun initView() {
+
     }
 
     @SuppressLint("SetTextI18n")

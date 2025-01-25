@@ -123,6 +123,10 @@
                 android:layout_marginTop="24dp"
                 android:onClick="@{(v)->click.onViewClick(v)}"
                 />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </ScrollView>
 </layout>

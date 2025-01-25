@@ -9,7 +9,13 @@
     <data>
         <variable
             name="click"
-            type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+            type="com.aiden.accountwallet.base.listener.ViewClickListener"
+            />
+
+        <variable
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel"
+            />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +53,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.providerName}"
             android:hint="@string/hint_provider_name"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -75,6 +82,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.productKey}"
             android:hint="@string/hint_product_key"
             app:layout_constraintTop_toBottomOf="@id/et_provider_name"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -115,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="#93534C"
+            android:text="@{vm.tagColor}"
             app:layout_constraintBottom_toBottomOf="@id/v_color_tag"
             app:layout_constraintStart_toEndOf="@id/v_color_tag"
             app:layout_constraintTop_toTopOf="@id/v_color_tag"
@@ -141,6 +149,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.siteUrl}"
             android:hint="@string/hint_site_url"
             app:layout_constraintTop_toBottomOf="@id/v_color_tag"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -167,6 +176,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.memo}"
             android:hint="@string/hint_memo"
             app:layout_constraintTop_toBottomOf="@id/h_memo"
             app:layout_constraintStart_toStartOf="parent"

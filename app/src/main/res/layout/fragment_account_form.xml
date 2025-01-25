@@ -10,6 +10,9 @@
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+        <variable
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,6 +50,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.siteName}"
             android:hint="@string/hint_site_name"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -75,6 +79,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.personalAccount}"
             android:hint="@string/hint_personal_account"
             app:layout_constraintTop_toBottomOf="@id/et_site_name"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -103,6 +108,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.password}"
             android:hint="@string/hint_password"
             app:layout_constraintTop_toBottomOf="@id/et_personal_account"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -137,11 +143,15 @@
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             >
-            <androidx.appcompat.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/et_create_date"
+                style="@style/baseTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/hint_create_date"
+                android:text="@{vm.createDate}"
+                android:paddingVertical="4dp"
+                android:onClick="@{(v)->click.onViewClick(v)}"
+                tools:text="2025-01-03 12:44:30"
                 />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -177,7 +187,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="#93534C"
+            android:text="@{vm.tagColor}"
             app:layout_constraintBottom_toBottomOf="@id/v_color_tag"
             app:layout_constraintStart_toEndOf="@id/v_color_tag"
             app:layout_constraintTop_toTopOf="@id/v_color_tag"
@@ -204,6 +214,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.siteUrl}"
             android:hint="@string/hint_site_url"
             app:layout_constraintTop_toBottomOf="@id/v_color_tag"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
@@ -230,6 +241,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.memo}"
             android:hint="@string/hint_memo"
             app:layout_constraintTop_toBottomOf="@id/h_memo"
             app:layout_constraintStart_toStartOf="parent"
