@@ -11,6 +11,9 @@
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
         <variable
+            name="etAction"
+            type="com.aiden.accountwallet.base.listener.OnEditorActionListener" />
+        <variable
             name="vm"
             type="com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel" />
     </data>
@@ -52,11 +55,15 @@
             android:layout_height="wrap_content"
             android:text="@{vm.siteName}"
             android:hint="@string/hint_site_name"
+            android:singleLine="true"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            app:onEditorAction="@{etAction}"
             />
 
         <!-- ID -->
@@ -80,12 +87,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{vm.personalAccount}"
+            android:singleLine="true"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:hint="@string/hint_personal_account"
             app:layout_constraintTop_toBottomOf="@id/et_site_name"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            app:onEditorAction="@{etAction}"
             />
 
         <!-- Password -->
@@ -109,12 +120,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{vm.password}"
+            android:singleLine="true"
+            android:inputType="textPassword"
+            android:imeOptions="actionDone"
             android:hint="@string/hint_password"
             app:layout_constraintTop_toBottomOf="@id/et_personal_account"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            app:onEditorAction="@{etAction}"
             />
         <!-- Create Date -->
         <androidx.appcompat.widget.AppCompatTextView
@@ -148,7 +163,7 @@
                 style="@style/baseTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{vm.createDate}"
+                android:text="@{vm.createDateStr}"
                 android:paddingVertical="4dp"
                 android:onClick="@{(v)->click.onViewClick(v)}"
                 tools:text="2025-01-03 12:44:30"
@@ -215,12 +230,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@{vm.siteUrl}"
+            android:singleLine="true"
+            android:inputType="text"
+            android:imeOptions="actionDone"
             android:hint="@string/hint_site_url"
             app:layout_constraintTop_toBottomOf="@id/v_color_tag"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            app:onEditorAction="@{etAction}"
             />
         <!-- Memo -->
         <androidx.appcompat.widget.AppCompatTextView
@@ -247,6 +266,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
+            app:onEditorAction="@{etAction}"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

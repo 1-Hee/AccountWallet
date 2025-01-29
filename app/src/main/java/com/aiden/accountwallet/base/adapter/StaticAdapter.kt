@@ -1,11 +1,13 @@
 package com.aiden.accountwallet.base.adapter
 
+import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
+import com.aiden.accountwallet.base.listener.OnEditorActionListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
@@ -17,6 +19,16 @@ import com.aiden.accountwallet.databinding.ItemSettingBinding
 class StaticAdapter {
 
     companion object {
+
+        @JvmStatic
+        @BindingAdapter("onEditorAction")
+        fun setOnEditorActionListener(editText: EditText, listener: OnEditorActionListener?) {
+            editText.setOnEditorActionListener { v, actionId, event ->
+                listener?.onEditorAction(
+                    v, actionId, event
+                )?:false
+            }
+        }
 
         @JvmStatic
         @BindingAdapter(value = ["accountList", "vClick"], requireAll = true)

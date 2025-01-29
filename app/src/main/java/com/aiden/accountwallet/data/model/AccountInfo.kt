@@ -23,7 +23,7 @@ data class AccountInfo (
     var accountId:Long = 0, // 고유 ID            // 기본키
 
     @ColumnInfo(name = "fk_info_id")
-    val fkInfoId: Int?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
+    val fkInfoId: Long?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
 
     // site_name
     @ColumnInfo(name = "site_name")
