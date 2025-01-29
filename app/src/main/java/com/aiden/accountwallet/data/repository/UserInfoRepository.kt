@@ -8,23 +8,28 @@ import timber.log.Timber
 
 class UserInfoRepository(
     private val userInfoDao: UserInfoDao
-) {
+) : BaseRoomRepository<UserInfo>() {
 
-    private val LIST_SIZE = 10;
-
-    // Create
-    suspend fun addUserInfo(userInfo : UserInfo):Long
-            = withContext(Dispatchers.IO) {
-        Timber.d("addUserInfo.. %s", userInfo)
-        return@withContext userInfoDao.addUserInfo(userInfo)
+    override suspend fun addEntity(entity: UserInfo): Long {
+        Timber.d("repo addEntity.. %s", entity)
+        return this.userInfoDao.addUserInfo(entity)
     }
 
-
-    // Read
-    suspend fun readUserInfoList():List<UserInfo>
-            = withContext(Dispatchers.IO){
-        return@withContext userInfoDao.readUserInfoList()
+    override suspend fun readEntity(): List<UserInfo> {
+        val list = userInfoDao.readUserInfoList()
+        Timber.d("repo readEntity.. %s", list)
+        return list
     }
 
+    override suspend fun modifyEntity(entity: UserInfo) {
 
+    }
+
+    override suspend fun deleteEntity(entityId: Long) {
+
+    }
+
+    override suspend fun deleteEntity(entity: UserInfo) {
+
+    }
 }

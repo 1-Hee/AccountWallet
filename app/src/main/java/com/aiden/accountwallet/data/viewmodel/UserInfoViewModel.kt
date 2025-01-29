@@ -5,19 +5,21 @@ import androidx.databinding.ObservableArrayList
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.aiden.accountwallet.data.dao.UserInfoDao
 import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.UserInfo
+import com.aiden.accountwallet.data.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.repository.UserInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class UserInfoViewModel(
-    private val application: Application
-) : AndroidViewModel(application) {
+    application: Application
+) : BaseRoomViewModel<UserInfo>(application) {
 
+    override val repository: BaseRoomRepository<UserInfo>
     // db init
-    private val repository:UserInfoRepository
     init {
         val userInfoDao = AppDataBase
             .getInstance(application.applicationContext)
@@ -25,60 +27,74 @@ class UserInfoViewModel(
         repository = UserInfoRepository(userInfoDao)
     }
 
-    // * ----------------------------------------
-    // *        Variables
-    // * ----------------------------------------
-    val userAddStatus:MutableLiveData<Long> = MutableLiveData<Long>(0)
-    var userInfoList:ObservableArrayList<UserInfo> = ObservableArrayList<UserInfo>()
-    val isUserEmpty:MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
 
 
     // * ----------------------------------------
     // *        Sync Task API
     // * ----------------------------------------
 
-    // Create
-    suspend fun addUserInfo(userInfo: UserInfo):Long{
-        Timber.d("vm.. addUserInfo : %s", userInfo)
-        return repository.addUserInfo(userInfo)
+    override suspend fun addEntity(entity: UserInfo): Long {
+        Timber.d("vm.. addUserInfo : %s", entity)
+        val result = repository.addEntity(entity)
+        this@UserInfoViewModel.setAddEntityStatus(result)
+        return result
     }
 
-    // Read
-    suspend fun readUserInfoList():List<UserInfo> {
-        Timber.d("vm.. readUserInfoList ...")
-        return repository.readUserInfoList()
+    override suspend fun readEntity(): List<UserInfo> {
+        val list = repository.readEntity()
+        Timber.d("vm.. readUserInfoList : %s", list)
+        this@UserInfoViewModel.addEntityList(list)
+        return list
     }
 
+    override suspend fun editEntity(entity: UserInfo) {
+
+    }
+
+    override suspend fun removeEntity(entityId: Long) {
+
+    }
+
+    override suspend fun removeEntity(entity: UserInfo) {
+
+    }
 
     // * ----------------------------------------
-    // *        Async Task API
+    // *        ASync Task API
     // * ----------------------------------------
 
-    // Create
-    fun addAsyncUserInfo(userInfo: UserInfo) {
+    override fun addAsyncEntity(entity: UserInfo) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm.. addUserInfo : %s", userInfo)
-            val result =  repository.addUserInfo(userInfo)
-            this@UserInfoViewModel.userAddStatus.postValue(result)
-            Timber.d("vm.. addUserInfo result : %s", result)
+            Timber.d("vm.. addUserInfo : %s", entity)
+            val result =  repository.addEntity(entity)
+            this@UserInfoViewModel.setAddEntityStatus(result)
         }
     }
 
-    // Read
-    fun readAsyncUserInfoList() {
+
+    override fun readAsyncEntity() {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm.. readUserInfoList ...")
-            val userInfoList = repository.readUserInfoList()
+            val userInfoList = repository.readEntity()
+            Timber.d("vm.. readUserInfoList : %s", userInfoList)
 
             userInfoList.forEach { info ->
                 Timber.d("vm.. info : %s", info)
             }
+            this@UserInfoViewModel.addEntityList(userInfoList)
 
-            this@UserInfoViewModel.userInfoList.clear()
-            this@UserInfoViewModel.userInfoList.addAll(userInfoList)
-            this@UserInfoViewModel.isUserEmpty.postValue(userInfoList.isEmpty())
         }
     }
 
+    override fun editAsyncEntity(entity: UserInfo) {
+
+    }
+
+    override fun removeAsyncEntity(entityId: Long) {
+
+    }
+
+    override fun removeAsyncEntity(entity: UserInfo) {
+
+    }
 
 }

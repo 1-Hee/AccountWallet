@@ -9,6 +9,7 @@ import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.model.UserInfo
+import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentHomeBinding
 import com.aiden.accountwallet.ui.activity.MainActivity
@@ -34,7 +35,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
         userInfoViewModel = getFragmentScopeViewModel(
             UserInfoViewModel::class.java, factory
         )
-        userInfoViewModel.readAsyncUserInfoList()
+
+        userInfoViewModel.readAsyncEntity()
     }
 
     override fun initView() {
@@ -62,9 +64,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
     private fun initUserNickName() {
         // get nickname from db
         val userInfo:UserInfo? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            userInfoViewModel.userInfoList.first
+            userInfoViewModel.entityList.first
         } else {
-            userInfoViewModel.userInfoList[0]
+            userInfoViewModel.entityList[0]
         }
 
         if(userInfo != null && userInfo.nickName.isNotBlank()){

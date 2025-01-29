@@ -19,7 +19,7 @@ interface IdentityInfoDao {
     fun addAllIdentityInfo(vararg identityInfo : IdentityInfo)
 
     // Read
-    @Query("SELECT * FROM identity_info")
+    @Query("SELECT * FROM identity_info WHERE status = 0")
     fun readIdentityInfoList(): List<IdentityInfo>
 
     @Query("SELECT * FROM identity_info WHERE date(created_at) = date(:mDate)")
@@ -32,7 +32,11 @@ interface IdentityInfoDao {
     @Update
     fun modifyIdentityInfo(identityInfo : IdentityInfo)
 
+
     // Delete
+    @Query("UPDATE identity_info SET status = 1 WHERE info_id = :mInfoId")
+    fun removeIdentityInfo(mInfoId : Long)
+
     @Delete
     fun removeIdentityInfo(identityInfo : IdentityInfo)
 

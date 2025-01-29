@@ -32,7 +32,7 @@ class StartFragment : BaseFragment<FragmentStartBinding>(), ViewClickListener {
     override fun initView() {
         (requireActivity() as MainActivity).supportActionBar?.hide()
 
-        userInfoViewModel.userAddStatus.observe(this) { it ->
+        userInfoViewModel.addStatus.observe(this) { it ->
             if(it > 0) {
                 Toast.makeText(
                     requireContext(),
@@ -64,12 +64,7 @@ class StartFragment : BaseFragment<FragmentStartBinding>(), ViewClickListener {
                     nickName = nickName
                 )
 
-                userInfoViewModel.addAsyncUserInfo(userInfo)
-
-                // Thread.sleep(500)
-
-                userInfoViewModel.readAsyncUserInfoList()
-
+                userInfoViewModel.addAsyncEntity(userInfo)
 
             }
         }

@@ -17,8 +17,6 @@ import java.util.Date
         )
     ]
 )
-
-
 data class IdentityInfo(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "info_id")

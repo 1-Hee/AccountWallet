@@ -73,10 +73,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             withContext(Dispatchers.Main){
                 mBinding.clCheckNickname.visibility = View.VISIBLE
             }
-            val nickNameList = userInfoViewModel.readUserInfoList()
+            val nickNameList = userInfoViewModel.readEntity()
+            withContext(Dispatchers.Main){
+                mBinding.clCheckNickname.visibility = View.GONE
+            }
             if(nickNameList.isNotEmpty()){
                 withContext(Dispatchers.Main){
-                    mBinding.clCheckNickname.visibility = View.GONE
                     mBinding.notifyChange()
                     navController.popBackStack(R.id.startFragment, true)
                     navController.navigate(R.id.homeFragment)
