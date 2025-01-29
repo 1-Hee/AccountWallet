@@ -6,7 +6,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.android.gms.oss-licenses-plugin")
-    kotlin("kapt")// 사용하는 코틀린 버전에 맞게 해주어야함!
+    id("org.jetbrains.kotlin.kapt")
+    // kotlin("kapt")// 사용하는 코틀린 버전에 맞게 해주어야함!
 }
 
 fun getApiKey(propertyKey: String): String {
@@ -128,6 +129,9 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
 
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.0")
+
     // multi dex
     val multi_dex_version = "2.0.1"
     implementation("androidx.multidex:multidex:$multi_dex_version")
@@ -164,7 +168,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifeCycleVersion")
 
     // navigation implements
-    val navVersion = "2.3.2"
+    val navVersion = "2.8.5"
     implementation ("androidx.navigation:navigation-fragment:$navVersion")
     implementation ("androidx.navigation:navigation-ui:$navVersion")
 

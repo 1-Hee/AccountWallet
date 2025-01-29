@@ -49,6 +49,7 @@
     <color name="mono600">#7d7e80</color>
     <color name="mono700">#656769</color>
     <color name="mono800">#4e5053</color>
+    <color name="mono300_trans">#7BC4C4C4</color>
     <color name="mono900">#37393c</color>
     <color name="white">#fbfbfb</color>
     <color name="black">#090909</color>

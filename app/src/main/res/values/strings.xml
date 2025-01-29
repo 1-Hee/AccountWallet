@@ -68,6 +68,7 @@
     <string name="btn_cancel">Cancel</string>
     <string name="title_select_tag">Select Tag Color</string>
     <string name="msg_success_nickname">닉네임이 성공적으로 등록되었습니다.</string>
+    <string name="str_empty">None</string>
 
     <string-array name="spinner_info_type">
         <item>개인 계정</item>

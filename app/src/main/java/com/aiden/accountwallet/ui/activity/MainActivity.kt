@@ -5,24 +5,45 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
+import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
+import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.ui.BaseActivity
+import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
+    // vm
+    private lateinit var userInfoViewModel: UserInfoViewModel
+
     // variables
     // 세팅 액티비티 팝업용 런처
+    private lateinit var navController: NavController
     private lateinit var launcher: ActivityResultLauncher<Intent>;
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_main)
+    }
+
+    override fun initViewModel() {
+        super.initViewModel()
+        val factory = ApplicationFactory(this.application)
+        this.userInfoViewModel = getApplicationScopeViewModel(
+            UserInfoViewModel::class.java, factory
+        )
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -39,11 +60,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                  */
             }
         }
-        setSupportActionBar(mBinding.mainAppBar.toolbar)
+
+        // set up navcontroller
+        navController = findNavController(R.id.nav_host_fragment_content_main)
 
         //admob init
         MobileAds.initialize(this) {}
 
+        // check nickname
+        lifecycleScope.launch(Dispatchers.IO){
+            // 현재 로직에서 나중에 진입 프래그먼트를 고려한 로직으로 수정하기
+            withContext(Dispatchers.Main){
+                mBinding.clCheckNickname.visibility = View.VISIBLE
+            }
+            val nickNameList = userInfoViewModel.readUserInfoList()
+            if(nickNameList.isNotEmpty()){
+                withContext(Dispatchers.Main){
+                    mBinding.clCheckNickname.visibility = View.GONE
+                    mBinding.notifyChange()
+                    navController.popBackStack(R.id.startFragment, true)
+                    navController.navigate(R.id.homeFragment)
+                }
+            }
+        }
     }
 
     // 액션 바 메뉴

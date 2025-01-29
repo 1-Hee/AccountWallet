@@ -30,6 +30,7 @@ class UserInfoViewModel(
     // * ----------------------------------------
     val userAddStatus:MutableLiveData<Long> = MutableLiveData<Long>(0)
     var userInfoList:ObservableArrayList<UserInfo> = ObservableArrayList<UserInfo>()
+    val isUserEmpty:MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
 
 
     // * ----------------------------------------
@@ -75,6 +76,7 @@ class UserInfoViewModel(
 
             this@UserInfoViewModel.userInfoList.clear()
             this@UserInfoViewModel.userInfoList.addAll(userInfoList)
+            this@UserInfoViewModel.isUserEmpty.postValue(userInfoList.isEmpty())
         }
     }
 

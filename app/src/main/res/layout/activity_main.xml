@@ -23,6 +23,26 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_check_nickname"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mono300_trans"
+            android:visibility="gone"
+            >
+            <ProgressBar
+                android:id="@+id/pb_check_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/sky_blue400"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <!--
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
