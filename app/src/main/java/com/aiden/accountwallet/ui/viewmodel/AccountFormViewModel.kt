@@ -3,6 +3,7 @@ package com.aiden.accountwallet.ui.viewmodel
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.aiden.accountwallet.data.model.IdAccountInfo
 import java.util.Date
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 
@@ -33,6 +34,19 @@ class AccountFormViewModel : ViewModel() {
         this.memo.set("")
     }
 
+    fun initVariables(idAccountInfo : IdAccountInfo) {
+        this.siteName.set(idAccountInfo.baseInfo.providerName)
+        this.personalAccount.set(idAccountInfo.accountInfo.userAccount)
+        this.password.set(idAccountInfo.accountInfo.userPassword)
+        this.createDateStr.set(getSimpleDateFormat()
+            .format(idAccountInfo.accountInfo.acCreatedAt
+            ))
+        this.createDate.set(idAccountInfo.accountInfo.acCreatedAt)
+        this.tagColor.set(idAccountInfo.baseInfo.tagColor)
+        this.siteUrl.set(idAccountInfo.accountInfo.officialUrl)
+        this.memo.set(idAccountInfo.baseInfo.memo)
+        this.updateStatus.postValue(true) // notify data setup
+    }
 
     // * ------------------------------------------------
     // *    ViewModel's Setter

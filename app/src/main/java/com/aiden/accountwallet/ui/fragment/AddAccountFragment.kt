@@ -1,5 +1,7 @@
 package com.aiden.accountwallet.ui.fragment
 
+import android.content.Context
+import android.provider.DocumentsContract.Root
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -22,6 +24,7 @@ import com.aiden.accountwallet.databinding.FragmentAddAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.RoomTool
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -93,6 +96,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         accountFormViewModel.initVariables()
     }
 
+    @Deprecated("user other")
     private fun getIdentifyInfo(typeIdx:Int = -1):IdentityInfo {
         var mInfoType:Int = 0
         var mProviderName:String = "None"
@@ -122,6 +126,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         )
     }
 
+    @Deprecated("user other")
     private fun getAccountInfo(infoId: Long?): AccountInfo {
         return AccountInfo(
             fkInfoId = infoId,
@@ -132,6 +137,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         )
     }
 
+    @Deprecated("user other")
     private fun getProductKey(infoId: Long?): ProductKey {
         return ProductKey(
             fkInfoId = infoId,
@@ -143,35 +149,45 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
     // 사용자 계정 추가 작업
     private fun addUserAccountTask() {
         accountFormViewModel.updateStatus.postValue(true)
-        // save...
-        // nav().popBackStack()
+        val context:Context = requireContext()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            // delay(100)
-            val iInfo:IdentityInfo = getIdentifyInfo(0)
-            var aInfo:AccountInfo = getAccountInfo(iInfo.infoId)
+            delay(100)
+            val iInfo:IdentityInfo = RoomTool.getIdentifyInfo(
+                context, 0,
+                fkUserId = 1,
+                accountFormViewModel,
+                productFormViewModel
+            )
+            var aInfo:AccountInfo = RoomTool.getAccountInfo(
+                iInfo.infoId, accountFormViewModel
+            )
 
             if(iInfo.providerName.isBlank()
                 || aInfo.userAccount.isBlank() || aInfo.userPassword.isBlank()){
                 withContext(Dispatchers.Main){
                     Toast.makeText(
-                        requireContext(), "등록 실패", Toast.LENGTH_SHORT
+                        requireContext(),
+                        getString(R.string.msg_add_fail),
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
                 return@launch
             }
 
             val iId:Long = identityInfoViewModel.addEntity(iInfo)
-            aInfo = getAccountInfo(iId)
+            aInfo = RoomTool.getAccountInfo(iId, accountFormViewModel)
             val aId:Long = accountInfoViewModel.addEntity(aInfo)
 
             if(aId > 0){
                 withContext(Dispatchers.Main){
                     Toast.makeText(
                         requireContext(),
-                        "등록 성공",
+                        getString(R.string.msg_add_success),
                         Toast.LENGTH_SHORT
                     ).show()
+                    nav().popBackStack()
+                    accountFormViewModel.initVariables()
                 }
             }
         }
@@ -180,34 +196,44 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
     // 제품키 추가 작업
     private fun addProductKeyTask() {
         productFormViewModel.updateStatus.postValue(true)
-        // save...
-        // nav().popBackStack()
+        val context = requireContext()
 
         lifecycleScope.launch(Dispatchers.IO) {
-            // delay(100)
-            val iInfo:IdentityInfo = getIdentifyInfo(1)
-            var pInfo:ProductKey = getProductKey(iInfo.infoId)
+            delay(100)
+            val iInfo:IdentityInfo = RoomTool.getIdentifyInfo(
+                context,
+                1,
+                fkUserId = 1,
+                accountFormViewModel, productFormViewModel
+            )
+            var pInfo:ProductKey = RoomTool.getProductKey(
+                iInfo.infoId, productFormViewModel
+            )
 
             if(iInfo.providerName.isBlank() || pInfo.productKey.isBlank()){
                 withContext(Dispatchers.Main){
                     Toast.makeText(
-                        requireContext(), "등록 실패", Toast.LENGTH_SHORT
+                        requireContext(),
+                        getString(R.string.msg_add_fail),
+                        Toast.LENGTH_SHORT
                     ).show()
                 }
                 return@launch
             }
 
             val iId:Long = identityInfoViewModel.addEntity(iInfo)
-            pInfo = getProductKey(iId)
-            val pId = productKeyViewModel.addEntity(pInfo)
+            pInfo = RoomTool.getProductKey(iId, productFormViewModel)
+            val pId:Long = productKeyViewModel.addEntity(pInfo)
 
             if(pId > 0){
                 withContext(Dispatchers.Main){
                     Toast.makeText(
                         requireContext(),
-                        "등록 성공",
+                        getString(R.string.msg_add_success),
                         Toast.LENGTH_SHORT
                     ).show()
+                    nav().popBackStack()
+                    productFormViewModel.initVariables()
                 }
             }
         }

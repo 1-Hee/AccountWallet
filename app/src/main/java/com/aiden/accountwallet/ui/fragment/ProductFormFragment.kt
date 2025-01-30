@@ -2,6 +2,7 @@ package com.aiden.accountwallet.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.KeyEvent
 import android.view.View
 import android.widget.TextView
@@ -67,6 +68,21 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         productFormViewModel.setProviderName(providerName)
         productFormViewModel.setProductKey(productKey)
         productFormViewModel.setTagColor(tagStr)
+        // set tag color
+        val colorHex:String = tagStr
+        val color:Int = colorHex.let {
+            try {
+                Color.parseColor(it)
+            } catch (e: IllegalArgumentException) {
+                try {
+                    val defStr:String = getString(R.string.def_tag_color)
+                    Color.parseColor(defStr)
+                } catch (e: IllegalArgumentException) {
+                    Color.GRAY
+                }
+            }
+        }
+        mBinding.vColorTag.setBackgroundColor(color)
         productFormViewModel.setSiteUrl(urlStr)
         productFormViewModel.setMemo(memoStr)
     }

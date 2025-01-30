@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
+import android.graphics.Color
 import android.view.KeyEvent
 import android.view.View
 import android.widget.DatePicker
@@ -55,29 +56,6 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                 accountFormViewModel.updateStatus.postValue(false)
             }
         }
-
-
-
-        /*
-        // 키보드 엔터 이벤트 핸들링을 위한 리스너
-        val onKeyListener = View.OnKeyListener { view, keyCode, keyEvent ->
-            if(keyCode == KeyEvent.KEYCODE_ENTER
-                && keyEvent.action == KeyEvent.ACTION_DOWN){
-                AppUtil.UIManager.hideKeyPad(requireActivity())
-                return@OnKeyListener true // 이벤트 소비
-            }
-            false // 이벤트 계속 전달
-        }
-        // 가상 키패드 엔터 이벤트 핸들링을 위한 리스너
-        val textListener = TextView.OnEditorActionListener { textView, keyCode, keyEvent ->
-            if(keyCode == 5) { // 엔터 코드
-                AppUtil.UIManager.hideKeyPad(requireActivity())
-                return@OnEditorActionListener true // 이벤트 소비
-            }
-            false // 이벤트 계속 전달
-        }
-         */
-
     }
 
     private fun notifyAccountInfo() {
@@ -105,6 +83,21 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         }
         accountFormViewModel.setCreateDate(dateResult)
         accountFormViewModel.setTagColor(tagStr)
+        // set tag color
+        val colorHex:String = tagStr
+        val color:Int = colorHex.let {
+            try {
+                Color.parseColor(it)
+            } catch (e: IllegalArgumentException) {
+                try {
+                    val defStr:String = getString(R.string.def_tag_color)
+                    Color.parseColor(defStr)
+                } catch (e: IllegalArgumentException) {
+                    Color.GRAY
+                }
+            }
+        }
+        mBinding.vColorTag.setBackgroundColor(color)
         accountFormViewModel.setSiteUrl(urlStr)
         accountFormViewModel.setMemo(memoStr)
 

@@ -64,6 +64,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         // set up navcontroller
         navController = findNavController(R.id.nav_host_fragment_content_main)
+        setSupportActionBar(mBinding.mainAppBar.toolbar)
 
         //admob init
         MobileAds.initialize(this) {}

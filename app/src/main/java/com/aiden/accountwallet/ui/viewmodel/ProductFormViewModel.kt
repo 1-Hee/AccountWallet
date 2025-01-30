@@ -3,6 +3,7 @@ package com.aiden.accountwallet.ui.viewmodel
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.aiden.accountwallet.data.model.IdProductKey
 
 class ProductFormViewModel : ViewModel() {
 
@@ -23,6 +24,15 @@ class ProductFormViewModel : ViewModel() {
         this.tagColor.set("#93534C")
         this.siteUrl.set("")
         this.memo.set("")
+    }
+
+    fun initVariables(idProductKey: IdProductKey) {
+        this.providerName.set(idProductKey.baseInfo.providerName)
+        this.productKey.set(idProductKey.productKey.productKey)
+        this.tagColor.set(idProductKey.baseInfo.tagColor)
+        this.siteUrl.set(idProductKey.productKey.officialUrl)
+        this.memo.set(idProductKey.baseInfo.memo)
+        this.updateStatus.postValue(true) // notify data setup
     }
 
     // * ------------------------------------------------
