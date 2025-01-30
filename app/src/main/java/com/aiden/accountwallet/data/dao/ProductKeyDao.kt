@@ -21,8 +21,7 @@ interface ProductKeyDao {
     // Read
     @Query("""
         SELECT 
-            pi.product_id, pi.fk_info_id,
-            pi.provider_name, pi.product_key, pi.official_url
+            pi.product_id, pi.fk_info_id, pi.product_key, pi.official_url
         FROM identity_info ii
         JOIN PRODUCT_KEY pi 
         ON ii.info_id = pi.fk_info_id

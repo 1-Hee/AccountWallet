@@ -11,7 +11,12 @@
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener"
             />
-
+        <variable
+            name="onKeyAction"
+            type="com.aiden.accountwallet.base.listener.OnKeyListener" />
+        <variable
+            name="editAction"
+            type="com.aiden.accountwallet.base.listener.OnEditorActionListener" />
         <variable
             name="vm"
             type="com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel"
@@ -60,6 +65,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
 
         <!-- ID -->
@@ -89,6 +96,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
 
         <!-- Tag Color -->
@@ -156,6 +165,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
         <!-- Memo -->
         <androidx.appcompat.widget.AppCompatTextView
@@ -182,6 +193,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

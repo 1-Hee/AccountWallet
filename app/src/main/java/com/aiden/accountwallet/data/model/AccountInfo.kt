@@ -25,10 +25,6 @@ data class AccountInfo (
     @ColumnInfo(name = "fk_info_id")
     val fkInfoId: Long?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
 
-    // site_name
-    @ColumnInfo(name = "site_name")
-    var siteName: String = "",                  // 사이트명
-
     // user_account
     @ColumnInfo(name = "user_account")
     var userAccount: String = "",               // 사용자 계정

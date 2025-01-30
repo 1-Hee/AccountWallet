@@ -11,7 +11,10 @@
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
         <variable
-            name="etAction"
+            name="onKeyAction"
+            type="com.aiden.accountwallet.base.listener.OnKeyListener" />
+        <variable
+            name="editAction"
             type="com.aiden.accountwallet.base.listener.OnEditorActionListener" />
         <variable
             name="vm"
@@ -63,7 +66,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            app:onEditorAction="@{etAction}"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
 
         <!-- ID -->
@@ -96,7 +100,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            app:onEditorAction="@{etAction}"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
 
         <!-- Password -->
@@ -129,7 +134,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            app:onEditorAction="@{etAction}"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
         <!-- Create Date -->
         <androidx.appcompat.widget.AppCompatTextView
@@ -239,7 +245,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            app:onEditorAction="@{etAction}"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
         <!-- Memo -->
         <androidx.appcompat.widget.AppCompatTextView
@@ -266,7 +273,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
-            app:onEditorAction="@{etAction}"
+            android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
+            android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

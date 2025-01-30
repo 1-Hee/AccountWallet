@@ -1,6 +1,7 @@
 package com.aiden.accountwallet.ui.viewmodel
 
 import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class ProductFormViewModel : ViewModel() {
@@ -8,11 +9,21 @@ class ProductFormViewModel : ViewModel() {
     // * ------------------------------------------------
     // *    Variables
     // * ------------------------------------------------
+    val updateStatus: MutableLiveData<Boolean> = MutableLiveData<Boolean>(false)
     val providerName: ObservableField<String> = ObservableField("")
     val productKey: ObservableField<String> = ObservableField("")
     val tagColor:ObservableField<String> = ObservableField("#93534C")
     val siteUrl:ObservableField<String> = ObservableField("")
     val memo:ObservableField<String> = ObservableField("")
+
+    fun initVariables() {
+        this.updateStatus.postValue(false)
+        this.providerName.set("")
+        this.productKey.set("")
+        this.tagColor.set("#93534C")
+        this.siteUrl.set("")
+        this.memo.set("")
+    }
 
     // * ------------------------------------------------
     // *    ViewModel's Setter
@@ -27,7 +38,7 @@ class ProductFormViewModel : ViewModel() {
     }
 
     fun setTagColor(tagColor:String){
-        this.tagColor.set("#$tagColor")
+        this.tagColor.set(tagColor)
     }
 
     fun setSiteUrl(siteUrl:String){

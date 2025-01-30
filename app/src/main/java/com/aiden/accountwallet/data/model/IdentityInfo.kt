@@ -28,6 +28,10 @@ data class IdentityInfo(
     @ColumnInfo(name = "info_type")
     var infoType: Int = 0,                  // 정보 유형 ( 0 = Account , 1 = Product ))
 
+    // provider_name
+    @ColumnInfo(name = "provider_name")
+    val providerName:String = "",               // 제품 공급사
+
     @ColumnInfo(name = "created_at")
     var createAt: Date = Date(),            // 첫 등록 일자
 

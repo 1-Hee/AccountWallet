@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Update
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
-import com.aiden.accountwallet.data.model.IdentityInfo
 
 @Dao
 interface AccountInfoDao {
@@ -23,7 +22,7 @@ interface AccountInfoDao {
     // Read
     @Query("""
         SELECT 
-            ai.account_id, ai.fk_info_id, ai.site_name,
+            ai.account_id, ai.fk_info_id,
             ai.user_account, ai.user_password,
             ai.ac_created_at, ai.official_url
         FROM identity_info ii
@@ -38,9 +37,9 @@ interface AccountInfoDao {
     @Query("""
         SELECT 
             ii.info_id, ii.fk_user_id, ii.info_type,
-            ii.created_at, ii.updated_at, ii.memo,
+            ii.provider_name, ii.created_at, ii.updated_at, ii.memo,
             ii.tag_color, ii.status,
-            ai.account_id, ai.fk_info_id, ai.site_name,
+            ai.account_id, ai.fk_info_id,
             ai.user_account, ai.user_password,
             ai.ac_created_at, ai.official_url
         FROM identity_info ii

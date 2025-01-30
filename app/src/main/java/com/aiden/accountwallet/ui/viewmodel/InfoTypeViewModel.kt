@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableField
 import androidx.lifecycle.ViewModel
 
 
@@ -12,6 +13,7 @@ class InfoTypeViewModel : ViewModel() {
     // * ------------------------------------------------
     // *    Variables
     // * ------------------------------------------------
+    val selectedType:ObservableField<Int> = ObservableField(0)
     private val infoTypes: ObservableArrayList<String> = ObservableArrayList()
     var infoTypeAdapter:ArrayAdapter<String>? = null
     private var callback: InfoTypeCallback? = null
@@ -34,6 +36,10 @@ class InfoTypeViewModel : ViewModel() {
     // * ------------------------------------------------
     fun setCallback(callback: InfoTypeCallback?) {
         this.callback = callback
+    }
+
+    fun setSelectedType(typeIdx:Int) {
+        this.selectedType.set(typeIdx)
     }
 
     // * ------------------------------------------------

@@ -30,11 +30,7 @@ data class ProductKey (
     var productId:Long = 0, // 고유 ID            // 기본키
 
     @ColumnInfo(name = "fk_info_id")
-    val fkInfoId: Int?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
-
-    // provider_name
-    @ColumnInfo(name = "provider_name")
-    val providerName:String = "",               // 제품 공급사
+    val fkInfoId: Long?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
 
     // product_key
     @ColumnInfo(name = "product_key")

@@ -21,16 +21,6 @@ class StaticAdapter {
     companion object {
 
         @JvmStatic
-        @BindingAdapter("onEditorAction")
-        fun setOnEditorActionListener(editText: EditText, listener: OnEditorActionListener?) {
-            editText.setOnEditorActionListener { v, actionId, event ->
-                listener?.onEditorAction(
-                    v, actionId, event
-                )?:false
-            }
-        }
-
-        @JvmStatic
         @BindingAdapter(value = ["accountList", "vClick"], requireAll = true)
         fun setStorageAdapter(
             recyclerView: RecyclerView,
