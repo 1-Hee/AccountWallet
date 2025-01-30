@@ -1,12 +1,15 @@
 package com.aiden.accountwallet.data.repository
 
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.ExtraEntityHandler
 import com.aiden.accountwallet.data.dao.AccountInfoDao
 import com.aiden.accountwallet.data.model.AccountInfo
+import com.aiden.accountwallet.data.model.IdAccountInfo
 import timber.log.Timber
 
 class AccountInfoRepository(
     private val accountInfoDao: AccountInfoDao
-) : BaseRoomRepository<AccountInfo>() {
+) : BaseRoomRepository<AccountInfo>(), ExtraEntityHandler<IdAccountInfo> {
 
     override suspend fun addEntity(entity: AccountInfo): Long {
         Timber.d("repo addEntity : %s ", entity)
@@ -14,10 +17,25 @@ class AccountInfoRepository(
         return result
     }
 
-    override suspend fun readEntity(): List<AccountInfo> {
-        val list = accountInfoDao.readAccountInfoList()
-        Timber.d("repo eadEntity : %s ", list)
+    override suspend fun readEntity(entityId: Long): AccountInfo {
+        return AccountInfo(fkInfoId = -1)
+    }
+
+    override suspend fun readEntityList(): List<AccountInfo> {
+        val list:List<AccountInfo> = accountInfoDao.readAccountInfoList()
+        Timber.d("repo eadEntityList : %s ", list)
         return list
+    }
+
+    override suspend fun readExtraEntity(entityId: Long): IdAccountInfo {
+        Timber.d("repo readCombineEntity id : %d", entityId)
+        val entity:IdAccountInfo = accountInfoDao.readIdAccountInfoById(entityId)
+        Timber.d("repo readCombineEntity : %s", entity)
+        return entity
+    }
+
+    override suspend fun readExtraEntityList(): List<IdAccountInfo> {
+        return emptyList()
     }
 
     override suspend fun modifyEntity(entity: AccountInfo) {

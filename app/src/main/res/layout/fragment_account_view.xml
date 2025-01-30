@@ -7,6 +7,10 @@
     >
 
     <data>
+        <import type="android.view.View"/>
+        <variable
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel" />
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
@@ -44,6 +48,9 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_site_name"
             style="@style/baseTextStyle"
+            android:text="@{vm.MIdAccountInfo.baseInfo.providerName}"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,6 +80,9 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.MIdAccountInfo.accountInfo.userAccount}"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             app:layout_constraintTop_toBottomOf="@id/tv_site_name"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -100,6 +110,9 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.MIdAccountInfo.accountInfo.userPassword}"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             app:layout_constraintTop_toBottomOf="@id/tv_personal_account"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -128,6 +141,8 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             app:layout_constraintTop_toBottomOf="@id/tv_password"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -155,6 +170,9 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.MIdAccountInfo.accountInfo.officialUrl}"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             app:layout_constraintTop_toBottomOf="@id/tv_create_date"
             app:layout_constraintStart_toStartOf="@id/gl_vertical"
             app:layout_constraintEnd_toEndOf="parent"
@@ -175,6 +193,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_site_url"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="18dp"
+            android:visibility="@{vm.MIdAccountInfo.baseInfo.memo.toString().length() > 0 ? View.VISIBLE : View.GONE}"
             />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -182,12 +201,16 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{vm.MIdAccountInfo.baseInfo.memo}"
+            android:textSize="16sp"
+            android:textColor="@color/sky_blue600"
             app:layout_constraintTop_toBottomOf="@id/v_memo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="12dp"
             android:padding="8dp"
             android:background="@drawable/bg_all_line"
+            android:visibility="@{vm.MIdAccountInfo.baseInfo.memo.toString().length() > 0 ? View.VISIBLE : View.GONE}"
             tools:text="@string/hint_memo"
             />
 

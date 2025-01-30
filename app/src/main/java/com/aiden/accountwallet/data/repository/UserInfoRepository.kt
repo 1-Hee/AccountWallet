@@ -1,9 +1,8 @@
 package com.aiden.accountwallet.data.repository
 
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.UserInfoDao
 import com.aiden.accountwallet.data.model.UserInfo
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class UserInfoRepository(
@@ -15,14 +14,19 @@ class UserInfoRepository(
         return this.userInfoDao.addUserInfo(entity)
     }
 
-    override suspend fun readEntity(): List<UserInfo> {
-        val list = userInfoDao.readUserInfoList()
-        Timber.d("repo readEntity.. %s", list)
-        return list
-    }
 
     override suspend fun modifyEntity(entity: UserInfo) {
 
+    }
+
+    override suspend fun readEntity(entityId: Long): UserInfo {
+        return UserInfo()
+    }
+
+    override suspend fun readEntityList(): List<UserInfo> {
+        val list:List<UserInfo> = userInfoDao.readUserInfoList()
+        Timber.d("repo readEntityList.. %s", list)
+        return list
     }
 
     override suspend fun deleteEntity(entityId: Long) {

@@ -17,6 +17,7 @@ import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.ui.BaseActivity
+import com.aiden.accountwallet.data.model.UserInfo
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
@@ -73,7 +74,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             withContext(Dispatchers.Main){
                 mBinding.clCheckNickname.visibility = View.VISIBLE
             }
-            val nickNameList = userInfoViewModel.readEntity()
+            val nickNameList:List<UserInfo> = userInfoViewModel.readEntityList()
             withContext(Dispatchers.Main){
                 mBinding.clCheckNickname.visibility = View.GONE
             }

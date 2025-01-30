@@ -3,6 +3,7 @@ package com.aiden.accountwallet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
@@ -10,12 +11,15 @@ import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.listener.ItemClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
+import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
 
@@ -52,8 +56,6 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         infoItemViewModel = getApplicationScopeViewModel(
             InfoItemViewModel::class.java
         )
-
-        identityInfoViewModel.readAsyncEntity()
     }
 
     private fun getTagInfo(typeIdx:Int, tagColor: String):TagInfo{
@@ -66,21 +68,27 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
     override fun initView() {
         val sFormat:SimpleDateFormat = getSimpleDateFormat(DATE_FORMAT)
-        identityInfoViewModel.entityList.forEach { item ->
-            val tagInfo = getTagInfo(item.infoType, item.tagColor)
-            val mAccountInfo = DisplayAccountInfo (
-                item.infoId,
-                item.providerName,
-                item.infoType,
-                tagInfo.tagName,
-                tagInfo.tagColor,
-                sFormat.format(item.createAt)
-            )
-            Timber.i("item info : %s", mAccountInfo)
-            this.mDisplayAccountList.add(mAccountInfo)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            this@ListAccountFragment.mDisplayAccountList.clear()
+
+            val itemList:List<IdentityInfo> = identityInfoViewModel.readEntityList()
+            itemList.forEach { item ->
+                val tagInfo = getTagInfo(item.infoType, item.tagColor)
+                val mAccountInfo = DisplayAccountInfo (
+                    item.infoId,
+                    item.providerName,
+                    item.infoType,
+                    tagInfo.tagName,
+                    tagInfo.tagColor,
+                    sFormat.format(item.createAt)
+                )
+                Timber.i("item info : %s", mAccountInfo)
+                this@ListAccountFragment.mDisplayAccountList.add(mAccountInfo)
+            }
+            mBinding.setVariable(BR.displayAccountList, mDisplayAccountList)
         }
-        mBinding.setVariable(BR.displayAccountList, mDisplayAccountList)
-        mBinding.notifyChange()
+
     }
 
     override fun onViewClick(view: View) {

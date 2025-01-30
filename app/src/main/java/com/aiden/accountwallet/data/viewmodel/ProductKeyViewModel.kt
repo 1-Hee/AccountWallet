@@ -1,19 +1,27 @@
 package com.aiden.accountwallet.data.viewmodel
 
 import android.app.Application
+import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
+import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.ProductKey
-import com.aiden.accountwallet.data.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.ExtraEntityHandler
+import com.aiden.accountwallet.base.viewmodel.ExtraViewModel
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.repository.ProductKeyRepository
+import com.aiden.accountwallet.util.RoomTool.checkInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class ProductKeyViewModel (
     application: Application
-) :  BaseRoomViewModel<ProductKey>(application) {
+) :  BaseRoomViewModel<ProductKey>(application), ExtraViewModel<IdProductKey> {
 
+    // db init
     override val repository: BaseRoomRepository<ProductKey>
     init {
         val productKeyDao = AppDataBase
@@ -25,12 +33,12 @@ class ProductKeyViewModel (
     // * ----------------------------------------
     // *        Variables
     // * ----------------------------------------
-
+    override val extraEntity: ObservableField<IdProductKey> = ObservableField()
+    override val extraEntityList: ObservableArrayList<IdProductKey> = ObservableArrayList()
 
     // * ----------------------------------------
     // *        Sync Task API
     // * ----------------------------------------
-
     override suspend fun addEntity(entity: ProductKey): Long {
         Timber.d("vm addEntity %s", entity)
         val result = repository.addEntity(entity)
@@ -38,20 +46,32 @@ class ProductKeyViewModel (
         return result
     }
 
-    override suspend fun readEntity(): List<ProductKey> {
-        val list = repository.readEntity()
-        Timber.d("vm readEntity : %s", list)
+    override suspend fun readEntityList(): List<ProductKey> {
+        val list:List<ProductKey> = repository.readEntityList()
+        Timber.d("vm readEntityList : %s", list)
         this@ProductKeyViewModel.addEntityList(list)
         return list
     }
 
-    /*
-    suspend fun readIdAccountInfoList():List<IdAccountInfo> {
-        val idList = repository.readEntity()
-        Timber.d("vm readAccountInfoList : ${idList.toString()}")
-        return idList
+    override suspend fun readEntity(entityId: Long): ProductKey {
+        return ProductKey(fkInfoId = -1)
     }
-     */
+
+    override suspend fun readExtraEntity(entityId: Long): IdProductKey {
+        if(!checkInstance<ExtraEntityHandler<IdProductKey>>(repository)){
+            throw RuntimeException("Invalid Repository Casting")
+        }
+        Timber.d("vm readExtraEntity id : %d", entityId)
+        val entity: IdProductKey = (repository as ExtraEntityHandler<IdProductKey>)
+            .readExtraEntity(entityId)
+        Timber.d("vm readExtraEntity : %s", entity)
+        this@ProductKeyViewModel.extraEntity.set(entity)
+        return entity
+    }
+
+    override suspend fun readExtraEntityList(): List<IdProductKey> {
+        return emptyList()
+    }
 
     override suspend fun editEntity(entity: ProductKey) {
         Timber.d("vm editEntity : %s", entity)
@@ -81,21 +101,35 @@ class ProductKeyViewModel (
         }
     }
 
-    override fun readAsyncEntity() {
+    override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.readEntity()
-            Timber.d("vm readEntity : %s", list)
+            val list:List<ProductKey> = repository.readEntityList()
+            Timber.d("vm readEntityList : %s", list)
             this@ProductKeyViewModel.addEntityList(list)
         }
     }
 
-    /*
-    fun readIdAccountInfoList():List<IdAccountInfo> {
-        val idList = repository.readEntity()
-        Timber.d("vm readAccountInfoList : ${idList.toString()}")
-        return idList
+    override fun readAsyncEntity(entityId: Long) {
+
     }
-    */
+
+    override fun readAsyncExtraEntity(entityId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if(!checkInstance<ExtraEntityHandler<IdProductKey>>(repository)){
+                throw RuntimeException("Invalid Repository Casting")
+            }
+            Timber.d("vm readExtraEntity id : %d", entityId)
+            val entity: IdProductKey = (repository as ExtraEntityHandler<IdProductKey>)
+                .readExtraEntity(entityId)
+            Timber.d("vm readExtraEntity : %s", entity)
+            this@ProductKeyViewModel.extraEntity.set(entity)
+        }
+    }
+
+    override fun readAsyncExtraEntityList() {
+
+    }
+
 
     override fun editAsyncEntity(entity: ProductKey) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -28,6 +28,9 @@ interface IdentityInfoDao {
     @Query("SELECT * FROM identity_info WHERE info_id = :infoId")
     fun readIdentityInfoListById(infoId:Long): List<IdentityInfo>
 
+    @Query("SELECT * FROM identity_info WHERE info_id = :infoId")
+    fun readIdentityInfoById(infoId:Long):IdentityInfo
+
     // Update
     @Update
     fun modifyIdentityInfo(identityInfo : IdentityInfo)

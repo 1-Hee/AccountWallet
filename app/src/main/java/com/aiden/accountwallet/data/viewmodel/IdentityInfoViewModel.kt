@@ -2,9 +2,10 @@ package com.aiden.accountwallet.data.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.viewModelScope
+import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.IdentityInfo
-import com.aiden.accountwallet.data.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.repository.IdentityInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,15 +17,12 @@ class IdentityInfoViewModel (
 
     // db init
     override val repository: BaseRoomRepository<IdentityInfo>
-    // db init
     init {
         val identityInfoDao = AppDataBase
             .getInstance(application.applicationContext)
             .getIdentityInfoDao()
         repository = IdentityInfoRepository(identityInfoDao)
     }
-
-
 
     // * ----------------------------------------
     // *        Sync Task API
@@ -36,11 +34,15 @@ class IdentityInfoViewModel (
         return result
     }
 
-    override suspend fun readEntity(): List<IdentityInfo> {
-        val list = repository.readEntity()
-        Timber.d("vm readEntity : %s", list)
+    override suspend fun readEntityList(): List<IdentityInfo> {
+        val list:List<IdentityInfo> = repository.readEntityList()
+        Timber.d("vm readEntityList : %s", list)
         this@IdentityInfoViewModel.addEntityList(list)
         return list
+    }
+
+    override suspend fun readEntity(entityId: Long): IdentityInfo {
+        return IdentityInfo(fkUserId = -1);
     }
 
     override suspend fun editEntity(entity: IdentityInfo) {
@@ -70,13 +72,17 @@ class IdentityInfoViewModel (
         }
     }
 
-    override fun readAsyncEntity() {
+    override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.readEntity()
-            Timber.d("vm IdentityInfo : %s", list)
+            val list:List<IdentityInfo> = repository.readEntityList()
+            Timber.d("vm IdentityInfoList : %s", list)
             this@IdentityInfoViewModel.addEntityList(list)
         }
     }
+
+    override fun readAsyncEntity(entityId: Long) {
+    }
+
 
     override fun editAsyncEntity(entity: IdentityInfo) {
         viewModelScope.launch(Dispatchers.IO) {

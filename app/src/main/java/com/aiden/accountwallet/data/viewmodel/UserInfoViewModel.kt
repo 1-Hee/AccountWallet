@@ -1,14 +1,11 @@
 package com.aiden.accountwallet.data.viewmodel
 
 import android.app.Application
-import androidx.databinding.ObservableArrayList
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.aiden.accountwallet.data.dao.UserInfoDao
+import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.UserInfo
-import com.aiden.accountwallet.data.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.repository.UserInfoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,8 +24,6 @@ class UserInfoViewModel(
         repository = UserInfoRepository(userInfoDao)
     }
 
-
-
     // * ----------------------------------------
     // *        Sync Task API
     // * ----------------------------------------
@@ -40,11 +35,16 @@ class UserInfoViewModel(
         return result
     }
 
-    override suspend fun readEntity(): List<UserInfo> {
-        val list = repository.readEntity()
+    override suspend fun readEntityList(): List<UserInfo> {
+        val list:List<UserInfo> = repository.readEntityList()
         Timber.d("vm.. readUserInfoList : %s", list)
         this@UserInfoViewModel.addEntityList(list)
         return list
+    }
+
+    override suspend fun readEntity(entityId: Long): UserInfo {
+
+        return UserInfo()
     }
 
     override suspend fun editEntity(entity: UserInfo) {
@@ -72,17 +72,16 @@ class UserInfoViewModel(
     }
 
 
-    override fun readAsyncEntity() {
+    override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val userInfoList = repository.readEntity()
+            val userInfoList:List<UserInfo> = repository.readEntityList()
             Timber.d("vm.. readUserInfoList : %s", userInfoList)
-
-            userInfoList.forEach { info ->
-                Timber.d("vm.. info : %s", info)
-            }
             this@UserInfoViewModel.addEntityList(userInfoList)
-
         }
+    }
+
+    override fun readAsyncEntity(entityId: Long) {
+
     }
 
     override fun editAsyncEntity(entity: UserInfo) {

@@ -2,60 +2,103 @@ package com.aiden.accountwallet.ui.fragment
 
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
+import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.dto.AlertInfo
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
+import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
+import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
+import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentViewAccountBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
+import com.aiden.accountwallet.util.TimeParser
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
-    ViewClickListener {
+    ViewClickListener, AlertDialog.OnDialogClickListener {
 
     // vm
     private lateinit var infoItemViewModel: InfoItemViewModel
+    // db vm
+    private lateinit var identityInfoViewModel: IdentityInfoViewModel
+    private lateinit var accountInfoViewModel: AccountInfoViewModel
+    private lateinit var productKeyViewModel: ProductKeyViewModel
+
     private lateinit var navController: NavController
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_view_account)
             .addBindingParam(BR.click, this)
+            .addBindingParam(BR.typeName, "")
     }
 
     override fun initViewModel() {
         infoItemViewModel = getApplicationScopeViewModel(
             InfoItemViewModel::class.java
         )
+
+        // db vm init
+        val factory = ApplicationFactory(requireActivity().application)
+        identityInfoViewModel = getFragmentScopeViewModel(
+            IdentityInfoViewModel::class.java, factory
+        )
+        accountInfoViewModel = getFragmentScopeViewModel(
+            AccountInfoViewModel::class.java, factory
+        )
+        productKeyViewModel = getFragmentScopeViewModel(
+            ProductKeyViewModel::class.java, factory
+        )
+
+        accountInfoViewModel.initVariables()
+        productKeyViewModel.initVariables()
     }
 
     override fun initView() {
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_view_form) as NavHostFragment).navController
-        // navController.navigate(R.id.productViewFragment)
 
+        // Search Item Data By Info Item View Model
         infoItemViewModel.mDisplayAccountInfo.observe(viewLifecycleOwner) { it ->
             if(it != null && it.providerName.isNotBlank()){
-                Toast.makeText(requireContext(), it.providerName, Toast.LENGTH_SHORT).show()
+                mBinding.setVariable(BR.typeName, it.tagName)
+                mBinding.notifyChange()
 
                 when(it.typeIdx){
-                    1 -> {
-                        navController.navigate(R.id.productViewFragment)
-                    }
-                    else -> {
+                    0 -> { // Search Account info Data
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val infoId:Long = it.keyIndex
+                            val entity:IdAccountInfo =  accountInfoViewModel.readExtraEntity(infoId)
+                            Timber.i("View Read Entity (Account) : %s", entity)
+                            this@ViewAccountFragment.infoItemViewModel.setIdAccountInfo(entity)
+                        }
                         navController.navigate(R.id.accountViewFragment)
+                    }
+                    1 -> { // Search Product info Data
+                        lifecycleScope.launch(Dispatchers.IO) {
+                            val infoId:Long = it.keyIndex
+                            val entity:IdProductKey =  productKeyViewModel.readExtraEntity(infoId)
+                            Timber.i("View Read Entity (Product) : %s", entity)
+                            this@ViewAccountFragment.infoItemViewModel.setIdProductKey(entity)
+                        }
+                        navController.navigate(R.id.productViewFragment)
                     }
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        infoItemViewModel.initInfoItemViewModel()
     }
 
     override fun onViewClick(view: View) {
@@ -64,25 +107,47 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                 nav().navigate(R.id.action_move_edit_account)
             }
             R.id.iv_delete -> {
-                val tempInfo = AlertInfo(
-                    "Title", "Content...", flag = true
-                )
-
-                val dialog = AlertDialog(
-                    tempInfo,
-                    object : AlertDialog.OnDialogClickListener {
-                        override fun onOk(view: View) {
-                        }
-
-                        override fun onCancel(view: View) {
-                        }
-                    }
-                )
+                // 삭제 경고창 띄움
+                val title:String = getString(R.string.title_warnning)
+                val content:String = getString(R.string.content_delete_info)
+                val btnOkStr = "Delete"
+                val tempInfo = AlertInfo(title, content, flag = true, txtOk = btnOkStr)
+                val dialog = AlertDialog(tempInfo,this@ViewAccountFragment)
                 dialog.show(requireActivity().supportFragmentManager, null)
             }
             else -> {
 
             }
         }
+    }
+
+    // Dialog Listener
+    override fun onOk(view: View) {
+        when(view.id){
+            R.id.btn_ok -> {
+                val item:DisplayAccountInfo? = infoItemViewModel.mDisplayAccountInfo.value
+                if(item != null){
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        identityInfoViewModel.removeEntity(item.keyIndex)
+
+                        withContext(Dispatchers.Main){
+                            val mView:View = requireView()
+                            // Show Snack Bar
+                            val snackMsg:String = getString(R.string.msg_delete_complete)
+                            Snackbar.make(mView, snackMsg, Snackbar.LENGTH_SHORT)
+                                .setAction("Action", null)
+                                .setAnchorView(R.id.sp_bottom).show()
+                            nav().popBackStack()
+                        }
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    override fun onCancel(view: View) {
+
     }
 }

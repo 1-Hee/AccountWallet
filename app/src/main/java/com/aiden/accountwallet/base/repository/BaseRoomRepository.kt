@@ -1,11 +1,13 @@
-package com.aiden.accountwallet.data.repository
+package com.aiden.accountwallet.base.repository
 
 abstract class BaseRoomRepository<T> {
 
     // Create
     abstract suspend fun addEntity(entity:T): Long
     // Read
-    abstract suspend fun readEntity(): List<T>
+    abstract suspend fun readEntity(entityId: Long): T
+    abstract suspend fun readEntityList(): List<T>
+
     // Update
     abstract suspend fun modifyEntity(entity: T)
     // Delete

@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdentityInfo
 
 @Dao
 interface AccountInfoDao {
@@ -33,7 +34,6 @@ interface AccountInfoDao {
     """)
     fun readAccountInfoList(): List<AccountInfo>
 
-
     @Query("""
         SELECT 
             ii.info_id, ii.fk_user_id, ii.info_type,
@@ -49,6 +49,22 @@ interface AccountInfoDao {
         ORDER BY ii.created_at DESC;
     """)
     fun readAllCountInfoList(): List<IdAccountInfo>
+
+    @Query("""
+        SELECT 
+            ii.info_id, ii.fk_user_id, ii.info_type,
+            ii.provider_name, ii.created_at, ii.updated_at, ii.memo,
+            ii.tag_color, ii.status,
+            ai.account_id, ai.fk_info_id,
+            ai.user_account, ai.user_password,
+            ai.ac_created_at, ai.official_url
+        FROM identity_info ii
+        JOIN account_info ai 
+        ON ii.info_id = ai.fk_info_id
+        WHERE ii.info_id = :infoId AND ii.status = 0;
+    """)
+    fun readIdAccountInfoById(infoId:Long): IdAccountInfo
+
 
     // Update
     @Update

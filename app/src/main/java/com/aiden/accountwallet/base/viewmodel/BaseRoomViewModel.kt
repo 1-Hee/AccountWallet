@@ -1,10 +1,11 @@
-package com.aiden.accountwallet.data.viewmodel
+package com.aiden.accountwallet.base.viewmodel
 
 import android.app.Application
 import androidx.databinding.ObservableArrayList
+import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.aiden.accountwallet.data.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import timber.log.Timber
 
 abstract class BaseRoomViewModel<T>(
@@ -17,8 +18,15 @@ abstract class BaseRoomViewModel<T>(
     // *        Variables
     // * ----------------------------------------
     val addStatus: MutableLiveData<Long> = MutableLiveData<Long>(0)
+    val entity:ObservableField<T> = ObservableField()
     val entityList: ObservableArrayList<T> = ObservableArrayList<T>()
     val isEntityEmpty: MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
+
+    fun initVariables() {
+        this.addStatus.postValue(0)
+        this.entityList.clear()
+        this.isEntityEmpty.postValue(true)
+    }
 
     // * ----------------------------------------
     // *        Sync Task API
@@ -27,7 +35,9 @@ abstract class BaseRoomViewModel<T>(
     // Create
     abstract suspend fun addEntity(entity: T):Long
     // Read
-    abstract suspend fun readEntity():List<T>
+    abstract suspend fun readEntityList():List<T>
+    abstract suspend fun readEntity(entityId:Long):T
+
     // Update
     abstract suspend fun editEntity(entity: T)
 
@@ -36,13 +46,16 @@ abstract class BaseRoomViewModel<T>(
     abstract suspend fun removeEntity(entity: T)
 
     // * ----------------------------------------
-    // *        Sync Task API
+    // *        Async Task API
     // * ----------------------------------------
 
     // Create
     abstract fun addAsyncEntity(entity:T)
+
     // Read
-    abstract fun readAsyncEntity()
+    abstract fun readAsyncEntityList()
+    abstract fun readAsyncEntity(entityId:Long)
+
     // Update
     abstract fun editAsyncEntity(entity: T)
 

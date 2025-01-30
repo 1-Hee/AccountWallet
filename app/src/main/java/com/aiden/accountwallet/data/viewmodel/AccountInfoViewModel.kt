@@ -2,22 +2,26 @@ package com.aiden.accountwallet.data.viewmodel
 
 import android.app.Application
 import androidx.databinding.ObservableArrayList
-import androidx.lifecycle.MutableLiveData
+import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
+import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.repository.AccountInfoRepository
-import com.aiden.accountwallet.data.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.BaseRoomRepository
+import com.aiden.accountwallet.base.repository.ExtraEntityHandler
+import com.aiden.accountwallet.base.viewmodel.ExtraViewModel
+import com.aiden.accountwallet.util.RoomTool.checkInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AccountInfoViewModel (
     application: Application
-) :  BaseRoomViewModel<AccountInfo>(application)  {
+) :  BaseRoomViewModel<AccountInfo>(application), ExtraViewModel<IdAccountInfo>  {
 
-
+    // db init
     override val repository: BaseRoomRepository<AccountInfo>
     init {
         val accountInfoDao = AppDataBase
@@ -29,9 +33,10 @@ class AccountInfoViewModel (
     // * ----------------------------------------
     // *        Variables
     // * ----------------------------------------
-    val idAccountInfoList: ObservableArrayList<IdAccountInfo> = ObservableArrayList<IdAccountInfo>()
-    val isIdAccountEmpty: MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
-
+    override val extraEntity: ObservableField<IdAccountInfo>
+        = ObservableField<IdAccountInfo>()
+    override val extraEntityList:  ObservableArrayList<IdAccountInfo>
+        = ObservableArrayList<IdAccountInfo>()
 
     // * ----------------------------------------
     // *        Sync Task API
@@ -44,20 +49,32 @@ class AccountInfoViewModel (
         return result
     }
 
-    override suspend fun readEntity(): List<AccountInfo> {
-        val list = repository.readEntity()
-        Timber.d("vm readEntity : %s", list)
+    override suspend fun readEntityList(): List<AccountInfo> {
+        val list:List<AccountInfo> = repository.readEntityList()
+        Timber.d("vm readEntityList : %s", list)
         this@AccountInfoViewModel.addEntityList(list)
         return list
     }
 
-    /*
-    suspend fun readIdAccountInfoList():List<IdAccountInfo> {
-        val idList = repository.readEntity()
-        Timber.d("vm readAccountInfoList : ${idList.toString()}")
-        return idList
+    override suspend fun readEntity(entityId: Long): AccountInfo {
+        return AccountInfo(fkInfoId = -1)
     }
-     */
+
+    override suspend fun readExtraEntity(entityId: Long): IdAccountInfo {
+        if(!checkInstance<ExtraEntityHandler<IdAccountInfo>>(repository)){
+            throw IllegalArgumentException()
+        }
+        Timber.d("vm readExtraEntity id : %d", entityId)
+        val entity:IdAccountInfo = (repository as ExtraEntityHandler<IdAccountInfo>)
+            .readExtraEntity(entityId)
+        Timber.d("vm readExtraEntity : %s", entity)
+        this@AccountInfoViewModel.extraEntity.set(entity)
+        return entity
+    }
+
+    override suspend fun readExtraEntityList(): List<IdAccountInfo> {
+        return emptyList()
+    }
 
     override suspend fun editEntity(entity: AccountInfo) {
         Timber.d("vm editEntity : %s", entity)
@@ -86,21 +103,17 @@ class AccountInfoViewModel (
         }
     }
 
-    override fun readAsyncEntity() {
+    override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.readEntity()
-            Timber.d("vm readEntity : %s", list)
+            val list:List<AccountInfo> = repository.readEntityList()
+            Timber.d("vm readEntityList : %s", list)
             this@AccountInfoViewModel.addEntityList(list)
         }
     }
 
-    /*
-    fun readIdAccountInfoList():List<IdAccountInfo> {
-        val idList = repository.readEntity()
-        Timber.d("vm readAccountInfoList : ${idList.toString()}")
-        return idList
+    override fun readAsyncEntity(entityId: Long) {
+
     }
-     */
 
     override fun editAsyncEntity(entity: AccountInfo) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -121,6 +134,22 @@ class AccountInfoViewModel (
             Timber.d("vm removeEntity  : %s", entity)
             repository.deleteEntity(entity.accountId)
         }
+    }
+
+    override fun readAsyncExtraEntity(entityId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if(!checkInstance<ExtraEntityHandler<IdAccountInfo>>(repository)){
+                throw IllegalArgumentException()
+            }
+            Timber.d("vm readExtraEntity id : %d", entityId)
+            val entity:IdAccountInfo = (repository as ExtraEntityHandler<IdAccountInfo>)
+                .readExtraEntity(entityId)
+            Timber.d("vm readExtraEntity : %s", entity)
+            this@AccountInfoViewModel.extraEntity.set(entity)        }
+    }
+
+    override fun readAsyncExtraEntityList() {
+
     }
 
 }

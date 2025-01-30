@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
 
 @Dao
@@ -29,6 +30,20 @@ interface ProductKeyDao {
         ORDER BY ii.created_at DESC;
     """)
     fun readProductKeyList(): List<ProductKey>
+
+    @Query("""
+        SELECT 
+            ii.info_id, ii.fk_user_id, ii.info_type,
+            ii.provider_name, ii.created_at, ii.updated_at, ii.memo,
+            ii.tag_color, ii.status,
+            pi.product_id, pi.fk_info_id, pi.product_key, pi.official_url
+        FROM identity_info ii
+        JOIN PRODUCT_KEY pi 
+        ON ii.info_id = pi.fk_info_id
+        WHERE ii.info_id = :infoId AND ii.status = 0;
+    """)
+    fun readIdProductKeyById(infoId : Long): IdProductKey
+
 
     // Update
     @Update

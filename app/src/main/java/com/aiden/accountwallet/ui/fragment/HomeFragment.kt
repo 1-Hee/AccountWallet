@@ -36,7 +36,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
             UserInfoViewModel::class.java, factory
         )
 
-        userInfoViewModel.readAsyncEntity()
+        userInfoViewModel.readAsyncEntityList()
     }
 
     override fun initView() {
