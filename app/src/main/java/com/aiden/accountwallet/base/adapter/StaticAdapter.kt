@@ -1,5 +1,6 @@
 package com.aiden.accountwallet.base.adapter
 
+import android.graphics.Color
 import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,11 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.listener.OnEditorActionListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
+import com.aiden.accountwallet.base.listener.ItemClickListener
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
-import com.aiden.accountwallet.data.vo.AccountInfo
+import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.ItemAccountInfoBinding
 import com.aiden.accountwallet.databinding.ItemPermissionBinding
 import com.aiden.accountwallet.databinding.ItemSettingBinding
@@ -21,11 +22,11 @@ class StaticAdapter {
     companion object {
 
         @JvmStatic
-        @BindingAdapter(value = ["accountList", "vClick"], requireAll = true)
+        @BindingAdapter(value = ["displayAccountList", "itemClickListener"], requireAll = true)
         fun setStorageAdapter(
             recyclerView: RecyclerView,
-            accountList:List<AccountInfo>,
-            clickListener: ViewClickListener
+            displayAccountList:List<DisplayAccountInfo>,
+            itemClickListener: ItemClickListener<DisplayAccountInfo>
         ){
             val llm = LinearLayoutManager(
                 recyclerView.context,
@@ -34,26 +35,41 @@ class StaticAdapter {
             );
 
             recyclerView.layoutManager = llm
-
             val adapter = object : BaseDataBindingAdapter<
-                    AccountInfo, ItemAccountInfoBinding>(recyclerView.context){
+                    DisplayAccountInfo, ItemAccountInfoBinding>(recyclerView.context){
                 override fun getDataBindingConfig(): DataBindingConfig {
                     return DataBindingConfig(R.layout.item_account_info)
-                        .addBindingParam(BR.click, clickListener)
                 }
 
                 override fun onBindItem(
                     binding: ItemAccountInfoBinding,
                     position: Int,
-                    item: AccountInfo,
+                    item: DisplayAccountInfo,
                     holder: RecyclerView.ViewHolder
                 ) {
-                    binding.accountInfo = item
+                    binding.displayAccountInfo = item
+                    val colorHex = item.tagColor
+                    val color:Int = colorHex.let {
+                        try {
+                            Color.parseColor(it)
+                        } catch (e: IllegalArgumentException) {
+                            try {
+                                val defStr:String = binding.root.context.getString(R.string.def_tag_color)
+                                Color.parseColor(defStr)
+                            } catch (e: IllegalArgumentException) {
+                                Color.GRAY
+                            }
+                        }
+                    }
+                    binding.mcvAccountInfo.setOnClickListener { v ->
+                        itemClickListener?.onItemClick(v, item)
+                    }
+                    binding.mcvTypeTag.setBackgroundColor(color)
                     binding.notifyChange()
                 }
 
             }
-            adapter.setItemList(accountList)
+            adapter.setItemList(displayAccountList)
             recyclerView.adapter = adapter
         }
 

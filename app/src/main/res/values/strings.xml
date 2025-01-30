@@ -27,7 +27,7 @@
     <string name="hint_site_url">Enter Official Site URL</string>
     <string name="h_memo">메모 사항</string>
     <string name="hint_memo">Enter Memo…</string>
-    <string name="suffix_registered"> 등록됨</string>
+    <string name="suffix_registered">&#160;등록됨</string>
     <string name="h_provider_name">공급사</string>
     <string name="hint_provider_name">Enter Provider…(eg. Microsoft)</string>
     <string name="h_product_key">제품키</string>

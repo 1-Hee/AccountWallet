@@ -13,7 +13,7 @@ import java.util.Date
             entity = IdentityInfo::class,
             parentColumns = arrayOf("info_id"),
             childColumns = arrayOf("fk_info_id"),
-            onDelete = ForeignKey.SET_NULL  // 부모키가 삭제되면 자식 외래키를 NULL로 설정
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )

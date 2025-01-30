@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
             entity = IdentityInfo::class,
             parentColumns = arrayOf("info_id"),
             childColumns = arrayOf("fk_info_id"),
-            onDelete = ForeignKey.SET_NULL  // 부모키가 삭제되면 자식 외래키를 NULL로 설정
+            onDelete = ForeignKey.CASCADE
         )
     ],
     indices = [Index(value = ["fk_info_id"])]  // fk_info_id 컬럼에 인덱스 추가
