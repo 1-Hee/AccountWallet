@@ -5,6 +5,7 @@ import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.content.Context
 import android.graphics.Color
+import android.provider.Contacts.Intents.UI
 import android.view.KeyEvent
 import android.view.View
 import android.widget.DatePicker
@@ -24,12 +25,14 @@ import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_TIME_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
+import com.aiden.accountwallet.util.UIManager
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
 import timber.log.Timber
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.cos
 
 
 class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
@@ -92,18 +95,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         accountFormViewModel.setTagColor(tagStr)
         // set tag color
         val colorHex:String = tagStr
-        val color:Int = colorHex.let {
-            try {
-                Color.parseColor(it)
-            } catch (e: IllegalArgumentException) {
-                try {
-                    val defStr:String = getString(R.string.def_tag_color)
-                    Color.parseColor(defStr)
-                } catch (e: IllegalArgumentException) {
-                    Color.GRAY
-                }
-            }
-        }
+        val color:Int = UIManager.getColor(requireContext(), colorHex)
         mBinding.vColorTag.setBackgroundColor(color)
         accountFormViewModel.setSiteUrl(urlStr)
         accountFormViewModel.setMemo(memoStr)
@@ -156,7 +148,8 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                 ColorEnvelopeListener { envelope, fromUser ->
                     mBinding.vColorTag.setBackgroundColor(envelope.color)
                     val colorStr = "#${envelope.hexCode.substring(2)}"
-                    mBinding.tvColorTag.text = colorStr
+                    mBinding.tvColorTag.setText(colorStr)
+                    // mBinding.tvColorTag.text = colorStr
                     accountFormViewModel.setTagColor(colorStr)
                 })
             .setNegativeButton(
@@ -179,13 +172,24 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
             R.id.v_color_tag -> {
                 popUpColorDialog(context)
             }
+
+            R.id.btn_refresh_color -> {
+                val colorStr:String = getString(R.string.def_tag_color)
+                mBinding.tvColorTag.setText(colorStr)
+                accountFormViewModel.setTagColor(colorStr)
+                val color:Int = UIManager.getColor(context, colorStr)
+                mBinding.vColorTag.setBackgroundColor(color)
+
+                val msg:String = getString(R.string.msg_refresh_tag_color)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
 
     override fun onEditorAction(view: TextView?, actionEvent: Int, keyEvent: KeyEvent?): Boolean {
+        Timber.i("event(action) : %s", keyEvent)
         if(view == null) return false
-        if(keyEvent == null) return false
         val inputText:String = view.text.toString()
 
         if (BuildConfig.DEBUG) {
@@ -193,32 +197,42 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
             Timber.i("Action Event : %d", actionEvent)
         }
 
-        return if(actionEvent == 5) {
-            hideKeyPad(requireActivity())
-            when(view.id){
-                R.id.et_site_name -> {
-                    accountFormViewModel.setSiteName(inputText)
-                }
-                R.id.et_personal_account -> {
-                    accountFormViewModel.setPersonalAccount(inputText)
-                }
-                R.id.et_password -> {
-                    accountFormViewModel.setPassword(inputText)
-                }
-                R.id.et_site_url -> {
-                    accountFormViewModel.setSiteUrl(inputText)
-                }
-                R.id.et_memo -> {
-                    accountFormViewModel.setMemo(inputText)
-                }
-                else -> {
-                    return false
-                }
+        hideKeyPad(requireActivity())
+        when(view.id){
+            R.id.et_site_name -> {
+                accountFormViewModel.setSiteName(inputText)
             }
-            true
-        } else {
-            false
+            R.id.et_personal_account -> {
+                accountFormViewModel.setPersonalAccount(inputText)
+            }
+            R.id.et_password -> {
+                accountFormViewModel.setPassword(inputText)
+            }
+            R.id.et_site_url -> {
+                accountFormViewModel.setSiteUrl(inputText)
+            }
+            R.id.et_memo -> {
+                accountFormViewModel.setMemo(inputText)
+            }
+            R.id.tv_color_tag -> {
+                val context:Context = requireContext()
+                val colorStr:String = inputText
+                mBinding.tvColorTag.setText(colorStr)
+                val color:Int = UIManager.getColor(colorStr)
+                // Check Color
+                if(color == Color.GRAY){
+                    val errColorMsg:String = getString(R.string.msg_invalid_color_value)
+                    Toast.makeText(context, errColorMsg, Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                accountFormViewModel.setTagColor(colorStr)
+                mBinding.vColorTag.setBackgroundColor(color)
+            }
+            else -> {
+                return false
+            }
         }
+         return true
     }
 
     override fun onKey(view: View?, keyCode: Int, keyEvent: KeyEvent?): Boolean {
@@ -245,6 +259,20 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                 }
                 R.id.et_memo -> {
                     accountFormViewModel.setMemo(inputText)
+                }
+                R.id.tv_color_tag -> {
+                    val context:Context = requireContext()
+                    val colorStr:String = inputText
+                    mBinding.tvColorTag.setText(colorStr)
+                    val color:Int = UIManager.getColor(colorStr)
+                    // Check Color
+                    if(color == Color.GRAY){
+                        val errColorMsg:String = getString(R.string.msg_invalid_color_value)
+                        Toast.makeText(context, errColorMsg, Toast.LENGTH_SHORT).show()
+                        return true
+                    }
+                    accountFormViewModel.setTagColor(colorStr)
+                    mBinding.vColorTag.setBackgroundColor(color)
                 }
                 else -> {
                     return false

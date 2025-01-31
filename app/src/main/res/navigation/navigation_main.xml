@@ -2,8 +2,21 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/navigation_main"
-    app:startDestination="@id/startFragment"
+    app:startDestination="@id/introFragment"
     >
+
+    <fragment
+        android:id="@+id/introFragment"
+        android:name="com.aiden.accountwallet.ui.fragment.IntroFragment"
+        android:label="introFragment"
+        >
+        <action
+            android:id="@+id/action_intro_move_home"
+            app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_intro_move_start"
+            app:destination="@id/startFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/startFragment"

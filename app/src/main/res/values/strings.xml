@@ -82,6 +82,9 @@
     <string name="msg_edit_fail">입력하신 정보 수정에 실패하였습니다…</string>
     <string name="content_delete_database">정말로 저장된 모든 데이터를 삭제하시겠습니까?\n삭제된 데이터는 복구하실 수 없습니다.</string>
     <string name="msg_database_delete_all">모든 정보가 초기화되었습니다.</string>
+    <string name="msg_input_nickname">닉네임을 입력해주세요.</string>
+    <string name="msg_refresh_tag_color">태그 색상이 초기화되었습니다.</string>
+    <string name="msg_invalid_color_value">유효하지 않은 색상입니다. 다시 입력해주세요.</string>
 
     <string-array name="spinner_info_type">
         <item>개인 계정</item>

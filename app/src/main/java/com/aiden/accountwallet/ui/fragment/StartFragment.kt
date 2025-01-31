@@ -1,7 +1,9 @@
 package com.aiden.accountwallet.ui.fragment
 
+import android.content.Context
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
@@ -29,8 +31,13 @@ class StartFragment : BaseFragment<FragmentStartBinding>(), ViewClickListener {
         )
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (context as AppCompatActivity).supportActionBar?.hide()
+    }
+
     override fun initView() {
-        (requireActivity() as MainActivity).supportActionBar?.hide()
+        // (requireActivity() as MainActivity).supportActionBar?.hide()
 
         userInfoViewModel.addStatus.observe(this) { it ->
             if(it > 0) {
@@ -39,7 +46,8 @@ class StartFragment : BaseFragment<FragmentStartBinding>(), ViewClickListener {
                     getString(R.string.msg_success_nickname),
                     Toast.LENGTH_SHORT
                 ).show()
-                nav().navigate(R.id.action_move_home)
+                nav().popBackStack(R.id.startFragment, true)
+                nav().navigate(R.id.homeFragment)
             }
         }
     }
@@ -54,7 +62,7 @@ class StartFragment : BaseFragment<FragmentStartBinding>(), ViewClickListener {
                 if(nickName.isBlank()){
                     Toast.makeText(
                         requireContext(),
-                        "닉네임을 입력해주세요.",
+                        getString(R.string.msg_input_nickname),
                         Toast.LENGTH_SHORT
                     ).show()
                     return

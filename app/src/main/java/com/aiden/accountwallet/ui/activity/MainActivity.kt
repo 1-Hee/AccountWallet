@@ -27,8 +27,6 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
-    // vm
-    private lateinit var userInfoViewModel: UserInfoViewModel
 
     // variables
     // 세팅 액티비티 팝업용 런처
@@ -37,14 +35,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_main)
-    }
-
-    override fun initViewModel() {
-        super.initViewModel()
-        val factory = ApplicationFactory(this.application)
-        this.userInfoViewModel = getApplicationScopeViewModel(
-            UserInfoViewModel::class.java, factory
-        )
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -69,24 +59,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         //admob init
         MobileAds.initialize(this) {}
 
-        // check nickname
-        lifecycleScope.launch(Dispatchers.IO){
-            // 현재 로직에서 나중에 진입 프래그먼트를 고려한 로직으로 수정하기
-            withContext(Dispatchers.Main){
-                mBinding.clCheckNickname.visibility = View.VISIBLE
-            }
-            val nickNameList:List<UserInfo> = userInfoViewModel.readEntityList()
-            withContext(Dispatchers.Main){
-                mBinding.clCheckNickname.visibility = View.GONE
-            }
-            if(nickNameList.isNotEmpty()){
-                withContext(Dispatchers.Main){
-                    mBinding.notifyChange()
-                    navController.popBackStack(R.id.startFragment, true)
-                    navController.navigate(R.id.homeFragment)
-                }
-            }
-        }
     }
 
     // 액션 바 메뉴

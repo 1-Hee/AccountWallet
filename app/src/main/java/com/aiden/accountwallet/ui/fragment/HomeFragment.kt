@@ -2,18 +2,25 @@ package com.aiden.accountwallet.ui.fragment
 
 import android.os.Build
 import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
+import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.model.UserInfo
 import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
+import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentHomeBinding
 import com.aiden.accountwallet.ui.activity.MainActivity
 import com.google.android.gms.ads.AdRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -22,12 +29,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
 
     // vm
     private lateinit var userInfoViewModel: UserInfoViewModel
+    private lateinit var identityInfoViewModel: IdentityInfoViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_home)
             .addBindingParam(BR.click, this)
             .addBindingParam(BR.sUserNickName, getString(R.string.str_empty))
             .addBindingParam(BR.sDate, "")
+            .addBindingParam(BR.sAccountCnt, "")
     }
 
     override fun initViewModel() {
@@ -35,8 +44,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
         userInfoViewModel = getFragmentScopeViewModel(
             UserInfoViewModel::class.java, factory
         )
-
-        userInfoViewModel.readAsyncEntityList()
+        identityInfoViewModel = getFragmentScopeViewModel(
+            IdentityInfoViewModel::class.java, factory
+        )
     }
 
     override fun initView() {
@@ -47,8 +57,22 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
         mBinding.avHome.loadAd(adRequest)
         initUserNickName()
         initCurrentDate()
+        initAccountList();
         mBinding.notifyChange()
 
+    }
+
+    // check Total Account List
+    private fun initAccountList() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val identityInfoList:List<IdentityInfo>
+                = identityInfoViewModel.readEntityList()
+
+            val cnt:Int = identityInfoList.size
+            withContext(Dispatchers.Main){
+                mBinding.setVariable(BR.sAccountCnt, cnt.toString())
+            }
+        }
     }
 
     // check current Date & display
@@ -63,30 +87,41 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
     // check user nickname & display at home fragment
     private fun initUserNickName() {
         // get nickname from db
-        if(userInfoViewModel.entityList.isEmpty()) return
+        lifecycleScope.launch(Dispatchers.IO) {
+            val userInfoList:List<UserInfo> = userInfoViewModel.readEntityList()
+            if(userInfoList.isEmpty()) return@launch
 
-        val userInfo:UserInfo? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            userInfoViewModel.entityList.first
-        } else {
-            userInfoViewModel.entityList[0]
-        }
+            val userInfo:UserInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                userInfoList.first()
+            } else {
+                userInfoList[0]
+            }
 
-        if(userInfo != null && userInfo.nickName.isNotBlank()){
-            mBinding.setVariable(
-                BR.sUserNickName,
-                userInfo.nickName
-            )
-        }else {
-            mBinding.setVariable(
-                BR.sUserNickName,
-                getString(R.string.str_empty)
-            )
+            withContext(Dispatchers.Main){
+                if(userInfo.nickName.isNotBlank()){
+                    mBinding.setVariable(
+                        BR.sUserNickName,
+                        userInfo.nickName
+                    )
+                } else {
+                    mBinding.setVariable(
+                        BR.sUserNickName,
+                        getString(R.string.str_empty)
+                    )
+                }
+            }
+
         }
 
     }
 
     override fun onViewClick(view: View) {
         when(view.id){
+            R.id.tv_card_title -> { // change nickname
+                Toast.makeText(requireContext(), "Change Nick Name...", Toast.LENGTH_SHORT).show()
+
+            }
+
             R.id.btn_add_account -> {
                 nav().navigate(R.id.action_move_add_account)
             }

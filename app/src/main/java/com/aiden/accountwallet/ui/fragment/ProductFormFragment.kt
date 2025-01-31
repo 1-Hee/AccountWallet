@@ -18,6 +18,7 @@ import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentProductFormBinding
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.UIManager
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
@@ -80,18 +81,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         productFormViewModel.setTagColor(tagStr)
         // set tag color
         val colorHex:String = tagStr
-        val color:Int = colorHex.let {
-            try {
-                Color.parseColor(it)
-            } catch (e: IllegalArgumentException) {
-                try {
-                    val defStr:String = getString(R.string.def_tag_color)
-                    Color.parseColor(defStr)
-                } catch (e: IllegalArgumentException) {
-                    Color.GRAY
-                }
-            }
-        }
+        val color:Int = UIManager.getColor(requireContext(), colorHex)
         mBinding.vColorTag.setBackgroundColor(color)
         productFormViewModel.setSiteUrl(urlStr)
         productFormViewModel.setMemo(memoStr)
@@ -107,7 +97,8 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 ColorEnvelopeListener { envelope, fromUser ->
                     mBinding.vColorTag.setBackgroundColor(envelope.color)
                     val colorStr = "#${envelope.hexCode.substring(2)}"
-                    mBinding.tvColorTag.text = colorStr
+                    mBinding.tvColorTag.setText(colorStr)
+                    // mBinding.tvColorTag.text = colorStr
                     productFormViewModel.setTagColor(colorStr)
                 })
             .setNegativeButton(
@@ -125,13 +116,22 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
             R.id.v_color_tag -> {
                 popUpColorDialog(context)
             }
+            R.id.btn_refresh_color -> {
+                val colorStr:String = getString(R.string.def_tag_color)
+                mBinding.tvColorTag.setText(colorStr)
+                productFormViewModel.setTagColor(colorStr)
+                val color:Int = UIManager.getColor(context, colorStr)
+                mBinding.vColorTag.setBackgroundColor(color)
+                val msg:String = getString(R.string.msg_refresh_tag_color)
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
 
     override fun onEditorAction(view: TextView?, actionEvent: Int, keyEvent: KeyEvent?): Boolean {
+        Timber.i("event(action) : %s", keyEvent)
         if(view == null) return false
-        if(keyEvent == null) return false
         val inputText:String = view.text.toString()
 
         if (BuildConfig.DEBUG) {
@@ -139,29 +139,39 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
             Timber.i("Action Event : %d", actionEvent)
         }
 
-        return if(actionEvent == 5) {
-            hideKeyPad(requireActivity())
-            when(view.id){
-                R.id.et_provider_name -> {
-                    productFormViewModel.setProviderName(inputText)
-                }
-                R.id.et_product_key -> {
-                    productFormViewModel.setProductKey(inputText)
-                }
-                R.id.et_site_url -> {
-                    productFormViewModel.setSiteUrl(inputText)
-                }
-                R.id.et_memo -> {
-                    productFormViewModel.setMemo(inputText)
-                }
-                else -> {
-                    return false
-                }
+        hideKeyPad(requireActivity())
+        when(view.id){
+            R.id.et_provider_name -> {
+                productFormViewModel.setProviderName(inputText)
             }
-            true
-        } else {
-            false
+            R.id.et_product_key -> {
+                productFormViewModel.setProductKey(inputText)
+            }
+            R.id.et_site_url -> {
+                productFormViewModel.setSiteUrl(inputText)
+            }
+            R.id.et_memo -> {
+                productFormViewModel.setMemo(inputText)
+            }
+            R.id.tv_color_tag -> {
+                val context:Context = requireContext()
+                val colorStr:String = inputText
+                mBinding.tvColorTag.setText(colorStr)
+                val color:Int = UIManager.getColor(colorStr)
+                // Check Color
+                if(color == Color.GRAY){
+                    val errColorMsg:String = getString(R.string.msg_invalid_color_value)
+                    Toast.makeText(context, errColorMsg, Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                productFormViewModel.setTagColor(colorStr)
+                mBinding.vColorTag.setBackgroundColor(color)
+            }
+            else -> {
+                return false
+            }
         }
+         return true
     }
 
     override fun onKey(view: View?, keyCode: Int, keyEvent: KeyEvent?): Boolean {
@@ -185,6 +195,20 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 }
                 R.id.et_memo -> {
                     productFormViewModel.setMemo(inputText)
+                }
+                R.id.tv_color_tag -> {
+                    val context:Context = requireContext()
+                    val colorStr:String = inputText
+                    mBinding.tvColorTag.setText(colorStr)
+                    val color:Int = UIManager.getColor(colorStr)
+                    // Check Color
+                    if(color == Color.GRAY){
+                        val errColorMsg:String = getString(R.string.msg_invalid_color_value)
+                        Toast.makeText(context, errColorMsg, Toast.LENGTH_SHORT).show()
+                        return true
+                    }
+                    productFormViewModel.setTagColor(colorStr)
+                    mBinding.vColorTag.setBackgroundColor(color)
                 }
                 else -> {
                     return false

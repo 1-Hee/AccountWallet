@@ -1,5 +1,6 @@
 package com.aiden.accountwallet.base.adapter
 
+import android.content.Context
 import android.graphics.Color
 import android.widget.EditText
 import androidx.databinding.BindingAdapter
@@ -16,6 +17,7 @@ import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.ItemAccountInfoBinding
 import com.aiden.accountwallet.databinding.ItemPermissionBinding
 import com.aiden.accountwallet.databinding.ItemSettingBinding
+import com.aiden.accountwallet.util.UIManager
 
 class StaticAdapter {
 
@@ -49,18 +51,8 @@ class StaticAdapter {
                 ) {
                     binding.displayAccountInfo = item
                     val colorHex = item.tagColor
-                    val color:Int = colorHex.let {
-                        try {
-                            Color.parseColor(it)
-                        } catch (e: IllegalArgumentException) {
-                            try {
-                                val defStr:String = binding.root.context.getString(R.string.def_tag_color)
-                                Color.parseColor(defStr)
-                            } catch (e: IllegalArgumentException) {
-                                Color.GRAY
-                            }
-                        }
-                    }
+                    val context:Context = recyclerView.context
+                    val color:Int = UIManager.getColor(context, colorHex)
                     binding.mcvAccountInfo.setOnClickListener { v ->
                         itemClickListener?.onItemClick(v, item)
                     }
