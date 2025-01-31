@@ -16,6 +16,7 @@ import com.aiden.accountwallet.base.listener.OnKeyListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentProductFormBinding
+import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
 import com.skydoves.colorpickerview.ColorPickerDialog
@@ -26,6 +27,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
     ViewClickListener, OnEditorActionListener, OnKeyListener {
 
     private lateinit var productFormViewModel: ProductFormViewModel
+    private lateinit var infoItemViewModel: InfoItemViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_product_form, BR.vm, productFormViewModel)
@@ -38,13 +40,18 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         productFormViewModel = getApplicationScopeViewModel(
             ProductFormViewModel::class.java
         )
+        infoItemViewModel = getApplicationScopeViewModel(
+            InfoItemViewModel::class.java
+        )
     }
 
     override fun initView() {
         productFormViewModel.updateStatus.observe(viewLifecycleOwner) {
             if(it){
                 notifyAccountInfo()
-                productFormViewModel.updateStatus.postValue(false)
+                mBinding.setVariable(BR.vm, productFormViewModel)
+                mBinding.notifyChange()
+                productFormViewModel.setUpdateStatus(false)
             }
         }
 
@@ -52,7 +59,10 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        productFormViewModel.initVariables()
+        val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
+        if(keyIdx == 0L){
+            productFormViewModel.initVariables()
+        }
     }
 
     private fun notifyAccountInfo() {

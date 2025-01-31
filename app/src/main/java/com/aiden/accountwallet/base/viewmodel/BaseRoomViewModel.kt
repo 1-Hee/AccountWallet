@@ -44,6 +44,7 @@ abstract class BaseRoomViewModel<T>(
     // Delete
     abstract suspend fun removeEntity(entityId:Long)
     abstract suspend fun removeEntity(entity: T)
+    abstract suspend fun removeAll()
 
     // * ----------------------------------------
     // *        Async Task API
@@ -62,6 +63,7 @@ abstract class BaseRoomViewModel<T>(
     // Delete
     abstract fun removeAsyncEntity(entityId:Long)
     abstract fun removeAsyncEntity(entity: T)
+    abstract fun removeAsyncAll()
 
     fun setAddEntityStatus(result:Long) {
         this.addStatus.postValue(result)

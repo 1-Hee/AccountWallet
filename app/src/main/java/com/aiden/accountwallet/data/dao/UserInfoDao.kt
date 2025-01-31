@@ -20,13 +20,13 @@ interface UserInfoDao {
     fun addAllUserInfo(vararg userInfo: UserInfo)
 
     // Read
-    @Query("SELECT * FROM user_info")
+    @Query("SELECT * FROM user_info WHERE user_status = 0")
     fun readUserInfoList(): List<UserInfo>
 
-    @Query("SELECT * FROM user_info WHERE date(created_at) = date(:mDate)")
+    @Query("SELECT * FROM user_info WHERE date(created_at) = date(:mDate) AND user_status = 0")
     fun readUserInfoListByDate(mDate: Date): List<UserInfo>
 
-    @Query("SELECT * FROM user_info WHERE user_id = :userId")
+    @Query("SELECT * FROM user_info WHERE user_id = :userId AND user_status = 0")
     fun readUserInfoListById(userId:Long): List<UserInfo>
 
     // Update
@@ -47,4 +47,6 @@ interface UserInfoDao {
     @Query("DELETE FROM user_info")
     fun deleteAll()
 
+    @Query("UPDATE user_info SET user_status = 1")
+    fun disableAll()
 }

@@ -53,4 +53,9 @@ class AccountInfoRepository(
         accountInfoDao.removeAccountInfo(entity.accountId)
     }
 
+    override suspend fun deleteAll() {
+
+    }
+
+
 }

@@ -20,7 +20,9 @@ import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentViewAccountBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
+import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
+import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.TimeParser
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +39,9 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     private lateinit var identityInfoViewModel: IdentityInfoViewModel
     private lateinit var accountInfoViewModel: AccountInfoViewModel
     private lateinit var productKeyViewModel: ProductKeyViewModel
+    // vm
+    private lateinit var productFormViewModel:ProductFormViewModel
+    private lateinit var accountFormViewModel:AccountFormViewModel
 
     private lateinit var navController: NavController
 
@@ -62,9 +67,17 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
         productKeyViewModel = getFragmentScopeViewModel(
             ProductKeyViewModel::class.java, factory
         )
-
         accountInfoViewModel.initVariables()
         productKeyViewModel.initVariables()
+
+        // display vm
+        productFormViewModel = getApplicationScopeViewModel(
+            ProductFormViewModel::class.java
+        )
+        accountFormViewModel = getApplicationScopeViewModel(
+            AccountFormViewModel::class.java
+        )
+
     }
 
     override fun initView() {
@@ -101,14 +114,20 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        accountFormViewModel.initVariables()
+        productFormViewModel.initVariables()
+    }
+
     override fun onViewClick(view: View) {
         when(view.id) {
             R.id.btn_edit_account -> {
-                nav().navigate(R.id.action_move_edit_account)
+                nav().navigate(R.id.editAccountFragment)
             }
             R.id.iv_delete -> {
                 // 삭제 경고창 띄움
-                val title:String = getString(R.string.title_warnning)
+                val title:String = getString(R.string.title_warning)
                 val content:String = getString(R.string.content_delete_info)
                 val btnOkStr = "Delete"
                 val tempInfo = AlertInfo(title, content, flag = true, txtOk = btnOkStr)

@@ -13,5 +13,7 @@ data class UserInfo (
     @ColumnInfo(name = "nickname")
     var nickName: String = "", // 닉네임
     @ColumnInfo(name = "created_at")
-    var createAt: Date = Date()// 첫 등록 일자
+    var createAt: Date = Date(), // 첫 등록 일자
+    @ColumnInfo(name = "user_status")
+    var userStatus:Int = 0 // 사용자 상태
 )

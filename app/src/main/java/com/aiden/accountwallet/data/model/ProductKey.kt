@@ -13,7 +13,7 @@ import androidx.room.PrimaryKey
 // 이 경우에 테이블 생성 SQL과 별개로 인덱싱에 대한 쿼리
 
 @Entity(
-    tableName = "product_key",
+    tableName = "product_info",
     foreignKeys = [
         ForeignKey(
             entity = IdentityInfo::class,
@@ -30,7 +30,7 @@ data class ProductKey (
     var productId:Long = 0, // 고유 ID            // 기본키
 
     @ColumnInfo(name = "fk_info_id")
-    val fkInfoId: Long?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
+    var fkInfoId: Long?,                         // 외래키, IdentityInfo 테이블의 info_id (nullable로 설정)
 
     // product_key
     @ColumnInfo(name = "product_key")

@@ -59,6 +59,12 @@ class UserInfoViewModel(
 
     }
 
+    override suspend fun removeAll() {
+        Timber.d("vm removeAll")
+        repository.deleteAll()
+    }
+
+
     // * ----------------------------------------
     // *        ASync Task API
     // * ----------------------------------------
@@ -94,6 +100,13 @@ class UserInfoViewModel(
 
     override fun removeAsyncEntity(entity: UserInfo) {
 
+    }
+
+    override fun removeAsyncAll() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("vm removeAll")
+            repository.deleteAll()
+        }
     }
 
 }

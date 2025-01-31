@@ -52,4 +52,7 @@ interface IdentityInfoDao {
 
     @Query("DELETE FROM identity_info")
     fun deleteAll()
+
+    @Query("UPDATE identity_info SET status = 1")
+    fun disableAll()
 }

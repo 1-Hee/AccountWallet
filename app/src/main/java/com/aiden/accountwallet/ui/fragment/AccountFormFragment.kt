@@ -21,6 +21,7 @@ import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentAccountFormBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
+import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_TIME_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
@@ -35,6 +36,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
     ViewClickListener, OnEditorActionListener, OnKeyListener {
 
     private lateinit var accountFormViewModel: AccountFormViewModel
+    private lateinit var infoItemViewModel: InfoItemViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_account_form, BR.vm, accountFormViewModel)
@@ -47,14 +49,27 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         accountFormViewModel = getApplicationScopeViewModel(
             AccountFormViewModel::class.java
         )
+        infoItemViewModel = getApplicationScopeViewModel(
+            InfoItemViewModel::class.java
+        )
     }
 
     override fun initView() {
         accountFormViewModel.updateStatus.observe(viewLifecycleOwner){
             if(it){
                 notifyAccountInfo()
-                accountFormViewModel.updateStatus.postValue(false)
+                mBinding.setVariable(BR.vm, accountFormViewModel)
+                mBinding.notifyChange()
+                accountFormViewModel.setUpdateStatus(false)
             }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
+        if(keyIdx == 0L){
+            accountFormViewModel.initVariables()
         }
     }
 
@@ -62,7 +77,6 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         val providerName:String = mBinding.etSiteName.text.toString()
         val personalAccount:String = mBinding.etPersonalAccount.text.toString()
         val password:String = mBinding.etPassword.text.toString()
-        val dateStr:String = mBinding.etCreateDate.text.toString()
         var tagStr:String = mBinding.tvColorTag.text.toString()
         if(tagStr.isBlank()) {
             tagStr = getString(R.string.def_tag_color)
@@ -70,18 +84,11 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         val urlStr:String = mBinding.etSiteUrl.text.toString()
         val memoStr:String = mBinding.etMemo.text.toString()
 
+        Timber.i("[Account Date] : %s", accountFormViewModel.createDate.get())
+
         accountFormViewModel.setSiteName(providerName)
         accountFormViewModel.setPersonalAccount(personalAccount)
         accountFormViewModel.setPassword(password)
-
-        var dateResult:Date = Date()
-        try {
-            val date: Date? = getSimpleDateFormat(DATE_TIME_FORMAT).parse(dateStr)
-            if(date != null) dateResult = date
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        accountFormViewModel.setCreateDate(dateResult)
         accountFormViewModel.setTagColor(tagStr)
         // set tag color
         val colorHex:String = tagStr
@@ -123,7 +130,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                         calendar.set(Calendar.MINUTE, minute)
 
                         // 선택된 날짜 및 시간 업데이트
-                        accountFormViewModel.setCreateDate(calendar.getTime())
+                        accountFormViewModel.setCreateDate(calendar.time)
                         // selectedDateTime.set(dateTimeFormat.format(calendar.getTime()))
                     },
                     calendar.get(Calendar.HOUR_OF_DAY),

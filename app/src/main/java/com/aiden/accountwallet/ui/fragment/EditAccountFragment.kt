@@ -29,10 +29,14 @@ import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.RoomTool
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
+import java.util.Date
 
 class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     ViewClickListener, InfoTypeViewModel.InfoTypeCallback  {
@@ -76,8 +80,6 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         productFormViewModel = getApplicationScopeViewModel(
             ProductFormViewModel::class.java
         )
-        accountFormViewModel.initVariables()
-        productFormViewModel.initVariables()
 
         // db vm init
         val factory = ApplicationFactory(requireActivity().application)
@@ -116,6 +118,7 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                             }
                             mBinding.spInfoType.setSelection(0)
                             accountFormViewModel.initVariables(entity)
+                            accountFormViewModel.setUpdateStatus(true)
                         }
                         1 -> { // Product Key
                             val entity:IdProductKey
@@ -124,12 +127,14 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                             }
                             mBinding.spInfoType.setSelection(1)
                             productFormViewModel.initVariables(entity)
+                            productFormViewModel.setUpdateStatus(true)
                         }
                     }
                 }
             }
         }
     }
+
 
     // 사용자 계정 수정 작업
     private fun editUserAccountTask() {
@@ -164,13 +169,17 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                 ?: return@launch
 
             val parentId:Long = item.baseInfo.infoId
+            val accountId:Long = item.accountInfo.accountId
             iInfo.infoId = parentId
             aInfo = RoomTool.getAccountInfo(
                 parentId,  accountFormViewModel
             )
+            aInfo.accountId = accountId
 
             identityInfoViewModel.editEntity(iInfo)
+            Timber.i("[EDIT] parent entity : %s", iInfo)
             accountInfoViewModel.editEntity(aInfo)
+            Timber.i("[EDIT] child entity : %s", aInfo)
 
             withContext(Dispatchers.Main){
                 Toast.makeText(
@@ -216,11 +225,12 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                 ?: return@launch
 
             val parentId:Long = item.baseInfo.infoId
+            val productId:Long = item.productKey.productId
             iInfo.infoId = parentId
             pInfo = RoomTool.getProductKey(
                 parentId, productFormViewModel
             )
-
+            pInfo.productId = productId
             identityInfoViewModel.editEntity(iInfo)
             productKeyViewModel.editEntity(pInfo)
 
@@ -257,15 +267,6 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     }
 
     override fun onItemSelected(selectedItem: String?, position: Int) {
-
-        val item:DisplayAccountInfo? = infoItemViewModel.mDisplayAccountInfo.value
-        if(item != null){
-            if(position != item.typeIdx){
-                accountFormViewModel.initVariables()
-                productFormViewModel.initVariables()
-            }
-        }
-
         when(position){
             1 -> {
                 navController.navigate(R.id.productFormFragment)

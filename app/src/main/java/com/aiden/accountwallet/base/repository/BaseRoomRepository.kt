@@ -13,5 +13,6 @@ abstract class BaseRoomRepository<T> {
     // Delete
     abstract suspend fun deleteEntity(entityId: Long)
     abstract suspend fun deleteEntity(entity: T)
+    abstract suspend fun deleteAll()
 
 }

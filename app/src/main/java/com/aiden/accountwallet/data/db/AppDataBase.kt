@@ -21,18 +21,21 @@ abstract class AppDataBase : RoomDatabase(){
     abstract fun getAccountInfoDao(): AccountInfoDao
     abstract fun getProductKeyDao(): ProductKeyDao
 
+
     companion object {
+        const val DB_NAME:String = "account_wallet_data_base"
+
         @Volatile
         private var INSTANCE:AppDataBase? = null
         fun getInstance(context: Context):AppDataBase{
-            // context.deleteDatabase("account_wallet_data_base")
+            // context.deleteDatabase(DB_NAME)
             if(INSTANCE==null){
                 synchronized(this){
                     val instance = Room
                         .databaseBuilder(
                             context.applicationContext,
                             AppDataBase::class.java,
-                            "account_wallet_data_base"
+                            DB_NAME
                         )
                         .build()
                     INSTANCE = instance

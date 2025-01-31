@@ -18,7 +18,7 @@ class ProductFormViewModel : ViewModel() {
     val memo:ObservableField<String> = ObservableField("")
 
     fun initVariables() {
-        this.updateStatus.postValue(false)
+        this.setUpdateStatus(false)
         this.providerName.set("")
         this.productKey.set("")
         this.tagColor.set("#93534C")
@@ -32,12 +32,15 @@ class ProductFormViewModel : ViewModel() {
         this.tagColor.set(idProductKey.baseInfo.tagColor)
         this.siteUrl.set(idProductKey.productKey.officialUrl)
         this.memo.set(idProductKey.baseInfo.memo)
-        this.updateStatus.postValue(true) // notify data setup
+        this.setUpdateStatus(true)
     }
 
     // * ------------------------------------------------
     // *    ViewModel's Setter
     // * ------------------------------------------------
+    fun setUpdateStatus(flag : Boolean){
+        this.updateStatus.postValue(flag)
+    }
 
     fun setProviderName(providerName:String){
         this.providerName.set(providerName)

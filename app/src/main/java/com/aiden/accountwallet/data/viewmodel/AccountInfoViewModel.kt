@@ -91,6 +91,10 @@ class AccountInfoViewModel (
         repository.deleteEntity(entity.accountId)
     }
 
+    override suspend fun removeAll() {
+    }
+
+
     // * ----------------------------------------
     // *        Async Task API
     // * ----------------------------------------
@@ -115,6 +119,22 @@ class AccountInfoViewModel (
 
     }
 
+    override fun readAsyncExtraEntity(entityId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if(!checkInstance<ExtraEntityHandler<IdAccountInfo>>(repository)){
+                throw IllegalArgumentException()
+            }
+            Timber.d("vm readExtraEntity id : %d", entityId)
+            val entity:IdAccountInfo = (repository as ExtraEntityHandler<IdAccountInfo>)
+                .readExtraEntity(entityId)
+            Timber.d("vm readExtraEntity : %s", entity)
+            this@AccountInfoViewModel.extraEntity.set(entity)        }
+    }
+
+    override fun readAsyncExtraEntityList() {
+
+    }
+
     override fun editAsyncEntity(entity: AccountInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm editEntity : %s", entity)
@@ -136,20 +156,11 @@ class AccountInfoViewModel (
         }
     }
 
-    override fun readAsyncExtraEntity(entityId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            if(!checkInstance<ExtraEntityHandler<IdAccountInfo>>(repository)){
-                throw IllegalArgumentException()
-            }
-            Timber.d("vm readExtraEntity id : %d", entityId)
-            val entity:IdAccountInfo = (repository as ExtraEntityHandler<IdAccountInfo>)
-                .readExtraEntity(entityId)
-            Timber.d("vm readExtraEntity : %s", entity)
-            this@AccountInfoViewModel.extraEntity.set(entity)        }
-    }
 
-    override fun readAsyncExtraEntityList() {
+
+    override fun removeAsyncAll() {
 
     }
+
 
 }

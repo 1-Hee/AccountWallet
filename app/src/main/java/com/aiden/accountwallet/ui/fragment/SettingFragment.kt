@@ -2,6 +2,7 @@ package com.aiden.accountwallet.ui.fragment
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.TypedArray
@@ -20,23 +21,34 @@ import androidx.annotation.NonNull
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import com.aiden.accountwallet.BuildConfig
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
+import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
+import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.dto.AlertInfo
 import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
+import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
+import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentSettingBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.dialog.ProgressDialog
 import com.aiden.accountwallet.ui.dialog.SelectDialog
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>() {
+class SettingFragment : BaseFragment<FragmentSettingBinding>(),
+    AlertDialog.OnDialogClickListener {
 
     // 다른 액티비티 이동후 결과 값을 받아 핸들링할 런쳐
     private lateinit var launcher: ActivityResultLauncher<Intent>;
@@ -44,7 +56,18 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
     private lateinit var permissionInfoList:MutableList<Permission>
     private lateinit var settingOptionList:MutableList<SettingItem>
 
+    // db vm
+    private lateinit var userInfoViewModel:UserInfoViewModel
+    private lateinit var identityInfoViewModel: IdentityInfoViewModel
+
     override fun initViewModel() {
+        val factory = ApplicationFactory(requireActivity().application)
+        userInfoViewModel = getFragmentScopeViewModel(
+            UserInfoViewModel::class.java, factory
+        )
+        identityInfoViewModel = getFragmentScopeViewModel(
+            IdentityInfoViewModel::class.java, factory
+        )
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -75,7 +98,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
             val settingItem = SettingItem(settingArray[i], "")
             when(i){
                 0 -> { // 언어 설정
-                    
+                    val langStr:String = Locale.getDefault().toLanguageTag()
+                    settingItem.value = langStr
                 }
                 1 -> { // 앱 업데이트
                     settingItem.value = BuildConfig.VERSION_NAME
@@ -191,8 +215,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
             when(view.tag){
                 settingArray[0] -> { // 언어 설정
-                    // TODO : 언어설정 다이얼로그 디자인 및 기능 구현
-                    // Toast.makeText(context, "언어설정 다이얼로그...", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+                    launcher.launch(intent)
                 }
                 settingArray[1] -> { // 앱 업데이트 이동
                     try {
@@ -253,24 +277,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
 
                 }
                 settingArray[5] -> { // 데이터 초기화
+                    val title:String = getString(R.string.title_warning)
+                    val content:String = getString(R.string.content_delete_database)
+                    val mBtnOk:String = "Delete"
                     val alertInfo = AlertInfo(
-                        "Title", "Content...", flag = true
-                    )
-
-                    val dialog = AlertDialog(
-                        alertInfo,
-                        object : AlertDialog.OnDialogClickListener {
-                            override fun onOk(view: View) {
-
-                            }
-
-                            override fun onCancel(view: View) {
-
-                            }
-
-                        }
-                    )
-
+                        title, content, txtOk = mBtnOk, flag = true
+                   )
+                    val dialog = AlertDialog(alertInfo, this@SettingFragment)
                     dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 else -> {
@@ -278,5 +291,33 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>() {
                 }
             }
         }
+    }
+
+    // Dialog Listener
+    override fun onOk(view: View) {
+        when(view.id){
+            R.id.btn_ok -> {
+                lifecycleScope.launch(Dispatchers.IO) {
+                    identityInfoViewModel.removeAll()
+                    userInfoViewModel.removeAll()
+
+                    // Notify to User...
+                    withContext(Dispatchers.Main){
+                        val msg:String = getString(R.string.msg_database_delete_all)
+                        val context:Context = requireContext()
+                        Toast.makeText(
+                            context,
+                            msg,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+
+    }
+
+    override fun onCancel(view: View) {
+
     }
 }

@@ -63,6 +63,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
     // check user nickname & display at home fragment
     private fun initUserNickName() {
         // get nickname from db
+        if(userInfoViewModel.entityList.isEmpty()) return
+
         val userInfo:UserInfo? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             userInfoViewModel.entityList.first
         } else {

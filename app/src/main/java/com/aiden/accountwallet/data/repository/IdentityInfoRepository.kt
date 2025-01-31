@@ -41,4 +41,10 @@ class IdentityInfoRepository(
         Timber.d("repo deleteEntity : %s", entity)
         return identityInfoDao.removeIdentityInfo(entity.infoId)
     }
+
+    override suspend fun deleteAll() {
+        Timber.d("repo deleteAll")
+        identityInfoDao.disableAll()
+    }
+
 }

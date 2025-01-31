@@ -72,14 +72,16 @@
     <string name="def_tag_color">#93534C</string>
     <string name="tag_str_account">개인 계정</string>
     <string name="tag_str_product_key">제품키</string>
-    <string name="title_warnning">경고</string>
+    <string name="title_warning">경고</string>
     <string name="content_delete_info">정말로 현재 등록된 정보를 삭제하시겠습니까?\n삭제한 데이터는 복원할 수 없습니다.</string>
     <string name="msg_delete_complete">선택하신 정보가 삭제되었습니다.</string>
     <string name="msg_notify_data_change">계정 유형이 변경되었습니다.</string>
-    <string name="msg_add_fail">등록 실패</string>
-    <string name="msg_add_success">등록 성공</string>
-    <string name="msg_edit_success">수정 완료</string>
-    <string name="msg_edit_fail">데이터 수정 실패</string>
+    <string name="msg_add_fail">입력하신 정보 등록에 실패하였습니다…</string>
+    <string name="msg_add_success">입력하신 정보 등록에 성공하였습니다.</string>
+    <string name="msg_edit_success">입력하신 정보 수정이 완료되었습니다.</string>
+    <string name="msg_edit_fail">입력하신 정보 수정에 실패하였습니다…</string>
+    <string name="content_delete_database">정말로 저장된 모든 데이터를 삭제하시겠습니까?\n삭제된 데이터는 복구하실 수 없습니다.</string>
+    <string name="msg_database_delete_all">모든 정보가 초기화되었습니다.</string>
 
     <string-array name="spinner_info_type">
         <item>개인 계정</item>

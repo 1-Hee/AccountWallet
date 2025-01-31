@@ -60,6 +60,12 @@ class IdentityInfoViewModel (
         repository.deleteEntity(entity)
     }
 
+    override suspend fun removeAll() {
+        Timber.d("vm removeAll")
+        repository.deleteAll()
+    }
+
+
     // * ----------------------------------------
     // *        Async Task API
     // * ----------------------------------------
@@ -102,6 +108,13 @@ class IdentityInfoViewModel (
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm removeEntity : %s", entity)
             repository.deleteEntity(entity)
+        }
+    }
+
+    override fun removeAsyncAll() {
+        viewModelScope.launch(Dispatchers.IO) {
+            Timber.d("vm removeAll")
+            repository.deleteAll()
         }
     }
 }

@@ -54,4 +54,8 @@ class ProductKeyRepository(
         productKeyDao.removeProductKey(entity.productId)
     }
 
+    override suspend fun deleteAll() {
+    }
+
+
 }

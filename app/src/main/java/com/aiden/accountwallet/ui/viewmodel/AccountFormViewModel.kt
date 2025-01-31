@@ -23,7 +23,7 @@ class AccountFormViewModel : ViewModel() {
     val memo:ObservableField<String> = ObservableField("")
 
     fun initVariables() {
-        this.updateStatus.postValue(false)
+        this.setUpdateStatus(false)
         this.siteName.set("")
         this.personalAccount.set("")
         this.password.set("")
@@ -45,12 +45,16 @@ class AccountFormViewModel : ViewModel() {
         this.tagColor.set(idAccountInfo.baseInfo.tagColor)
         this.siteUrl.set(idAccountInfo.accountInfo.officialUrl)
         this.memo.set(idAccountInfo.baseInfo.memo)
-        this.updateStatus.postValue(true) // notify data setup
+        this.setUpdateStatus(true)
     }
 
     // * ------------------------------------------------
     // *    ViewModel's Setter
     // * ------------------------------------------------
+    fun setUpdateStatus(flag : Boolean){
+        this.updateStatus.postValue(flag)
+    }
+
     fun setSiteName(siteName:String){
         this.siteName.set(siteName);
     }
@@ -80,5 +84,6 @@ class AccountFormViewModel : ViewModel() {
     fun setMemo(memo:String){
         this.memo.set(memo)
     }
+
 
 }

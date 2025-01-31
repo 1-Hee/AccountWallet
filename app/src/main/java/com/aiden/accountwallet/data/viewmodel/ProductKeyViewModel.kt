@@ -83,6 +83,10 @@ class ProductKeyViewModel (
         repository.deleteEntity(entityId)
     }
 
+    override suspend fun removeAll() {
+
+    }
+
     override suspend fun removeEntity(entity: ProductKey) {
         Timber.d("vm removeEntity  : %s", entity)
         repository.deleteEntity(entity.productId)
@@ -151,5 +155,10 @@ class ProductKeyViewModel (
             repository.deleteEntity(entity.productId)
         }
     }
+
+    override fun removeAsyncAll() {
+
+    }
+
 
 }

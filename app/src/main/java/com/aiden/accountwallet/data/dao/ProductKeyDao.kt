@@ -24,7 +24,7 @@ interface ProductKeyDao {
         SELECT 
             pi.product_id, pi.fk_info_id, pi.product_key, pi.official_url
         FROM identity_info ii
-        JOIN PRODUCT_KEY pi 
+        JOIN product_info pi 
         ON ii.info_id = pi.fk_info_id
         WHERE ii.status = 0
         ORDER BY ii.created_at DESC;
@@ -38,7 +38,7 @@ interface ProductKeyDao {
             ii.tag_color, ii.status,
             pi.product_id, pi.fk_info_id, pi.product_key, pi.official_url
         FROM identity_info ii
-        JOIN PRODUCT_KEY pi 
+        JOIN product_info pi 
         ON ii.info_id = pi.fk_info_id
         WHERE ii.info_id = :infoId AND ii.status = 0;
     """)
@@ -55,7 +55,7 @@ interface ProductKeyDao {
         UPDATE identity_info
         SET status = 1
         WHERE info_id IN (
-            SELECT fk_info_id FROM product_key
+            SELECT fk_info_id FROM product_info
             WHERE product_id = :productId
         ); 
         """
@@ -72,6 +72,6 @@ interface ProductKeyDao {
     //    @Query("DELETE FROM sqlite_sequence where name='table_task_registration'")
     //    fun clearAll()
 
-    @Query("DELETE FROM product_key")
+    @Query("DELETE FROM product_info")
     fun deleteAll()
 }

@@ -36,4 +36,10 @@ class UserInfoRepository(
     override suspend fun deleteEntity(entity: UserInfo) {
 
     }
+
+    override suspend fun deleteAll() {
+        Timber.d("repo deleteAll")
+        userInfoDao.disableAll()
+    }
+
 }
