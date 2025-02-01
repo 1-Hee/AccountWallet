@@ -12,7 +12,7 @@ class InfoItemViewModel : ViewModel() {
     // * ------------------------------------------------
     // *    ViewModel's Variables
     // * ------------------------------------------------
-    val mDisplayAccountInfo: MutableLiveData<DisplayAccountInfo> = MutableLiveData<DisplayAccountInfo>(null)
+    val mDisplayAccountInfo: MutableLiveData<DisplayAccountInfo> = MutableLiveData<DisplayAccountInfo>()
     val mIdAccountInfo:ObservableField<IdAccountInfo> = ObservableField()
     val mIdProductKey:ObservableField<IdProductKey> = ObservableField()
 
@@ -26,7 +26,7 @@ class InfoItemViewModel : ViewModel() {
     // *    ViewModel's Setter
     // * ------------------------------------------------
     fun setDisplayAccountInfo(displayAccountInfo : DisplayAccountInfo){
-        this.mDisplayAccountInfo.postValue(displayAccountInfo)
+        this.mDisplayAccountInfo.postValue(displayAccountInfo) // todo remove
     }
 
     fun setIdAccountInfo(idAccountInfo : IdAccountInfo){

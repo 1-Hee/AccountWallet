@@ -70,10 +70,14 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        /*
         val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
         if(keyIdx == 0L){
             accountFormViewModel.initVariables()
         }
+         */
+        accountFormViewModel.initVariables()
+
     }
 
     private fun notifyAccountInfo() {
@@ -99,7 +103,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         mBinding.vColorTag.setBackgroundColor(color)
         accountFormViewModel.setSiteUrl(urlStr)
         accountFormViewModel.setMemo(memoStr)
-
+        mBinding.notifyChange()
     }
 
     private fun popUpDateDialog(context: Context) {
@@ -227,6 +231,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                 }
                 accountFormViewModel.setTagColor(colorStr)
                 mBinding.vColorTag.setBackgroundColor(color)
+                mBinding.notifyChange()
             }
             else -> {
                 return false

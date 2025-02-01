@@ -7,8 +7,9 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.aiden.accountwallet.R
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.aiden.accountwallet.BR
+import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
@@ -21,25 +22,21 @@ import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
-import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentEditAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.RoomTool
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.util.Date
 
 class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
-    ViewClickListener, InfoTypeViewModel.InfoTypeCallback  {
+    ViewClickListener, InfoTypeViewModel.InfoTypeCallback,
+    SwipeRefreshLayout.OnRefreshListener {
 
     // vm
     private lateinit var infoTypeViewModel: InfoTypeViewModel
@@ -59,6 +56,7 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         return DataBindingConfig(R.layout.fragment_edit_account)
             .addBindingParam(BR.infoVm, infoTypeViewModel)
             .addBindingParam(BR.click, this)
+            .addBindingParam(BR.onRefreshListener, this)
     }
 
     override fun initViewModel() {
@@ -101,9 +99,10 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         loadEntityData()
     }
 
-    private fun loadEntityData(){
+
+    private fun loadEntityData() {
         infoItemViewModel.mDisplayAccountInfo.observe(viewLifecycleOwner){
-            if(it.keyIndex > 0){
+            if(it != null && it.keyIndex > 0){
                 lifecycleScope.launch(Dispatchers.Main) {
                     val parentIndex:Long = it.keyIndex
                     withContext(Dispatchers.IO){
@@ -131,6 +130,8 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                         }
                     }
                 }
+            }else {
+                Toast.makeText(requireContext(), "로딩 실패", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -268,14 +269,22 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
 
     override fun onItemSelected(selectedItem: String?, position: Int) {
         when(position){
+            0 -> {
+                navController.navigate(R.id.accountFormFragment)
+                accountFormViewModel.setUpdateStatus(true)
+            }
             1 -> {
                 navController.navigate(R.id.productFormFragment)
-            }
-            else ->{
-                navController.navigate(R.id.accountFormFragment)
+                productFormViewModel.setUpdateStatus(true)
             }
         }
+    }
 
-
+    override fun onRefresh() {
+        lifecycleScope.launch {
+            onResume()
+            delay(300)
+            mBinding.swiperEditAccount.isRefreshing = false
+        }
     }
 }

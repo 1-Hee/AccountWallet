@@ -195,14 +195,13 @@ dependencies {
     implementation("com.google.android.play:app-update:$app_update_version")
     implementation("com.google.android.play:app-update-ktx:$app_update_version") // for kotlin
 
-    // for xml
-    val swiperefresh_version = "0.24.7-alpha"
-    implementation("com.google.accompanist:accompanist-swiperefresh:$swiperefresh_version")
+    // swiper
+    val swiper_version = "1.1.0"
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:$swiper_version")
 
     // Color Picker
-    // val color_picker_version = 2.3
-    // implementation("com.github.Dhaval2404:ColorPicker:$color_picker_version")
-    implementation("com.github.skydoves:colorpickerview:2.3.0")
+    val color_picker_version = "2.3.0"
+    implementation("com.github.skydoves:colorpickerview:$color_picker_version")
 
 
 }

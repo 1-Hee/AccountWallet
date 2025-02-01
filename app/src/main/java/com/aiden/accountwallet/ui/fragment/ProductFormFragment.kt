@@ -60,10 +60,13 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
 
     override fun onDestroyView() {
         super.onDestroyView()
+        /*
         val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
         if(keyIdx == 0L){
             productFormViewModel.initVariables()
         }
+         */
+        productFormViewModel.initVariables()
     }
 
     private fun notifyAccountInfo() {
@@ -85,6 +88,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         mBinding.vColorTag.setBackgroundColor(color)
         productFormViewModel.setSiteUrl(urlStr)
         productFormViewModel.setMemo(memoStr)
+        mBinding.notifyChange()
     }
 
     @SuppressLint("SetTextI18n")
@@ -166,6 +170,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 }
                 productFormViewModel.setTagColor(colorStr)
                 mBinding.vColorTag.setBackgroundColor(color)
+                mBinding.notifyChange()
             }
             else -> {
                 return false

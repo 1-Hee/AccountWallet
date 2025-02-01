@@ -1,7 +1,6 @@
 package com.aiden.accountwallet.ui.fragment
 
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -23,7 +22,6 @@ import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
-import com.aiden.accountwallet.util.TimeParser
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +44,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     private lateinit var navController: NavController
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_view_account)
+        return DataBindingConfig(R.layout.fragment_view_account, BR.vm, infoItemViewModel)
             .addBindingParam(BR.click, this)
             .addBindingParam(BR.typeName, "")
     }
@@ -84,9 +82,8 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_view_form) as NavHostFragment).navController
 
-        // Search Item Data By Info Item View Model
         infoItemViewModel.mDisplayAccountInfo.observe(viewLifecycleOwner) { it ->
-            if(it != null && it.providerName.isNotBlank()){
+            if (it != null && it.providerName.isNotBlank()) {
                 mBinding.setVariable(BR.typeName, it.tagName)
                 mBinding.notifyChange()
 
@@ -112,12 +109,6 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        accountFormViewModel.initVariables()
-        productFormViewModel.initVariables()
     }
 
     override fun onViewClick(view: View) {

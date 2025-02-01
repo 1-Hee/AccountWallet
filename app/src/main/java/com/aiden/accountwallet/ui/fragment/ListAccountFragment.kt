@@ -1,6 +1,5 @@
 package com.aiden.accountwallet.ui.fragment
 
-import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
@@ -8,14 +7,16 @@ import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
-import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.listener.ItemClickListener
+import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
+import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
+import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import kotlinx.coroutines.Dispatchers
@@ -35,6 +36,10 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     private lateinit var identityInfoViewModel:IdentityInfoViewModel
     private lateinit var infoItemViewModel: InfoItemViewModel
 
+    // form vm
+    private lateinit var accountFormViewModel: AccountFormViewModel
+    private lateinit var productFormViewModel: ProductFormViewModel
+
     // variables
     private lateinit var mDisplayAccountList:MutableList<DisplayAccountInfo>
 
@@ -49,6 +54,14 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     }
 
     override fun initViewModel() {
+        // form vm init
+        accountFormViewModel = getApplicationScopeViewModel(
+            AccountFormViewModel::class.java
+        )
+        productFormViewModel = getApplicationScopeViewModel(
+            ProductFormViewModel::class.java
+        )
+
         val factory = ApplicationFactory(requireActivity().application)
         identityInfoViewModel = getFragmentScopeViewModel(
             IdentityInfoViewModel::class.java, factory
@@ -66,12 +79,17 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Toast.makeText(requireContext(), "onResume", Toast.LENGTH_SHORT).show()
+        // productFormViewModel.initVariables()
+        // accountFormViewModel.initVariables()
+    }
+
     override fun initView() {
         val sFormat:SimpleDateFormat = getSimpleDateFormat(DATE_FORMAT)
-
         lifecycleScope.launch(Dispatchers.IO) {
             this@ListAccountFragment.mDisplayAccountList.clear()
-
             val itemList:List<IdentityInfo> = identityInfoViewModel.readEntityList()
             itemList.forEach { item ->
                 val tagInfo = getTagInfo(item.infoType, item.tagColor)
@@ -89,6 +107,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
             mBinding.setVariable(BR.displayAccountList, mDisplayAccountList)
         }
 
+
     }
 
     override fun onViewClick(view: View) {
@@ -105,7 +124,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     override fun onItemClick(view: View, item: DisplayAccountInfo) {
         when(view.id){
             R.id.mcv_account_info -> {
-                infoItemViewModel.setDisplayAccountInfo(item)
+                infoItemViewModel.setDisplayAccountInfo(item) // todo remove
                 nav().navigate(R.id.action_move_view_account)
             }
             else ->{
