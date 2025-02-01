@@ -65,10 +65,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
     // check Total Account List
     private fun initAccountList() {
         lifecycleScope.launch(Dispatchers.IO) {
-            val identityInfoList:List<IdentityInfo>
-                = identityInfoViewModel.readEntityList()
-
-            val cnt:Int = identityInfoList.size
+            val cnt:Long = identityInfoViewModel.getIdentityInfoCnt()
             withContext(Dispatchers.Main){
                 mBinding.setVariable(BR.sAccountCnt, cnt.toString())
             }
@@ -88,31 +85,23 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
     private fun initUserNickName() {
         // get nickname from db
         lifecycleScope.launch(Dispatchers.IO) {
-            val userInfoList:List<UserInfo> = userInfoViewModel.readEntityList()
-            if(userInfoList.isEmpty()) return@launch
-
-            val userInfo:UserInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                userInfoList.first()
-            } else {
-                userInfoList[0]
-            }
-
-            withContext(Dispatchers.Main){
-                if(userInfo.nickName.isNotBlank()){
-                    mBinding.setVariable(
-                        BR.sUserNickName,
-                        userInfo.nickName
-                    )
-                } else {
-                    mBinding.setVariable(
-                        BR.sUserNickName,
-                        getString(R.string.str_empty)
-                    )
+            val userInfo:UserInfo? = userInfoViewModel.getLastUserInfo()
+            if(userInfo != null){
+                withContext(Dispatchers.Main){
+                    if(userInfo.nickName.isNotBlank()){
+                        mBinding.setVariable(
+                            BR.sUserNickName,
+                            userInfo.nickName
+                        )
+                    } else {
+                        mBinding.setVariable(
+                            BR.sUserNickName,
+                            getString(R.string.str_empty)
+                        )
+                    }
                 }
             }
-
         }
-
     }
 
     override fun onViewClick(view: View) {

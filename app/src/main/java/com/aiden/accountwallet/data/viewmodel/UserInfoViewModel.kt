@@ -28,6 +28,7 @@ class UserInfoViewModel(
     // *        Sync Task API
     // * ----------------------------------------
 
+    // Create
     override suspend fun addEntity(entity: UserInfo): Long {
         Timber.d("vm.. addUserInfo : %s", entity)
         val result = repository.addEntity(entity)
@@ -35,6 +36,7 @@ class UserInfoViewModel(
         return result
     }
 
+    // Read
     override suspend fun readEntityList(): List<UserInfo> {
         val list:List<UserInfo> = repository.readEntityList()
         Timber.d("vm.. readUserInfoList : %s", list)
@@ -43,14 +45,21 @@ class UserInfoViewModel(
     }
 
     override suspend fun readEntity(entityId: Long): UserInfo {
-
         return UserInfo()
     }
 
+    suspend fun getLastUserInfo():UserInfo? {
+        val userInfo:UserInfo? = (repository as UserInfoRepository).getLastUserInfo()
+        Timber.d("vm getLastUserInfo : %s", userInfo)
+        return userInfo
+    }
+
+    // Update
     override suspend fun editEntity(entity: UserInfo) {
 
     }
 
+    // Delete
     override suspend fun removeEntity(entityId: Long) {
 
     }
@@ -64,11 +73,11 @@ class UserInfoViewModel(
         repository.deleteAll()
     }
 
-
     // * ----------------------------------------
     // *        ASync Task API
     // * ----------------------------------------
 
+    // Create
     override fun addAsyncEntity(entity: UserInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm.. addUserInfo : %s", entity)
@@ -77,7 +86,7 @@ class UserInfoViewModel(
         }
     }
 
-
+    // Read
     override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
             val userInfoList:List<UserInfo> = repository.readEntityList()
@@ -90,10 +99,20 @@ class UserInfoViewModel(
 
     }
 
+    fun getAsyncLastUserInfo() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val userInfo:UserInfo? = (repository as UserInfoRepository).getLastUserInfo()
+            Timber.d("repo getLastUserInfo : %s", userInfo)
+            this@UserInfoViewModel.entity.set(userInfo)
+        }
+    }
+
+    // Update
     override fun editAsyncEntity(entity: UserInfo) {
 
     }
 
+    // Delete
     override fun removeAsyncEntity(entityId: Long) {
 
     }

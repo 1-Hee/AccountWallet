@@ -4,16 +4,19 @@ import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
 import com.aiden.accountwallet.data.model.IdentityInfo
 import timber.log.Timber
+import kotlin.math.ceil
 
 class IdentityInfoRepository(
     private val identityInfoDao : IdentityInfoDao
 ) : BaseRoomRepository<IdentityInfo>() {
 
+    // Create
     override suspend fun addEntity(entity: IdentityInfo): Long {
         Timber.d("repo addEntity.. %s", entity)
         return this.identityInfoDao.addIdentityInfo(entity)
     }
 
+    // Read
     override suspend fun readEntityList(): List<IdentityInfo> {
         val list:List<IdentityInfo> = this.identityInfoDao.readIdentityInfoList()
         Timber.d("repo readEntityList.. %s", list)
@@ -27,11 +30,19 @@ class IdentityInfoRepository(
         return entity
     }
 
+    suspend fun getIdentityInfoCnt():Long {
+        val cnt:Long = identityInfoDao.getIdentityInfoCnt()
+        Timber.d("repo getIdentityInfoCnt : %d", cnt)
+        return cnt
+    }
+
+    // Update
     override suspend fun modifyEntity(entity: IdentityInfo) {
         Timber.d("repo modifyEntity : %s", entity)
         this.identityInfoDao.modifyIdentityInfo(entity)
     }
 
+    // Delete
     override suspend fun deleteEntity(entityId: Long) {
         Timber.d("repo deleteEntity (id) : %s", entityId)
         return this.identityInfoDao.removeIdentityInfo(entityId)

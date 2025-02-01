@@ -29,6 +29,9 @@ interface UserInfoDao {
     @Query("SELECT * FROM user_info WHERE user_id = :userId AND user_status = 0")
     fun readUserInfoListById(userId:Long): List<UserInfo>
 
+    @Query("SELECT * FROM user_info WHERE user_status = 0 ORDER BY created_at DESC LIMIT 1")
+    fun getLastUserInfo():UserInfo?
+
     // Update
     @Update
     fun modifyUserInfo(userInfo : UserInfo)

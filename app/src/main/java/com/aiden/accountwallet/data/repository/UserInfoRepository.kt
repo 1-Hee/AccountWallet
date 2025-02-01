@@ -9,16 +9,13 @@ class UserInfoRepository(
     private val userInfoDao: UserInfoDao
 ) : BaseRoomRepository<UserInfo>() {
 
+    // Create
     override suspend fun addEntity(entity: UserInfo): Long {
         Timber.d("repo addEntity.. %s", entity)
         return this.userInfoDao.addUserInfo(entity)
     }
 
-
-    override suspend fun modifyEntity(entity: UserInfo) {
-
-    }
-
+    // Read
     override suspend fun readEntity(entityId: Long): UserInfo {
         return UserInfo()
     }
@@ -29,6 +26,18 @@ class UserInfoRepository(
         return list
     }
 
+    suspend fun getLastUserInfo():UserInfo? {
+        val userInfo:UserInfo? = userInfoDao.getLastUserInfo()
+        Timber.d("repo getLastUserInfo : %s", userInfo)
+        return userInfo
+    }
+
+    // Update
+    override suspend fun modifyEntity(entity: UserInfo) {
+
+    }
+
+    // Delete
     override suspend fun deleteEntity(entityId: Long) {
 
     }

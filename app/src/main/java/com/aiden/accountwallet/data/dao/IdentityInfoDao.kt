@@ -31,6 +31,13 @@ interface IdentityInfoDao {
     @Query("SELECT * FROM identity_info WHERE info_id = :infoId")
     fun readIdentityInfoById(infoId:Long):IdentityInfo
 
+    @Query("""
+        SELECT COUNT(info_id)
+        FROM identity_info
+        WHERE status = 0;
+    """)
+    fun getIdentityInfoCnt():Long
+
     // Update
     @Update
     fun modifyIdentityInfo(identityInfo : IdentityInfo)

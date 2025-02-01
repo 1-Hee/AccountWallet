@@ -27,6 +27,8 @@ class IdentityInfoViewModel (
     // * ----------------------------------------
     // *        Sync Task API
     // * ----------------------------------------
+
+    // Create
     override suspend fun addEntity(entity: IdentityInfo): Long {
         Timber.d("vm addEntity %s", entity)
         val result = repository.addEntity(entity)
@@ -34,6 +36,7 @@ class IdentityInfoViewModel (
         return result
     }
 
+    // Read
     override suspend fun readEntityList(): List<IdentityInfo> {
         val list:List<IdentityInfo> = repository.readEntityList()
         Timber.d("vm readEntityList : %s", list)
@@ -45,11 +48,19 @@ class IdentityInfoViewModel (
         return IdentityInfo(fkUserId = -1);
     }
 
+    suspend fun getIdentityInfoCnt():Long {
+        val cnt:Long = (repository as IdentityInfoRepository).getIdentityInfoCnt()
+        Timber.d("vm getIdentityInfoCnt : %d", cnt)
+        return cnt
+    }
+
+    // Update
     override suspend fun editEntity(entity: IdentityInfo) {
         Timber.d("vm editEntity: %s", entity)
         repository.modifyEntity(entity)
     }
 
+    // Delete
     override suspend fun removeEntity(entityId: Long) {
         Timber.d("vm removeEntity (id) : %s", entityId)
         repository.deleteEntity(entityId)
@@ -70,6 +81,7 @@ class IdentityInfoViewModel (
     // *        Async Task API
     // * ----------------------------------------
 
+    // Create
     override fun addAsyncEntity(entity: IdentityInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm identityInfo %s", entity)
@@ -78,6 +90,7 @@ class IdentityInfoViewModel (
         }
     }
 
+    // Read
     override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
             val list:List<IdentityInfo> = repository.readEntityList()
@@ -89,7 +102,7 @@ class IdentityInfoViewModel (
     override fun readAsyncEntity(entityId: Long) {
     }
 
-
+    // Update
     override fun editAsyncEntity(entity: IdentityInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm edit identityInfo : %s", entity)
@@ -97,6 +110,7 @@ class IdentityInfoViewModel (
         }
     }
 
+    // Delete
     override fun removeAsyncEntity(entityId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("vm removeEntity (id) : %s", entityId)
