@@ -17,6 +17,10 @@ class ProductFormViewModel : ViewModel() {
     val siteUrl:ObservableField<String> = ObservableField("")
     val memo:ObservableField<String> = ObservableField("")
 
+    // * ------------------------------------------------
+    // *    init Method
+    // * ------------------------------------------------
+
     fun initVariables() {
         this.setUpdateStatus(false)
         this.providerName.set("")

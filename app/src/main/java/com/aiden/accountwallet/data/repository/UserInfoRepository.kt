@@ -34,7 +34,8 @@ class UserInfoRepository(
 
     // Update
     override suspend fun modifyEntity(entity: UserInfo) {
-
+        Timber.d("repo modifyEntity : %s", entity)
+        this.userInfoDao.modifyUserInfo(entity)
     }
 
     // Delete

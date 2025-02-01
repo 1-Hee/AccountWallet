@@ -65,6 +65,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
             android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
@@ -89,6 +91,7 @@
             style="@style/baseTextStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:inputType="textPassword"
             android:text="@{vm.productKey}"
             android:hint="@string/hint_product_key"
             app:layout_constraintTop_toBottomOf="@id/et_provider_name"
@@ -96,6 +99,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
             android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />
@@ -187,6 +192,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
+            android:singleLine="true"
+            android:imeOptions="actionDone"
             android:OnEditorActionListener="@{(v, a, e) -> editAction.onEditorAction(v, a, e)}"
             android:OnKeyListener="@{(v, kc, ke) -> onKeyAction.onKey(v, kc, ke)}"
             />

@@ -56,7 +56,8 @@ class UserInfoViewModel(
 
     // Update
     override suspend fun editEntity(entity: UserInfo) {
-
+        Timber.d("vm editEntity : %s", entity)
+        repository.modifyEntity(entity)
     }
 
     // Delete

@@ -51,6 +51,7 @@
 
                 <!-- Card View -->
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/mcv_account_wallet"
                     android:layout_width="332dp"
                     android:layout_height="209.05dp"
                     app:cardCornerRadius="8dp"
@@ -88,7 +89,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintBottom_toBottomOf="@+id/ibtn_wallet"
                             tools:text="@string/app_name"
-                            android:onClick="@{(v)->click.onViewClick(v)}"
                             />
 
                         <androidx.appcompat.widget.AppCompatImageButton

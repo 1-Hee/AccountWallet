@@ -1,23 +1,24 @@
 package com.aiden.accountwallet.ui.fragment
 
-import android.os.Build
+import android.content.Context
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
+import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
-import com.aiden.accountwallet.data.model.IdentityInfo
+import com.aiden.accountwallet.data.dto.UserProfile
 import com.aiden.accountwallet.data.model.UserInfo
-import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentHomeBinding
 import com.aiden.accountwallet.ui.activity.MainActivity
+import com.aiden.accountwallet.ui.dialog.UserProfileDialog
 import com.google.android.gms.ads.AdRequest
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,7 +26,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
+class HomeFragment : BaseFragment<FragmentHomeBinding>(),
+    ViewClickListener, UserProfileDialog.OnDialogClickListener {
 
     // vm
     private lateinit var userInfoViewModel: UserInfoViewModel
@@ -53,12 +55,35 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
         (requireActivity() as MainActivity).supportActionBar?.show()
 
         // 배너 광고 로드
+        /*
         val adRequest = AdRequest.Builder().build()
         mBinding.avHome.loadAd(adRequest)
+         */
+
         initUserNickName()
         initCurrentDate()
         initAccountList();
         mBinding.notifyChange()
+
+        // setup dialog LongClick
+        mBinding.mcvAccountWallet.setOnLongClickListener {
+            val context:Context = requireContext()
+            val showMsg:String = getString(R.string.msg_notify_edit_user_info)
+            Toast.makeText(
+                context, showMsg, Toast.LENGTH_SHORT
+            ).show()
+            // change nickname
+            val btnEdit:String = context.getString(R.string.btn_dialog_edit)
+            val btnCancel:String = context.getString(R.string.btn_dialog_cancel)
+            val mUserProfile = UserProfile(
+                txtOk = btnEdit,
+                txtCancel = btnCancel
+            )
+            val dialog = UserProfileDialog(mUserProfile, this)
+            dialog.show(requireActivity().supportFragmentManager, null)
+
+            true
+        }
 
     }
 
@@ -106,11 +131,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
 
     override fun onViewClick(view: View) {
         when(view.id){
-            R.id.tv_card_title -> { // change nickname
-                Toast.makeText(requireContext(), "Change Nick Name...", Toast.LENGTH_SHORT).show()
-
-            }
-
             R.id.btn_add_account -> {
                 nav().navigate(R.id.action_move_add_account)
             }
@@ -118,6 +138,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(), ViewClickListener {
                 nav().navigate(R.id.action_move_list_account)
             }
         }
+
+    }
+
+    // Dialog Listener
+    override fun onEdit(view: View, item: UserProfile?) {
+        // notify nickname change
+        if(item != null){
+            val formMsg:String = getString(R.string.msg_change_nickname)
+            val msg:String = String.format(formMsg, item.userNickname)
+            val mView:View = requireView()
+            // Show Snack Bar
+            Snackbar.make(mView, msg, Snackbar.LENGTH_SHORT)
+                .setAction("Action", null)
+                .setAnchorView(R.id.av_home).show()
+            this.initUserNickName()
+        }
+    }
+
+    override fun onEditCancel(view: View) {
 
     }
 

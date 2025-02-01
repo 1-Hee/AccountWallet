@@ -85,6 +85,13 @@
     <string name="msg_input_nickname">닉네임을 입력해주세요.</string>
     <string name="msg_refresh_tag_color">태그 색상이 초기화되었습니다.</string>
     <string name="msg_invalid_color_value">유효하지 않은 색상입니다. 다시 입력해주세요.</string>
+    <string name="title_dialog_user_profile">사용자 정보 수정</string>
+    <string name="tv_profile_guide">아래의 정보를 수정합니다,</string>
+    <string name="tv_label_nickname">닉네임 :</string>
+    <string name="btn_dialog_edit">Edit</string>
+    <string name="btn_dialog_cancel">Cancel</string>
+    <string name="msg_change_nickname">닉네임이 수정되었습니다 : %s</string>
+    <string name="msg_notify_edit_user_info">사용자 정보를 수정합니다...</string>
 
     <string-array name="spinner_info_type">
         <item>개인 계정</item>

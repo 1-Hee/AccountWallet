@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <data>
+        <variable
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.UserProfileViewModel" />
+        <variable
+            name="click"
+            type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/none"
+        tools:background="@color/black"
+        >
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="8dp"
+            app:strokeColor="@color/none"
+            app:cardBackgroundColor="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="321.1dp"
+                android:layout_height="wrap_content"
+                android:minHeight="202.42dp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="16dp"
+                >
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_profile_title"
+                    style="@style/boldTextStyle"
+                    android:text="@string/title_dialog_user_profile"
+                    android:textSize="18sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    tools:text="@string/title_dialog_user_profile"
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_profile_guide"
+                    style="@style/lightTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/mono800"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_title"
+                    app:layout_constraintStart_toStartOf="@id/tv_profile_title"
+                    android:text="@string/tv_profile_guide"
+                    />
+
+                <!-- user nickname -->
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_label_nickname"
+                    style="@style/boldTextStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_label_nickname"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/tv_profile_guide"
+                    app:layout_constraintBottom_toBottomOf="@id/gl_horizontal"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_edit_nickname"
+                    style="@style/baseTextStyle"
+                    android:text="@{vm.userProfile.userNickname}"
+                    android:textSize="14sp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@id/tv_label_nickname"
+                    app:layout_constraintBottom_toBottomOf="@id/tv_label_nickname"
+                    app:layout_constraintStart_toStartOf="@id/gl_vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    />
+
+                <!-- dialog divider  -->
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintGuide_percent="0.35"
+                    />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintGuide_percent="0.7"
+                    />
+
+                <!-- right button -->
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_cancel"
+                    style="@style/baseTextStyle"
+                    android:text="@{vm.userProfile.txtCancel}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/none"
+                    app:layout_constraintEnd_toStartOf="@id/btn_ok"
+                    app:layout_constraintTop_toBottomOf="@id/gl_horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginEnd="8dp"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
+                    tools:text="Cancel"
+                    />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_ok"
+                    style="@style/baseTextStyle"
+                    android:text="@{vm.userProfile.txtOk}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/sky_blue400"
+                    android:background="@color/none"
+                    app:layout_constraintTop_toBottomOf="@id/gl_horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
+                    tools:text="OK"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
