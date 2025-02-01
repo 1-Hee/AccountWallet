@@ -19,6 +19,9 @@
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+        <variable
+            name="longClick"
+            type="com.aiden.accountwallet.base.listener.OnLongClickListener" />
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
@@ -59,6 +62,7 @@
                     app:strokeWidth=".5dp"
                     app:cardBackgroundColor="@color/white"
                     android:elevation="8dp"
+                    android:onLongClick="@{(v)->longClick.onLongClick(v)}"
                     >
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"

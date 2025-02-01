@@ -8,6 +8,7 @@ import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.factory.ApplicationFactory
+import com.aiden.accountwallet.base.listener.OnLongClickListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.dto.UserProfile
@@ -27,7 +28,8 @@ import java.util.Date
 import java.util.Locale
 
 class HomeFragment : BaseFragment<FragmentHomeBinding>(),
-    ViewClickListener, UserProfileDialog.OnDialogClickListener {
+    ViewClickListener, UserProfileDialog.OnDialogClickListener,
+    OnLongClickListener {
 
     // vm
     private lateinit var userInfoViewModel: UserInfoViewModel
@@ -36,6 +38,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(),
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_home)
             .addBindingParam(BR.click, this)
+            .addBindingParam(BR.longClick, this)
             .addBindingParam(BR.sUserNickName, getString(R.string.str_empty))
             .addBindingParam(BR.sDate, "")
             .addBindingParam(BR.sAccountCnt, "")
@@ -65,25 +68,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(),
         initAccountList();
         mBinding.notifyChange()
 
-        // setup dialog LongClick
-        mBinding.mcvAccountWallet.setOnLongClickListener {
-            val context:Context = requireContext()
-            val showMsg:String = getString(R.string.msg_notify_edit_user_info)
-            Toast.makeText(
-                context, showMsg, Toast.LENGTH_SHORT
-            ).show()
-            // change nickname
-            val btnEdit:String = context.getString(R.string.btn_dialog_edit)
-            val btnCancel:String = context.getString(R.string.btn_dialog_cancel)
-            val mUserProfile = UserProfile(
-                txtOk = btnEdit,
-                txtCancel = btnCancel
-            )
-            val dialog = UserProfileDialog(mUserProfile, this)
-            dialog.show(requireActivity().supportFragmentManager, null)
-
-            true
-        }
 
     }
 
@@ -158,6 +142,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(),
 
     override fun onEditCancel(view: View) {
 
+    }
+
+    override fun onLongClick(view: View): Boolean {
+        return when(view.id){
+            R.id.mcv_account_wallet -> {
+                val context:Context = requireContext()
+                val showMsg:String = getString(R.string.msg_notify_edit_user_info)
+                Toast.makeText(
+                    context, showMsg, Toast.LENGTH_SHORT
+                ).show()
+                // change nickname
+                val btnEdit:String = context.getString(R.string.btn_dialog_edit)
+                val btnCancel:String = context.getString(R.string.btn_dialog_cancel)
+                val mUserProfile = UserProfile(
+                    txtOk = btnEdit,
+                    txtCancel = btnCancel
+                )
+                val dialog = UserProfileDialog(mUserProfile, this)
+                dialog.show(requireActivity().supportFragmentManager, null)
+
+                true
+            }
+            else -> false
+        }
     }
 
 }

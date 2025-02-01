@@ -310,6 +310,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
                             msg,
                             Toast.LENGTH_SHORT
                         ).show()
+
+                        nav().popBackStack(R.id.settingFragment, true)
+                        nav().navigate(R.id.introFragment)
                     }
                 }
             }
