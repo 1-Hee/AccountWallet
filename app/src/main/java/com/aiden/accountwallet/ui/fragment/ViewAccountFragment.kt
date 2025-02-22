@@ -64,13 +64,8 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
         productKeyViewModel.initVariables()
 
         // display vm
-        productFormViewModel = getApplicationScopeViewModel(
-            ProductFormViewModel::class.java
-        )
-        accountFormViewModel = getApplicationScopeViewModel(
-            AccountFormViewModel::class.java
-        )
-
+        productFormViewModel = getApplicationScopeViewModel(ProductFormViewModel::class.java)
+        accountFormViewModel = getApplicationScopeViewModel(AccountFormViewModel::class.java)
     }
 
     override fun initView() {

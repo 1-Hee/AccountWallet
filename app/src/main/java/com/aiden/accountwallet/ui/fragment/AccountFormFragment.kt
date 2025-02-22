@@ -70,12 +70,6 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-//        accountFormViewModel.initVariables()
-
-    }
-
     private fun notifyAccountInfo() {
         val providerName:String = mBinding.etSiteName.text.toString()
         val personalAccount:String = mBinding.etPersonalAccount.text.toString()

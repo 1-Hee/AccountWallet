@@ -59,11 +59,6 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
 
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // productFormViewModel.initVariables()
-    }
-
     private fun notifyAccountInfo() {
 
         val providerName:String = mBinding.etProviderName.text.toString()
