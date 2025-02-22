@@ -36,10 +36,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     private lateinit var identityInfoViewModel:IdentityInfoViewModel
     private lateinit var infoItemViewModel: InfoItemViewModel
 
-    // form vm
-    private lateinit var accountFormViewModel: AccountFormViewModel
-    private lateinit var productFormViewModel: ProductFormViewModel
-
+    // TODO 검색기능..
     // variables
     private lateinit var mDisplayAccountList:MutableList<DisplayAccountInfo>
 
@@ -54,14 +51,6 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     }
 
     override fun initViewModel() {
-        // form vm init
-        accountFormViewModel = getApplicationScopeViewModel(
-            AccountFormViewModel::class.java
-        )
-        productFormViewModel = getApplicationScopeViewModel(
-            ProductFormViewModel::class.java
-        )
-
         val factory = ApplicationFactory(requireActivity().application)
         identityInfoViewModel = getFragmentScopeViewModel(
             IdentityInfoViewModel::class.java, factory
@@ -79,12 +68,6 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        // Toast.makeText(requireContext(), "onResume", Toast.LENGTH_SHORT).show()
-        // productFormViewModel.initVariables()
-        // accountFormViewModel.initVariables()
-    }
 
     override fun initView() {
         val sFormat:SimpleDateFormat = getSimpleDateFormat(DATE_FORMAT)
