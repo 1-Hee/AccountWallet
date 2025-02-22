@@ -42,7 +42,8 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
     private lateinit var infoItemViewModel: InfoItemViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_account_form, BR.vm, accountFormViewModel)
+        return DataBindingConfig(R.layout.fragment_account_form)
+            .addBindingParam(BR.vm, accountFormViewModel)
             .addBindingParam(BR.click, this)
             .addBindingParam(BR.editAction, this)
             .addBindingParam(BR.onKeyAction, this)
@@ -55,6 +56,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         infoItemViewModel = getApplicationScopeViewModel(
             InfoItemViewModel::class.java
         )
+
     }
 
     override fun initView() {
@@ -70,13 +72,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        /*
-        val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
-        if(keyIdx == 0L){
-            accountFormViewModel.initVariables()
-        }
-         */
-        accountFormViewModel.initVariables()
+//        accountFormViewModel.initVariables()
 
     }
 
@@ -126,7 +122,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                         calendar.set(Calendar.MINUTE, minute)
 
                         // 선택된 날짜 및 시간 업데이트
-                        accountFormViewModel.setCreateDate(calendar.time)
+                         accountFormViewModel.setCreateDate(calendar.time)
                         // selectedDateTime.set(dateTimeFormat.format(calendar.getTime()))
                     },
                     calendar.get(Calendar.HOUR_OF_DAY),
@@ -154,7 +150,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
                     val colorStr = "#${envelope.hexCode.substring(2)}"
                     mBinding.tvColorTag.setText(colorStr)
                     // mBinding.tvColorTag.text = colorStr
-                    accountFormViewModel.setTagColor(colorStr)
+                     accountFormViewModel.setTagColor(colorStr)
                 })
             .setNegativeButton(
                 getString(R.string.btn_cancel)
@@ -168,6 +164,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
     override fun onViewClick(view: View) {
         val context:Context = requireContext()
 
+
         when(view.id){
             R.id.et_create_date -> {
                 popUpDateDialog(context)
@@ -180,7 +177,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
             R.id.btn_refresh_color -> {
                 val colorStr:String = getString(R.string.def_tag_color)
                 mBinding.tvColorTag.setText(colorStr)
-                accountFormViewModel.setTagColor(colorStr)
+                // accountFormViewModel.setTagColor(colorStr)
                 val color:Int = UIManager.getColor(context, colorStr)
                 mBinding.vColorTag.setBackgroundColor(color)
 

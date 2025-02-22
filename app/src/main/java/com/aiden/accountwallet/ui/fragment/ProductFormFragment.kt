@@ -31,7 +31,8 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
     private lateinit var infoItemViewModel: InfoItemViewModel
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_product_form, BR.vm, productFormViewModel)
+        return DataBindingConfig(R.layout.fragment_product_form)
+            .addBindingParam(BR.vm, productFormViewModel)
             .addBindingParam(BR.click, this)
             .addBindingParam(BR.editAction, this)
             .addBindingParam(BR.onKeyAction, this)
@@ -60,16 +61,11 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        /*
-        val keyIdx:Long = infoItemViewModel.mDisplayAccountInfo.value?.keyIndex?:0L
-        if(keyIdx == 0L){
-            productFormViewModel.initVariables()
-        }
-         */
-        productFormViewModel.initVariables()
+        // productFormViewModel.initVariables()
     }
 
     private fun notifyAccountInfo() {
+
         val providerName:String = mBinding.etProviderName.text.toString()
         val productKey:String = mBinding.etProductKey.text.toString()
         var tagStr:String = mBinding.tvColorTag.text.toString()
@@ -103,7 +99,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                     val colorStr = "#${envelope.hexCode.substring(2)}"
                     mBinding.tvColorTag.setText(colorStr)
                     // mBinding.tvColorTag.text = colorStr
-                    productFormViewModel.setTagColor(colorStr)
+                    // productFormViewModel.setTagColor(colorStr)
                 })
             .setNegativeButton(
                 getString(R.string.btn_cancel)
@@ -124,6 +120,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 val colorStr:String = getString(R.string.def_tag_color)
                 mBinding.tvColorTag.setText(colorStr)
                 productFormViewModel.setTagColor(colorStr)
+
                 val color:Int = UIManager.getColor(context, colorStr)
                 mBinding.vColorTag.setBackgroundColor(color)
                 val msg:String = getString(R.string.msg_refresh_tag_color)
@@ -144,6 +141,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         }
 
         hideKeyPad(requireActivity())
+
         when(view.id){
             R.id.et_provider_name -> {
                 productFormViewModel.setProviderName(inputText)
@@ -176,6 +174,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 return false
             }
         }
+
          return true
     }
 
@@ -188,6 +187,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
         return if(keyCode == KeyEvent.KEYCODE_ENTER
             && keyEvent.action == KeyEvent.ACTION_DOWN) {
             hideKeyPad(requireActivity())
+
             when(view.id){
                 R.id.et_provider_name -> {
                     productFormViewModel.setProviderName(inputText)
@@ -219,6 +219,7 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                     return false
                 }
             }
+
             true
         } else {
             if (BuildConfig.DEBUG) {

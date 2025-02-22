@@ -51,4 +51,20 @@ object UIManager {
         }
         return color
     }
+
+    fun getContrastingTextColor(context: Context, hexColor: String): Int {
+        // HEX 코드에서 RGB 값을 추출
+        val color = Color.parseColor(hexColor)
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+
+        // 밝기(Luminance) 계산
+        val luminance = (0.299 * r + 0.587 * g + 0.114 * b)
+
+        // 밝으면 검은색(#000000), 어두우면 흰색(#FFFFFF)
+        val colorBlack:Int = context.getColor(R.color.black)
+        val colorWhite:Int = context.getColor(R.color.white)
+        return if (luminance >= 128) colorBlack else colorWhite
+    }
 }

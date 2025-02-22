@@ -1,6 +1,8 @@
 package com.aiden.accountwallet.ui.fragment
 
+import android.content.Context
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -22,6 +24,7 @@ import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.UIManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -50,12 +53,9 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     }
 
     override fun initViewModel() {
-        infoItemViewModel = getApplicationScopeViewModel(
-            InfoItemViewModel::class.java
-        )
+        infoItemViewModel = getApplicationScopeViewModel(InfoItemViewModel::class.java)
 
         // db vm init
-        val factory = ApplicationFactory(requireActivity().application)
         identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
         accountInfoViewModel = getApplicationScopeViewModel(AccountInfoViewModel::class.java)
         productKeyViewModel = getApplicationScopeViewModel(ProductKeyViewModel::class.java)
@@ -82,13 +82,25 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                 mBinding.setVariable(BR.typeName, it.tagName)
                 mBinding.notifyChange()
 
+                // tag color init
+                val context:Context = requireContext()
+                val colorHex:String = it.tagColor
+                val mTagColor:Int = UIManager.getColor(context, colorHex)
+                val mTxtColor:Int = UIManager.getContrastingTextColor(context, colorHex)
+                mBinding.setVariable(BR.tagColor, mTagColor)
+                mBinding.setVariable(BR.txtColor, mTxtColor)
+                mBinding.notifyChange()
+
+
                 when(it.typeIdx){
                     0 -> { // Search Account info Data
                         lifecycleScope.launch(Dispatchers.IO) {
                             val infoId:Long = it.keyIndex
                             val entity:IdAccountInfo =  accountInfoViewModel.readExtraEntity(infoId)
                             Timber.i("View Read Entity (Account) : %s", entity)
+                            accountFormViewModel.initVariables(entity)
                             this@ViewAccountFragment.infoItemViewModel.setIdAccountInfo(entity)
+
                         }
                         navController.navigate(R.id.accountViewFragment)
                     }
@@ -97,6 +109,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                             val infoId:Long = it.keyIndex
                             val entity:IdProductKey =  productKeyViewModel.readExtraEntity(infoId)
                             Timber.i("View Read Entity (Product) : %s", entity)
+                            productFormViewModel.initVariables(entity)
                             this@ViewAccountFragment.infoItemViewModel.setIdProductKey(entity)
                         }
                         navController.navigate(R.id.productViewFragment)

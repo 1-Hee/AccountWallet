@@ -1,12 +1,19 @@
 package com.aiden.accountwallet.util
 
 import android.content.Context
+import android.nfc.Tag
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.model.ProductKey
+import com.aiden.accountwallet.data.vo.DisplayAccountInfo
+import com.aiden.accountwallet.ui.fragment.ListAccountFragment.TagInfo
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
+import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
+import timber.log.Timber
+import java.text.SimpleDateFormat
 import java.util.Date
 
 object RoomTool {
@@ -72,5 +79,29 @@ object RoomTool {
             productKey = productVm.productKey.get()?:"",
             officialUrl = productVm.siteUrl.get()?:""
         )
+    }
+
+    // 태그정보 변환을 위함
+    private fun getTagInfo(context: Context,  typeIdx:Int, tagColor: String): TagInfo {
+        return when(typeIdx) {
+            0 -> TagInfo(context.getString(R.string.tag_str_account), tagColor)
+            1 -> TagInfo(context.getString(R.string.tag_str_product_key), tagColor)
+            else -> TagInfo("None", tagColor)
+        }
+    }
+
+    fun getDisplayAccountInfo(context: Context, item:IdentityInfo): DisplayAccountInfo {
+        val sFormat: SimpleDateFormat = getSimpleDateFormat(DATE_FORMAT)
+        val tagInfo:TagInfo = getTagInfo(context, item.infoType, item.tagColor)
+        val mAccountInfo = DisplayAccountInfo (
+            item.infoId,
+            item.providerName,
+            item.infoType,
+            tagInfo.tagName,
+            tagInfo.tagColor,
+            sFormat.format(item.createAt)
+        )
+        Timber.i("item info : %s", mAccountInfo)
+        return mAccountInfo
     }
 }

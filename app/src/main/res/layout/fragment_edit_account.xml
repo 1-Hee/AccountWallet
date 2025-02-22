@@ -11,96 +11,109 @@
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
         <variable
-            name="onRefreshListener"
-            type="androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener" />
-        <variable
-            name="infoVm"
-            type="com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel"
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel"
             />
+        <variable
+            name="tagColor"
+            type="Integer" />
+        <variable
+            name="txtColor"
+            type="Integer" />
     </data>
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swiper_edit_account"
+    <ScrollView
+        android:id="@+id/sv_add_account"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:onRefreshListener="@{onRefreshListener}"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
         >
-        <ScrollView
-            android:id="@+id/sv_add_account"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             >
-            <androidx.appcompat.widget.LinearLayoutCompat
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_info_type"
+                style="@style/boldTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_info_type"
+                />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/mcv_tag_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                app:cardCornerRadius="10dp"
+                app:strokeColor="@color/mono600"
+                app:strokeWidth="0dp"
+                android:layout_marginTop="12dp"
+                app:cardBackgroundColor="@{tagColor}"
+                tools:cardBackgroundColor="@color/mono700"
                 >
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_info_type"
-                    style="@style/boldTextStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_info_type"
-                    />
-
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="12dp"
-                    android:background="@drawable/bg_all_line"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="16dp"
                     >
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/sp_info_type"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_account_type"
+                        style="@style/baseTextStyle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:adapter="@{infoVm.infoTypeAdapter}"
-                        android:onItemSelected="@{infoVm::onItemSelected}"
+                        android:textSize="16sp"
+                        android:text="@{vm.MDisplayAccountInfo.tagName}"
+                        android:textAlignment="center"
+                        android:textColor="@{txtColor}"
+                        tools:text="개인 계정"
+                        tools:textColor="@color/white"
                         />
                 </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.material.card.MaterialCardView>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_form_input"
-                    style="@style/boldTextStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/str_form_input"
-                    android:layout_marginTop="16dp"
-                    />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_form_input"
+                style="@style/boldTextStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/str_form_input"
+                android:layout_marginTop="16dp"
+                />
 
-                <!-- fragment -->
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_edit_form"
-                    android:name="androidx.navigation.fragment.NavHostFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:navGraph="@navigation/navigation_add_form"
-                    tools:layout_height="128dp"
-                    />
+            <!-- fragment -->
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_edit_form"
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:navGraph="@navigation/navigation_add_form"
+                tools:layout_height="128dp"
+                />
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="32dp"
-                    />
-                <androidx.appcompat.widget.AppCompatButton
-                    android:id="@+id/btn_edit_account"
-                    style="@style/boldTextStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_base_button"
-                    android:text="@string/btn_save_account"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white"
-                    android:layout_marginTop="24dp"
-                    android:onClick="@{(v)->click.onViewClick(v)}"
-                    />
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="64dp"
-                    />
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_edit_account"
+                style="@style/boldTextStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_base_button"
+                android:text="@string/btn_save_account"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:layout_marginTop="24dp"
+                android:onClick="@{(v)->click.onViewClick(v)}"
+                />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
 </layout>

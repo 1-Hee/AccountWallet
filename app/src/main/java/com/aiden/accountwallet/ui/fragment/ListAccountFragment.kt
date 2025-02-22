@@ -1,5 +1,6 @@
 package com.aiden.accountwallet.ui.fragment
 
+import android.content.Context
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.aiden.accountwallet.BR
@@ -14,6 +15,7 @@ import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
+import com.aiden.accountwallet.util.RoomTool.getDisplayAccountInfo
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import kotlinx.coroutines.Dispatchers
@@ -59,31 +61,14 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
     }
 
-    private fun getTagInfo(typeIdx:Int, tagColor: String):TagInfo{
-        return when(typeIdx) {
-            0 -> TagInfo(getString(R.string.tag_str_account), tagColor)
-            1 -> TagInfo(getString(R.string.tag_str_product_key), tagColor)
-            else -> TagInfo("None", tagColor)
-        }
-    }
-
 
     override fun initView() {
-        val sFormat:SimpleDateFormat = getSimpleDateFormat(DATE_FORMAT)
+        val context:Context = requireContext()
         lifecycleScope.launch(Dispatchers.IO) {
             this@ListAccountFragment.mDisplayAccountList.clear()
             val itemList:List<IdentityInfo> = identityInfoViewModel.readEntityList()
             itemList.forEach { item ->
-                val tagInfo = getTagInfo(item.infoType, item.tagColor)
-                val mAccountInfo = DisplayAccountInfo (
-                    item.infoId,
-                    item.providerName,
-                    item.infoType,
-                    tagInfo.tagName,
-                    tagInfo.tagColor,
-                    sFormat.format(item.createAt)
-                )
-                Timber.i("item info : %s", mAccountInfo)
+                val mAccountInfo:DisplayAccountInfo = getDisplayAccountInfo(context, item)
                 this@ListAccountFragment.mDisplayAccountList.add(mAccountInfo)
             }
             mBinding.setVariable(BR.displayAccountList, mDisplayAccountList)
@@ -92,16 +77,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
     }
 
-    override fun onViewClick(view: View) {
-        when(view.id){
-            R.id.mcv_account_info -> {
-                // nav().navigate(R.id.action_move_view_account)
-            }
-            else ->{
-
-            }
-        }
-    }
+    override fun onViewClick(view: View) {}
 
     override fun onItemClick(view: View, item: DisplayAccountInfo) {
         when(view.id){

@@ -22,21 +22,26 @@ import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
+import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentEditAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.RoomTool
+import com.aiden.accountwallet.util.RoomTool.getDisplayAccountInfo
+import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
+import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
+import com.aiden.accountwallet.util.UIManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
+import java.text.SimpleDateFormat
 
 class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
-    ViewClickListener, InfoTypeViewModel.InfoTypeCallback,
-    SwipeRefreshLayout.OnRefreshListener {
+    ViewClickListener {
 
     // vm
     private lateinit var infoTypeViewModel: InfoTypeViewModel
@@ -51,12 +56,10 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
 
     // for child Nav Controller
     private lateinit var navController: NavController
-
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_edit_account)
+        return DataBindingConfig(R.layout.fragment_edit_account, BR.vm, infoItemViewModel)
             .addBindingParam(BR.infoVm, infoTypeViewModel)
             .addBindingParam(BR.click, this)
-            .addBindingParam(BR.onRefreshListener, this)
     }
 
     override fun initViewModel() {
@@ -67,17 +70,10 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         val adapter:ArrayAdapter<String> = ArrayAdapter(requireContext(), R.layout.custom_spinner_item, items)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         infoTypeViewModel.initInfoTypes(items, adapter)
-        infoTypeViewModel.setCallback(this)
         // vm for data edit init
-        infoItemViewModel = getApplicationScopeViewModel(
-            InfoItemViewModel::class.java
-        )
-        accountFormViewModel = getApplicationScopeViewModel(
-            AccountFormViewModel::class.java
-        )
-        productFormViewModel = getApplicationScopeViewModel(
-            ProductFormViewModel::class.java
-        )
+        infoItemViewModel = getApplicationScopeViewModel(InfoItemViewModel::class.java)
+        accountFormViewModel = getApplicationScopeViewModel(AccountFormViewModel::class.java)
+        productFormViewModel = getApplicationScopeViewModel(ProductFormViewModel::class.java)
 
         // db vm init
         identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
@@ -88,7 +84,6 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     override fun initView() {
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_edit_form) as NavHostFragment).navController
-
         loadEntityData()
     }
 
@@ -101,6 +96,16 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                     withContext(Dispatchers.IO){
                         identityInfoViewModel.readEntity(parentIndex)
                     }
+
+                    // tag color init
+                    val context:Context = requireContext()
+                    val colorHex:String = it.tagColor
+                    val mTagColor:Int = UIManager.getColor(context, colorHex)
+                    val mTxtColor:Int = UIManager.getContrastingTextColor(context, colorHex)
+                    mBinding.setVariable(BR.tagColor, mTagColor)
+                    mBinding.setVariable(BR.txtColor, mTxtColor)
+                    mBinding.notifyChange()
+
                     // type...
                     when(it.typeIdx){
                         0 -> { // Account Info
@@ -108,7 +113,7 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                             withContext(Dispatchers.IO){
                                 entity = accountInfoViewModel.readExtraEntity(parentIndex)
                             }
-                            mBinding.spInfoType.setSelection(0)
+                            navController.navigate(R.id.accountFormFragment)
                             accountFormViewModel.initVariables(entity)
                             accountFormViewModel.setUpdateStatus(true)
                         }
@@ -117,13 +122,13 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
                             withContext(Dispatchers.IO){
                                 entity = productKeyViewModel.readExtraEntity(parentIndex)
                             }
-                            mBinding.spInfoType.setSelection(1)
+                            navController.navigate(R.id.productFormFragment)
                             productFormViewModel.initVariables(entity)
                             productFormViewModel.setUpdateStatus(true)
                         }
                     }
                 }
-            }else {
+            } else {
                 Toast.makeText(requireContext(), "로딩 실패", Toast.LENGTH_SHORT).show()
             }
         }
@@ -174,6 +179,12 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
             Timber.i("[EDIT] parent entity : %s", iInfo)
             accountInfoViewModel.editEntity(aInfo)
             Timber.i("[EDIT] child entity : %s", aInfo)
+
+            // 변화 기록
+            infoItemViewModel.setIdAccountInfo(item)
+            val newItem:IdentityInfo = identityInfoViewModel.readEntity(iInfo.infoId)
+            val newDisplayItem:DisplayAccountInfo = getDisplayAccountInfo(context, newItem)
+            infoItemViewModel.setDisplayAccountInfo(newDisplayItem)
 
             withContext(Dispatchers.Main){
                 Toast.makeText(
@@ -228,6 +239,12 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
             identityInfoViewModel.editEntity(iInfo)
             productKeyViewModel.editEntity(pInfo)
 
+            // 변화 기록
+            infoItemViewModel.setIdProductKey(item)
+            val newItem:IdentityInfo = identityInfoViewModel.readEntity(iInfo.infoId)
+            val newDisplayItem:DisplayAccountInfo = getDisplayAccountInfo(context, newItem)
+            infoItemViewModel.setDisplayAccountInfo(newDisplayItem)
+
             withContext(Dispatchers.Main){
                 Toast.makeText(
                     requireContext(),
@@ -244,8 +261,8 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     override fun onViewClick(view: View) {
         when(view.id){
             R.id.btn_edit_account -> {
-                val sIdx:Int = mBinding.spInfoType.selectedItemPosition
-                when(sIdx){
+                val typeIdx:Int = infoItemViewModel.mDisplayAccountInfo.value?.typeIdx?:return;
+                when(typeIdx){
                     0 -> {
                         editUserAccountTask()
                     }
@@ -260,24 +277,4 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         }
     }
 
-    override fun onItemSelected(selectedItem: String?, position: Int) {
-        when(position){
-            0 -> {
-                navController.navigate(R.id.accountFormFragment)
-                accountFormViewModel.setUpdateStatus(true)
-            }
-            1 -> {
-                navController.navigate(R.id.productFormFragment)
-                productFormViewModel.setUpdateStatus(true)
-            }
-        }
-    }
-
-    override fun onRefresh() {
-        lifecycleScope.launch {
-            onResume()
-            delay(300)
-            mBinding.swiperEditAccount.isRefreshing = false
-        }
-    }
 }

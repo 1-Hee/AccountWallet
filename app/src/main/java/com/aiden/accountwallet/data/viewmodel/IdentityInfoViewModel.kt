@@ -37,7 +37,7 @@ class IdentityInfoViewModel @Inject constructor(
     }
 
     override suspend fun readEntity(entityId: Long): IdentityInfo {
-        return IdentityInfo(fkUserId = -1);
+        return repository.readEntity(entityId)
     }
 
     suspend fun getIdentityInfoCnt():Long {
