@@ -2,7 +2,6 @@ package com.aiden.accountwallet.base.ui
 
 import android.graphics.Color
 import android.os.Build
-import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.view.WindowInsets
@@ -20,11 +19,6 @@ abstract class BaseActivity<D:ViewDataBinding> : DataBindingActivity<D>() {
     // Viewmodel Provider 정의
     private var mApplicationProvider:ViewModelProvider? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Timber.plant(Timber.DebugTree())
-    }
-
     /**
      * Application 간 사용되는 ViewModel Provider
      * @param modelClass
@@ -33,7 +27,7 @@ abstract class BaseActivity<D:ViewDataBinding> : DataBindingActivity<D>() {
      */
     protected fun <T: ViewModel> getApplicationScopeViewModel(@NonNull modelClass:Class<T>):T{
         if(mApplicationProvider == null){
-            mApplicationProvider = ViewModelProvider(this.application as BaseApplication)
+            mApplicationProvider = ViewModelProvider(this.application as AppApplication)
         }
         return mApplicationProvider!![modelClass]
     }

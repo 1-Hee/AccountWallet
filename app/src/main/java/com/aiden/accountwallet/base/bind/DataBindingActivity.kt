@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 abstract class DataBindingActivity<D:ViewDataBinding>:AppCompatActivity() {

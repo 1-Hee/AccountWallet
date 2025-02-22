@@ -5,28 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.ui.BaseActivity
-import com.aiden.accountwallet.data.model.UserInfo
-import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
-
 
     // variables
     // 세팅 액티비티 팝업용 런처
