@@ -6,8 +6,9 @@ import com.aiden.accountwallet.data.dao.AccountInfoDao
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import timber.log.Timber
+import javax.inject.Inject
 
-class AccountInfoRepository(
+class AccountInfoRepository @Inject constructor(
     private val accountInfoDao: AccountInfoDao
 ) : BaseRoomRepository<AccountInfo>(), ExtraEntityHandler<IdAccountInfo> {
 

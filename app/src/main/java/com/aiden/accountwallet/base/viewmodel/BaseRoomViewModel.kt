@@ -1,16 +1,13 @@
 package com.aiden.accountwallet.base.viewmodel
 
-import android.app.Application
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import timber.log.Timber
 
-abstract class BaseRoomViewModel<T>(
-    application: Application
-) : AndroidViewModel(application) {
+abstract class BaseRoomViewModel<T> : ViewModel() {
 
     abstract val repository: BaseRoomRepository<T>
 

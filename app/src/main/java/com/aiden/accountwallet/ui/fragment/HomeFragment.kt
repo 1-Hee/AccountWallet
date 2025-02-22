@@ -45,13 +45,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(),
     }
 
     override fun initViewModel() {
-        val factory = ApplicationFactory(requireActivity().application)
-        userInfoViewModel = getFragmentScopeViewModel(
-            UserInfoViewModel::class.java, factory
-        )
-        identityInfoViewModel = getFragmentScopeViewModel(
-            IdentityInfoViewModel::class.java, factory
-        )
+        userInfoViewModel = getApplicationScopeViewModel(UserInfoViewModel::class.java)
+        identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
     }
 
     override fun initView() {

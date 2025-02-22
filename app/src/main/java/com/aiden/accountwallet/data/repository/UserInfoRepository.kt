@@ -4,8 +4,9 @@ import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.UserInfoDao
 import com.aiden.accountwallet.data.model.UserInfo
 import timber.log.Timber
+import javax.inject.Inject
 
-class UserInfoRepository(
+class UserInfoRepository @Inject constructor(
     private val userInfoDao: UserInfoDao
 ) : BaseRoomRepository<UserInfo>() {
 

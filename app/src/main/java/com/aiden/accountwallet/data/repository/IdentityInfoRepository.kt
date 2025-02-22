@@ -4,10 +4,10 @@ import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
 import com.aiden.accountwallet.data.model.IdentityInfo
 import timber.log.Timber
-import kotlin.math.ceil
+import javax.inject.Inject
 
-class IdentityInfoRepository(
-    private val identityInfoDao : IdentityInfoDao
+class IdentityInfoRepository @Inject constructor(
+    private val identityInfoDao: IdentityInfoDao
 ) : BaseRoomRepository<IdentityInfo>() {
 
     // Create

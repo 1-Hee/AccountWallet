@@ -146,7 +146,6 @@ dependencies {
     // View Model과 같은 클래스의 의존성 주입을 위한 라이브러리 (Hilt)
     // 코드 생성을 간편히 관리해줌, MVVM 디자인 패턴에 잘 어울림.
     // Room 과 궁합이 좋아보여서 도입.
-
     val hlit_version = "2.51.1"
     implementation("com.google.dagger:hilt-android:$hlit_version")
     kapt("com.google.dagger:hilt-android-compiler:$hlit_version")

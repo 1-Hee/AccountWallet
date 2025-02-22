@@ -1,7 +1,6 @@
 package com.aiden.accountwallet.ui.fragment
 
 import android.content.Context
-import android.provider.DocumentsContract.Root
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -72,16 +71,9 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         productFormViewModel = getApplicationScopeViewModel(ProductFormViewModel::class.java)
 
         // db model init
-        val factory = ApplicationFactory(requireActivity().application)
-        identityInfoViewModel = getFragmentScopeViewModel(
-            IdentityInfoViewModel::class.java, factory
-        )
-        accountInfoViewModel = getFragmentScopeViewModel(
-            AccountInfoViewModel::class.java, factory
-        )
-        productKeyViewModel = getFragmentScopeViewModel(
-            ProductKeyViewModel::class.java, factory
-        )
+        identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
+        accountInfoViewModel = getApplicationScopeViewModel(AccountInfoViewModel::class.java)
+        productKeyViewModel = getApplicationScopeViewModel(ProductKeyViewModel::class.java)
     }
 
     override fun initView() {

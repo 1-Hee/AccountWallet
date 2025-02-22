@@ -1,34 +1,26 @@
 package com.aiden.accountwallet.data.viewmodel
 
-import android.app.Application
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
+import com.aiden.accountwallet.base.repository.ExtraEntityHandler
 import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
-import com.aiden.accountwallet.data.db.AppDataBase
+import com.aiden.accountwallet.base.viewmodel.SubEntityHandler
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.repository.AccountInfoRepository
-import com.aiden.accountwallet.base.repository.BaseRoomRepository
-import com.aiden.accountwallet.base.repository.ExtraEntityHandler
-import com.aiden.accountwallet.base.viewmodel.ExtraViewModel
 import com.aiden.accountwallet.util.RoomTool.checkInstance
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class AccountInfoViewModel (
-    application: Application
-) :  BaseRoomViewModel<AccountInfo>(application), ExtraViewModel<IdAccountInfo>  {
+@HiltViewModel
+class AccountInfoViewModel @Inject constructor(
+    override val repository:AccountInfoRepository
+) :  BaseRoomViewModel<AccountInfo>(), SubEntityHandler<IdAccountInfo> {
 
-    // db init
-    override val repository: BaseRoomRepository<AccountInfo>
-    init {
-        val accountInfoDao = AppDataBase
-            .getInstance(application.applicationContext)
-            .getAccountInfoDao()
-        repository = AccountInfoRepository(accountInfoDao)
-    }
 
     // * ----------------------------------------
     // *        Variables

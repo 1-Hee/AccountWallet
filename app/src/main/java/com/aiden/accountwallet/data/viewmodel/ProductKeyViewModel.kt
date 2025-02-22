@@ -1,34 +1,25 @@
 package com.aiden.accountwallet.data.viewmodel
 
-import android.app.Application
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
 import androidx.lifecycle.viewModelScope
-import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
-import com.aiden.accountwallet.data.db.AppDataBase
-import com.aiden.accountwallet.data.model.ProductKey
-import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.base.repository.ExtraEntityHandler
-import com.aiden.accountwallet.base.viewmodel.ExtraViewModel
+import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
+import com.aiden.accountwallet.base.viewmodel.SubEntityHandler
 import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.repository.ProductKeyRepository
 import com.aiden.accountwallet.util.RoomTool.checkInstance
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class ProductKeyViewModel (
-    application: Application
-) :  BaseRoomViewModel<ProductKey>(application), ExtraViewModel<IdProductKey> {
-
-    // db init
-    override val repository: BaseRoomRepository<ProductKey>
-    init {
-        val productKeyDao = AppDataBase
-            .getInstance(application.applicationContext)
-            .getProductKeyDao()
-        repository = ProductKeyRepository(productKeyDao)
-    }
+@HiltViewModel
+class ProductKeyViewModel @Inject constructor (
+    override val repository: ProductKeyRepository
+) :  BaseRoomViewModel<ProductKey>(), SubEntityHandler<IdProductKey> {
 
     // * ----------------------------------------
     // *        Variables

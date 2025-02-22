@@ -23,6 +23,7 @@ abstract class BaseFragment<D:ViewDataBinding>: DataBindingFragment<D>() {
     }
 
     // ViewModel을 Factory를 통해 Provider를 얻어야 할 경우
+    // 지우기!
     protected fun<T:ViewModel> getFragmentScopeViewModel(modelClass: Class<T>, factory:ViewModelProvider.NewInstanceFactory):T{
         if(mFragmentProvider == null){
             mFragmentProvider = ViewModelProvider(this, factory)

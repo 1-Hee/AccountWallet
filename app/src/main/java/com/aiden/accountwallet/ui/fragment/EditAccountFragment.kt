@@ -80,16 +80,9 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
         )
 
         // db vm init
-        val factory = ApplicationFactory(requireActivity().application)
-        identityInfoViewModel = getFragmentScopeViewModel(
-            IdentityInfoViewModel::class.java, factory
-        )
-        accountInfoViewModel = getFragmentScopeViewModel(
-            AccountInfoViewModel::class.java, factory
-        )
-        productKeyViewModel = getFragmentScopeViewModel(
-            ProductKeyViewModel::class.java, factory
-        )
+        identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
+        accountInfoViewModel = getApplicationScopeViewModel(AccountInfoViewModel::class.java)
+        productKeyViewModel = getApplicationScopeViewModel(ProductKeyViewModel::class.java)
     }
 
     override fun initView() {

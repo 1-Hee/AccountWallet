@@ -38,10 +38,7 @@ class UserProfileDialog(
             UserProfileViewModel::class.java
         )
         userProfileViewModel.setUserProfile(this.userProfile)
-        val factory = ApplicationFactory(requireActivity().application)
-        userInfoViewModel = getDialogScopeViewModel(
-            UserInfoViewModel::class.java, factory
-        )
+        userInfoViewModel = getApplicationScopeViewModel(UserInfoViewModel::class.java)
     }
 
     override fun initView() {

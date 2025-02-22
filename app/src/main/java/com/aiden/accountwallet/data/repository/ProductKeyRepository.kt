@@ -6,8 +6,9 @@ import com.aiden.accountwallet.data.dao.ProductKeyDao
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
 import timber.log.Timber
+import javax.inject.Inject
 
-class ProductKeyRepository(
+class ProductKeyRepository @Inject constructor(
     private val productKeyDao : ProductKeyDao
 ) : BaseRoomRepository<ProductKey>(), ExtraEntityHandler<IdProductKey> {
 

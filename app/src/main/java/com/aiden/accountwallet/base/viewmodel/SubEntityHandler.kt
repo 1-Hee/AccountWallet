@@ -3,7 +3,7 @@ package com.aiden.accountwallet.base.viewmodel
 import androidx.databinding.ObservableArrayList
 import androidx.databinding.ObservableField
 
-interface ExtraViewModel<T> {
+interface SubEntityHandler<T> {
 
     // * ----------------------------------------
     // *        Variables

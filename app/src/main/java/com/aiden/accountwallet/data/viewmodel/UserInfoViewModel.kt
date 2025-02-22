@@ -1,28 +1,19 @@
 package com.aiden.accountwallet.data.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.viewModelScope
 import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
-import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.model.UserInfo
-import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.repository.UserInfoRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
-class UserInfoViewModel(
-    application: Application
-) : BaseRoomViewModel<UserInfo>(application) {
-
-    override val repository: BaseRoomRepository<UserInfo>
-    // db init
-    init {
-        val userInfoDao = AppDataBase
-            .getInstance(application.applicationContext)
-            .getUserInfoDao()
-        repository = UserInfoRepository(userInfoDao)
-    }
+@HiltViewModel
+class UserInfoViewModel @Inject constructor(
+    override val repository: UserInfoRepository
+) : BaseRoomViewModel<UserInfo>() {
 
     // * ----------------------------------------
     // *        Sync Task API

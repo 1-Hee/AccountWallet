@@ -1,7 +1,6 @@
 package com.aiden.accountwallet.ui.fragment
 
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
@@ -14,15 +13,14 @@ import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
-import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
-import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.text.SimpleDateFormat
+
 
 class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     ViewClickListener, ItemClickListener<DisplayAccountInfo> {
@@ -51,13 +49,14 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     }
 
     override fun initViewModel() {
-        val factory = ApplicationFactory(requireActivity().application)
-        identityInfoViewModel = getFragmentScopeViewModel(
-            IdentityInfoViewModel::class.java, factory
+        identityInfoViewModel = getApplicationScopeViewModel(
+            IdentityInfoViewModel::class.java
         )
+
         infoItemViewModel = getApplicationScopeViewModel(
             InfoItemViewModel::class.java
         )
+
     }
 
     private fun getTagInfo(typeIdx:Int, tagColor: String):TagInfo{
