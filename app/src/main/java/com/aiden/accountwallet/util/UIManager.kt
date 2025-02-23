@@ -63,7 +63,7 @@ object UIManager {
         val luminance = (0.299 * r + 0.587 * g + 0.114 * b)
 
         // 밝으면 검은색(#000000), 어두우면 흰색(#FFFFFF)
-        val colorBlack:Int = context.getColor(R.color.black)
+        val colorBlack:Int = context.getColor(R.color.mono800)
         val colorWhite:Int = context.getColor(R.color.white)
         return if (luminance >= 128) colorBlack else colorWhite
     }

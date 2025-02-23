@@ -74,6 +74,9 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
         accountInfoViewModel = getApplicationScopeViewModel(AccountInfoViewModel::class.java)
         productKeyViewModel = getApplicationScopeViewModel(ProductKeyViewModel::class.java)
+
+        accountFormViewModel.initVariables()
+        productFormViewModel.initVariables()
     }
 
     override fun initView() {

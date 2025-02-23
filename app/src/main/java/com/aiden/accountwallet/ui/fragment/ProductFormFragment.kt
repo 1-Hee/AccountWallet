@@ -56,7 +56,11 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
                 productFormViewModel.setUpdateStatus(false)
             }
         }
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // productFormViewModel.initVariables()
     }
 
     private fun notifyAccountInfo() {

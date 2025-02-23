@@ -28,7 +28,7 @@ class StaticAdapter {
         fun setStorageAdapter(
             recyclerView: RecyclerView,
             displayAccountList:List<DisplayAccountInfo>,
-            itemClickListener: ItemClickListener<DisplayAccountInfo>
+            itemClickListener: ItemClickListener<DisplayAccountInfo>?
         ){
             val llm = LinearLayoutManager(
                 recyclerView.context,
@@ -50,13 +50,15 @@ class StaticAdapter {
                     holder: RecyclerView.ViewHolder
                 ) {
                     binding.displayAccountInfo = item
-                    val colorHex = item.tagColor
+                    val colorHex:String = item.tagColor
                     val context:Context = recyclerView.context
-                    val color:Int = UIManager.getColor(context, colorHex)
+                    val tagColor:Int = UIManager.getColor(context, colorHex)
+                    val txtColor:Int = UIManager.getContrastingTextColor(context, colorHex)
+                    binding.setVariable(BR.tagColor, tagColor)
+                    binding.setVariable(BR.txtColor, txtColor)
                     binding.mcvAccountInfo.setOnClickListener { v ->
                         itemClickListener?.onItemClick(v, item)
                     }
-                    binding.mcvTypeTag.setBackgroundColor(color)
                     binding.notifyChange()
                 }
 
