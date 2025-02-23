@@ -1,8 +1,5 @@
 package com.aiden.accountwallet.base.adapter
 
-import android.content.Context
-import android.graphics.Color
-import android.widget.EditText
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,62 +7,14 @@ import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ViewClickListener
-import com.aiden.accountwallet.base.listener.ItemClickListener
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
-import com.aiden.accountwallet.data.vo.DisplayAccountInfo
-import com.aiden.accountwallet.databinding.ItemAccountInfoBinding
 import com.aiden.accountwallet.databinding.ItemPermissionBinding
 import com.aiden.accountwallet.databinding.ItemSettingBinding
-import com.aiden.accountwallet.util.UIManager
 
 class StaticAdapter {
 
     companion object {
-
-        @JvmStatic
-        @BindingAdapter(value = ["displayAccountList", "itemClickListener"], requireAll = true)
-        fun setStorageAdapter(
-            recyclerView: RecyclerView,
-            displayAccountList:List<DisplayAccountInfo>,
-            itemClickListener: ItemClickListener<DisplayAccountInfo>?
-        ){
-            val llm = LinearLayoutManager(
-                recyclerView.context,
-                RecyclerView.VERTICAL,
-                false
-            );
-
-            recyclerView.layoutManager = llm
-            val adapter = object : BaseDataBindingAdapter<
-                    DisplayAccountInfo, ItemAccountInfoBinding>(recyclerView.context){
-                override fun getDataBindingConfig(): DataBindingConfig {
-                    return DataBindingConfig(R.layout.item_account_info)
-                }
-
-                override fun onBindItem(
-                    binding: ItemAccountInfoBinding,
-                    position: Int,
-                    item: DisplayAccountInfo,
-                    holder: RecyclerView.ViewHolder
-                ) {
-                    binding.displayAccountInfo = item
-                    val colorHex:String = item.tagColor
-                    val context:Context = recyclerView.context
-                    val tagColor:Int = UIManager.getColor(context, colorHex)
-                    val txtColor:Int = UIManager.getContrastingTextColor(context, colorHex)
-                    binding.setVariable(BR.tagColor, tagColor)
-                    binding.setVariable(BR.txtColor, txtColor)
-                    binding.mcvAccountInfo.setOnClickListener { v ->
-                        itemClickListener?.onItemClick(v, item)
-                    }
-                    binding.notifyChange()
-                }
-
-            }
-            adapter.setItemList(displayAccountList)
-            recyclerView.adapter = adapter
-        }
 
         // User Permissions ....
         @JvmStatic

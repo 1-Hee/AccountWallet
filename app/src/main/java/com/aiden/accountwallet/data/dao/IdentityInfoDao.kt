@@ -1,5 +1,7 @@
 package com.aiden.accountwallet.data.dao
 
+import androidx.paging.PagingSource
+import androidx.paging.PagingSource.LoadResult.Page
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -21,6 +23,9 @@ interface IdentityInfoDao {
     // Read
     @Query("SELECT * FROM identity_info WHERE status = 0")
     fun readIdentityInfoList(): List<IdentityInfo>
+
+    @Query("SELECT * FROM identity_info WHERE status = 0 ORDER BY info_id DESC LIMIT :limit OFFSET :offset")
+    suspend fun readPageIdentityInfoList(limit: Int, offset: Int): List<IdentityInfo>
 
     @Query("SELECT * FROM identity_info WHERE date(created_at) = date(:mDate)")
     fun readIdentityInfoListByDate(mDate: Date): List<IdentityInfo>

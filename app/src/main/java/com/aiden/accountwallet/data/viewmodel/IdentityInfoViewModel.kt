@@ -1,11 +1,17 @@
 package com.aiden.accountwallet.data.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.repository.IdentityInfoRepository
+import com.aiden.accountwallet.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -35,6 +41,12 @@ class IdentityInfoViewModel @Inject constructor(
         this@IdentityInfoViewModel.addEntityList(list)
         return list
     }
+
+    fun readPageEntityList(): Flow<PagingData<IdentityInfo>> {
+        return repository.readPageEntityItems()
+            .cachedIn(viewModelScope)
+    }
+
 
     override suspend fun readEntity(entityId: Long): IdentityInfo {
         return repository.readEntity(entityId)

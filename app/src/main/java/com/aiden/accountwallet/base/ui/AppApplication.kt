@@ -1,5 +1,6 @@
 package com.aiden.accountwallet.base.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.multidex.BuildConfig
@@ -14,9 +15,7 @@ class AppApplication(
 
     override fun onCreate() {
         super.onCreate()
-        if(BuildConfig.DEBUG){
-            Timber.plant(Timber.DebugTree())
-        }
+        Log.i(this::class.simpleName, "${this.javaClass.simpleName} init!!!!!!!!!!")
     }
 
     override val viewModelStore: ViewModelStore

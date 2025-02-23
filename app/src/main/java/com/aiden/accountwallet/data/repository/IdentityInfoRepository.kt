@@ -1,9 +1,14 @@
 package com.aiden.accountwallet.data.repository
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
 import com.aiden.accountwallet.data.model.IdentityInfo
-import timber.log.Timber
+import com.aiden.accountwallet.ui.adapter.IdentityAdapter
+import com.aiden.accountwallet.util.Logger
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class IdentityInfoRepository @Inject constructor(
@@ -12,49 +17,58 @@ class IdentityInfoRepository @Inject constructor(
 
     // Create
     override suspend fun addEntity(entity: IdentityInfo): Long {
-        Timber.d("repo addEntity.. %s", entity)
+        Logger.d("repo addEntity.. %s", entity)
         return this.identityInfoDao.addIdentityInfo(entity)
     }
 
     // Read
     override suspend fun readEntityList(): List<IdentityInfo> {
         val list:List<IdentityInfo> = this.identityInfoDao.readIdentityInfoList()
-        Timber.d("repo readEntityList.. %s", list)
+        Logger.d("repo readEntityList.. %s", list)
         return list
     }
 
+
+    fun readPageEntityItems(): Flow<PagingData<IdentityInfo>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { IdentityAdapter.IdentityPageSource(identityInfoDao) }
+        ).flow
+    }
+
+
     override suspend fun readEntity(entityId: Long): IdentityInfo {
-        Timber.d("repo readEntity id : %d", entityId)
+        Logger.d("repo readEntity id : %d", entityId)
         val entity:IdentityInfo = this.identityInfoDao.readIdentityInfoById(entityId)
-        Timber.d("repo readEntity : %s", entity)
+        Logger.d("repo readEntity : %s", entity)
         return entity
     }
 
     suspend fun getIdentityInfoCnt():Long {
         val cnt:Long = identityInfoDao.getIdentityInfoCnt()
-        Timber.d("repo getIdentityInfoCnt : %d", cnt)
+        Logger.d("repo getIdentityInfoCnt : %d", cnt)
         return cnt
     }
 
     // Update
     override suspend fun modifyEntity(entity: IdentityInfo) {
-        Timber.d("repo modifyEntity : %s", entity)
+        Logger.d("repo modifyEntity : %s", entity)
         this.identityInfoDao.modifyIdentityInfo(entity)
     }
 
     // Delete
     override suspend fun deleteEntity(entityId: Long) {
-        Timber.d("repo deleteEntity (id) : %s", entityId)
+        Logger.d("repo deleteEntity (id) : %s", entityId)
         return this.identityInfoDao.removeIdentityInfo(entityId)
     }
 
     override suspend fun deleteEntity(entity: IdentityInfo) {
-        Timber.d("repo deleteEntity : %s", entity)
+        Logger.d("repo deleteEntity : %s", entity)
         return identityInfoDao.removeIdentityInfo(entity.infoId)
     }
 
     override suspend fun deleteAll() {
-        Timber.d("repo deleteAll")
+        Logger.d("repo deleteAll")
         identityInfoDao.disableAll()
     }
 

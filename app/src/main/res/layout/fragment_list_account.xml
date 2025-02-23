@@ -10,12 +10,6 @@
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
-        <variable
-            name="itemClick"
-            type="com.aiden.accountwallet.base.listener.ItemClickListener&lt;com.aiden.accountwallet.data.vo.DisplayAccountInfo>" />
-        <variable
-            name="displayAccountList"
-            type="java.util.List&lt;com.aiden.accountwallet.data.vo.DisplayAccountInfo>" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -70,8 +64,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:displayAccountList="@{displayAccountList}"
-                    app:itemClickListener="@{itemClick}"
                     android:layout_marginVertical="8dp"
                     />
             </androidx.appcompat.widget.LinearLayoutCompat>
