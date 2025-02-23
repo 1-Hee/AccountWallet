@@ -36,7 +36,6 @@ abstract class DataBindDialog<D:ViewDataBinding>:DialogFragment() {
         initViewModel()
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

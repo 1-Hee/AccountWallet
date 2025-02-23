@@ -22,15 +22,6 @@ abstract class BaseFragment<D:ViewDataBinding>: DataBindingFragment<D>() {
         return mFragmentProvider!![modelCLass]
     }
 
-    // ViewModel을 Factory를 통해 Provider를 얻어야 할 경우
-    // 지우기!
-    protected fun<T:ViewModel> getFragmentScopeViewModel(modelClass: Class<T>, factory:ViewModelProvider.NewInstanceFactory):T{
-        if(mFragmentProvider == null){
-            mFragmentProvider = ViewModelProvider(this, factory)
-        }
-        return mFragmentProvider!![modelClass]
-    }
-
     // Application 수준의 Provider
     protected fun<T:ViewModel> getApplicationScopeViewModel(modelClass: Class<T>):T{
         if(mApplicationProvider==null){
@@ -40,7 +31,10 @@ abstract class BaseFragment<D:ViewDataBinding>: DataBindingFragment<D>() {
     }
 
     // ViewModel 중 팩토리를 통해서 생성해야 할 경우 사용할 수 있도록 메서드 오버로딩
-    protected fun<T:ViewModel> getApplicationScopeViewModel(modelClass: Class<T>, factory: ViewModelProvider.NewInstanceFactory):T{
+    protected fun<T:ViewModel> getApplicationScopeViewModel(
+        modelClass: Class<T>,
+        factory: ViewModelProvider.NewInstanceFactory
+    ) : T {
         if(mApplicationProvider == null){
             mApplicationProvider = ViewModelProvider(requireActivity(), factory)
         }

@@ -1,13 +1,12 @@
 package com.aiden.accountwallet.util
 
 import android.content.Context
-import android.nfc.Tag
 import com.aiden.accountwallet.R
+import com.aiden.accountwallet.data.dto.TagInfo
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
-import com.aiden.accountwallet.ui.fragment.ListAccountFragment.TagInfo
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT

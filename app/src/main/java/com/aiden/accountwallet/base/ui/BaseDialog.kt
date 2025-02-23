@@ -20,14 +20,6 @@ abstract class BaseDialog<D:ViewDataBinding>: DataBindDialog<D>() {
         return mDialogProvider!![modelClass]
     }
 
-    // ViewModel 중 팩토리를 통해서 생성해야 할 경우 사용할 수 있도록 메서드 오버로딩
-    protected fun<T: ViewModel> getDialogScopeViewModel(modelClass: Class<T>, factory:ViewModelProvider.Factory):T{
-        if(mDialogProvider == null){
-            mDialogProvider = ViewModelProvider(this, factory)
-        }
-        return mDialogProvider!![modelClass]
-    }
-
     // Application 수준의 Provider
     protected fun<T: ViewModel> getApplicationScopeViewModel(modelClass: Class<T>):T{
         if(mApplicationProvider == null) {

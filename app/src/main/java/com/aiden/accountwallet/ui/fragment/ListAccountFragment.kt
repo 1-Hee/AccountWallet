@@ -6,7 +6,6 @@ import androidx.lifecycle.lifecycleScope
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ItemClickListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
@@ -16,21 +15,12 @@ import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.util.RoomTool.getDisplayAccountInfo
-import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
-import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
-import java.text.SimpleDateFormat
 
 
 class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     ViewClickListener, ItemClickListener<DisplayAccountInfo> {
-
-    data class TagInfo(
-        var tagName:String = "",
-        val tagColor:String = "#93534C"
-    )
 
     // vm
     private lateinit var identityInfoViewModel:IdentityInfoViewModel
@@ -58,9 +48,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         infoItemViewModel = getApplicationScopeViewModel(
             InfoItemViewModel::class.java
         )
-
     }
-
 
     override fun initView() {
         val context:Context = requireContext()
@@ -73,8 +61,6 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
             }
             mBinding.setVariable(BR.displayAccountList, mDisplayAccountList)
         }
-
-
     }
 
     override fun onViewClick(view: View) {}
@@ -89,6 +75,5 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
             }
         }
-
     }
 }
