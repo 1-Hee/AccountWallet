@@ -55,7 +55,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
     override fun initViewModel() {
         infoTypeViewModel = getFragmentScopeViewModel(InfoTypeViewModel::class.java)
         // 타입 배열
-        val items = resources.getStringArray(R.array.spinner_info_type)
+        val items:Array<String> = resources.getStringArray(R.array.spinner_info_type)
         // ArrayAdapter에 커스텀 레이아웃 적용
         val adapter:ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
@@ -63,6 +63,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
             items
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
         infoTypeViewModel.initInfoTypes(items, adapter)
         infoTypeViewModel.setCallback(this)
 

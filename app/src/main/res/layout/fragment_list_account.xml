@@ -7,9 +7,19 @@
     >
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
+        <variable
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.ListAccountViewModel" />
+        <variable
+            name="isVisible"
+            type="Boolean" />
+        <variable
+            name="searchWatcher"
+            type="android.text.TextWatcher" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -25,25 +35,108 @@
             android:layout_height="wrap_content"
             >
 
-            <androidx.appcompat.widget.AppCompatEditText
-                android:id="@+id/et_search_account"
-                style="@style/lightTextStyle"
-                android:layout_width="0dp"
-                android:hint="@string/hint_search_account"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_search_account"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@drawable/bg_gray_line"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="12dp"
+                >
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_search"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_search_black"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    />
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_search_account"
+                    style="@style/lightTextStyle"
+                    android:layout_width="0dp"
+                    android:hint="@string/hint_search_account"
+                    android:layout_height="wrap_content"
+                    android:text="@{vm.searchQuery}"
+                    app:addTextChangedListener="@{searchWatcher}"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/iv_search"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="28dp"
+                    android:background="@null"
+                    />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_search_clear"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_cancel_black"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
+                    android:visibility="@{isVisible ? View.VISIBLE : View.GONE}"
+                    />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Space
+                android:id="@+id/sp_search_bar"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                app:layout_constraintTop_toBottomOf="@id/cl_search_account"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_account_only"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/cb_account_only"
-                app:layout_constraintTop_toBottomOf="@id/et_search_account"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sp_search_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/gl_vertical"
+                android:onClick="@{(v)->click.onViewClick(v)}"
+                android:layout_marginEnd="8dp"
                 />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/gl_vertical"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.55"
+                />
+
+            <!-- 정렬 옵션 -->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/sp_search_bar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/gl_vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="4dp"
+                >
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/sp_sort_order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adapter="@{vm.sortOptionAdapter}"
+                    android:onItemSelected="@{vm::onItemSelected}"
+                    />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
         <Space
             android:layout_width="match_parent"

@@ -47,6 +47,11 @@ class IdentityInfoViewModel @Inject constructor(
             .cachedIn(viewModelScope)
     }
 
+    fun readPageQueryEntityList(query:String): Flow<PagingData<IdentityInfo>> {
+        return repository.readPageEntityQueryItems(query)
+            .cachedIn(viewModelScope)
+    }
+
 
     override suspend fun readEntity(entityId: Long): IdentityInfo {
         return repository.readEntity(entityId)

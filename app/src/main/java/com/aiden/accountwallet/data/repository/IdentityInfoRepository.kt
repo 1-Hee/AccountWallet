@@ -36,6 +36,13 @@ class IdentityInfoRepository @Inject constructor(
         ).flow
     }
 
+    fun readPageEntityQueryItems(query:String): Flow<PagingData<IdentityInfo>> {
+        return Pager(
+            config = PagingConfig(pageSize = 10),
+            pagingSourceFactory = { IdentityAdapter.IdentityQueryPageSource(query, identityInfoDao) }
+        ).flow
+    }
+
 
     override suspend fun readEntity(entityId: Long): IdentityInfo {
         Logger.d("repo readEntity id : %d", entityId)

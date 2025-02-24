@@ -24,8 +24,23 @@ interface IdentityInfoDao {
     @Query("SELECT * FROM identity_info WHERE status = 0")
     fun readIdentityInfoList(): List<IdentityInfo>
 
-    @Query("SELECT * FROM identity_info WHERE status = 0 ORDER BY info_id DESC LIMIT :limit OFFSET :offset")
+    @Query("SELECT * FROM identity_info " +
+            "WHERE status = 0 " +
+            "ORDER BY info_id DESC " +
+            "LIMIT :limit OFFSET :offset")
     suspend fun readPageIdentityInfoList(limit: Int, offset: Int): List<IdentityInfo>
+
+    @Query("SELECT * FROM identity_info " +
+            "WHERE status = 0 AND provider_name LIKE '%' || :query || '%' " +
+            "ORDER BY info_id DESC " +
+            "LIMIT :limit OFFSET :offset")
+    suspend fun readPageListByQuery(query:String, limit: Int, offset: Int): List<IdentityInfo>
+
+
+    // 계정 only 적용한 페이징
+
+    // 정렬 옵션 적용한 페이징
+
 
     @Query("SELECT * FROM identity_info WHERE date(created_at) = date(:mDate)")
     fun readIdentityInfoListByDate(mDate: Date): List<IdentityInfo>
