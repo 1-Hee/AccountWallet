@@ -62,13 +62,23 @@
 
     <!-- 정렬 옵션 -->
     <string-array name="arr_sort_option">
-        <item>오름차순</item>
         <item>내림차순</item>
+        <item>오름차순</item>
         <item>사이트 명</item>
         <item>과거순</item>
         <item>최신순</item>
         <item>태그 색상</item>
         <item>정보 유형</item>
+    </string-array>
+
+    <string-array name="key_sort_option">
+        <item>IDDESC</item>
+        <item>IDASC</item>
+        <item>PROVNAME</item>
+        <item>DATEASC</item>
+        <item>DATEDESC</item>
+        <item>TAGCOLOR</item>
+        <item>INFTYPE</item>
     </string-array>
 
     <string-array name="spinner_info_type">

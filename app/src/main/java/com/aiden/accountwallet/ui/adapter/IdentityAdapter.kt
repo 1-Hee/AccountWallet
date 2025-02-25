@@ -95,7 +95,10 @@ class IdentityAdapter(
     }
 
     // Page Source
-    class IdentityPageSource (
+    class QuerySortCheckPageSource (
+        private val query: String?,
+        private val sortType: String?,
+        private val isChecked:Boolean = false,
         private val dao: IdentityInfoDao
     ) : PagingSource<Int, IdentityInfo>() {
 
@@ -107,46 +110,10 @@ class IdentityAdapter(
             Log.d("PagingSource", "Loading page: $page, loadSize: ${params.loadSize}, offset: $offset")
 
             return try {
-                val items = dao.readPageIdentityInfoList(loadSize, offset)
-                Log.d("PagingSource", "Loaded items count: ${items.size}")
-
-                val nextKey = if (items.isEmpty()) null else page + 1
-
-                LoadResult.Page(
-                    data = items,
-                    prevKey = if (page == 0) null else page - 1,
-                    nextKey = nextKey
-                )
-            } catch (e: Exception) {
-                Log.e("PagingSource", "Error loading data", e)
-                LoadResult.Error(e)
-            }
-        }
-
-        override fun getRefreshKey(state: PagingState<Int, IdentityInfo>): Int? {
-            return state.anchorPosition?.let { anchorPosition ->
-                val anchorPage = state.closestPageToPosition(anchorPosition)
-                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
-            }
-        }
-    }
-
-    class IdentityQueryPageSource (
-        private val query:String,
-        private val dao: IdentityInfoDao
-    ) : PagingSource<Int, IdentityInfo>() {
-
-        override suspend fun load(params: LoadParams<Int>): LoadResult<Int, IdentityInfo> {
-            val page = params.key ?: 0  // 첫 페이지는 0으로 설정
-            val loadSize = params.loadSize  // 페이지 크기
-            val offset = page * loadSize
-
-            Log.d("PagingSource", "Loading page: $page, loadSize: ${params.loadSize}, offset: $offset")
-
-            return try {
-                val items:List<IdentityInfo> = dao.readPageListByQuery(query, loadSize, offset)
-                Log.d("PagingSource", "Loaded items count: ${items.size}")
-
+                val items:List<IdentityInfo> = dao
+                    .readPageQuerySortList(
+                        query, sortType, isChecked, loadSize, offset
+                    )
                 val nextKey = if (items.isEmpty()) null else page + 1
 
                 LoadResult.Page(

@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,8 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
     // Adapter
     private lateinit var identityAdapter: IdentityAdapter
+    // Sort List
+    private val sortOptionList:ArrayList<String> = arrayListOf()
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_list_account, BR.vm, listAccountViewModel)
@@ -65,6 +68,10 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         listAccountViewModel.initSortOptions(items, adapter)
         listAccountViewModel.setSortCallback(this)
 
+        // 정렬 쿼리값 init
+        val queryItems:Array<String> = resources.getStringArray(R.array.key_sort_option)
+        sortOptionList.clear()
+        sortOptionList.addAll(queryItems)
     }
 
     override fun initView() {
@@ -75,22 +82,42 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
             layoutManager = LinearLayoutManager(context)
             adapter = identityAdapter
         }
+        // loadIdentityInfoList() // 조건 없이 load
+        mBinding.notifyChange()
+    }
 
+    // load items
+    private fun loadIdentityInfoList(
+        query:String? = null,
+        sortType:String? = null,
+        isChecked:Boolean = false
+    ) {
         lifecycleScope.launch(Dispatchers.IO) {
-            identityInfoViewModel.readPageEntityList().collectLatest { pagingData ->
+            identityInfoViewModel.readPageQuerySortCheckList(
+                query, sortType, isChecked
+            ).collectLatest { pagingData ->
                 withContext(Dispatchers.Main){
                     identityAdapter.submitData(pagingData)
                 }
             }
         }
-
-        mBinding.notifyChange()
     }
 
     override fun onViewClick(view: View) {
         when(view.id){
             R.id.cb_account_only -> {
                 // add filter
+
+                val isChecked:Boolean = (view as CheckBox).isChecked
+                listAccountViewModel.setIsChecked(isChecked)
+
+                val mQuery:String = listAccountViewModel.searchQuery
+                val sortIdx:Int = listAccountViewModel.sortIdx.value ?: 0
+                val sortType:String? = if(sortIdx >= this.sortOptionList.size) null
+                else this.sortOptionList[sortIdx]
+
+                loadIdentityInfoList(mQuery, sortType, isChecked)
+
             }
             R.id.iv_search_clear -> {
                 mBinding.etSearchAccount.setText("")
@@ -120,18 +147,25 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
         mBinding.setVariable(BR.isVisible, mQuery.isNotBlank())
         listAccountViewModel.setSearchQuery(mQuery)
 
-        lifecycleScope.launch(Dispatchers.IO) {
-            identityInfoViewModel.readPageQueryEntityList(mQuery).collectLatest { pagingData ->
-                withContext(Dispatchers.Main){
-                    identityAdapter.submitData(pagingData)
-                }
-            }
-        }
+        val sortIdx:Int = listAccountViewModel.sortIdx.value ?: 0
+        val sortType:String? = if(sortIdx >= this.sortOptionList.size) null
+        else this.sortOptionList[sortIdx]
+        val isChecked:Boolean = listAccountViewModel.isChecked.value?:false
+
+        loadIdentityInfoList(mQuery, sortType, isChecked)
     }
 
     // Sort Callback
     override fun onItemSelected(selectedItem: String?, position: Int) {
-        Toast.makeText(requireContext(), "[$position] 정렬 옵션 : $selectedItem", Toast.LENGTH_SHORT).show()
+        listAccountViewModel.setSortIdx(position)
+
+        val mQuery:String = listAccountViewModel.searchQuery
+        val sortType:String? = if(position >= this.sortOptionList.size) null
+        else this.sortOptionList[position]
+        val isChecked:Boolean = listAccountViewModel.isChecked.value?:false
+
+        loadIdentityInfoList(mQuery, sortType, isChecked)
+        // Toast.makeText(requireContext(), "[$position] 정렬 옵션 : $selectedItem", Toast.LENGTH_SHORT).show()
 
     }
 }

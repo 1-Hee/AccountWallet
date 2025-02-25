@@ -1,7 +1,5 @@
 package com.aiden.accountwallet.data.dao
 
-import androidx.paging.PagingSource
-import androidx.paging.PagingSource.LoadResult.Page
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -24,22 +22,29 @@ interface IdentityInfoDao {
     @Query("SELECT * FROM identity_info WHERE status = 0")
     fun readIdentityInfoList(): List<IdentityInfo>
 
-    @Query("SELECT * FROM identity_info " +
-            "WHERE status = 0 " +
-            "ORDER BY info_id DESC " +
-            "LIMIT :limit OFFSET :offset")
-    suspend fun readPageIdentityInfoList(limit: Int, offset: Int): List<IdentityInfo>
-
-    @Query("SELECT * FROM identity_info " +
-            "WHERE status = 0 AND provider_name LIKE '%' || :query || '%' " +
-            "ORDER BY info_id DESC " +
-            "LIMIT :limit OFFSET :offset")
-    suspend fun readPageListByQuery(query:String, limit: Int, offset: Int): List<IdentityInfo>
-
-
-    // 계정 only 적용한 페이징
-
-    // 정렬 옵션 적용한 페이징
+    // 계정 only 검색
+    // 검색어 필터링
+    // 정렬 유형 적용 및 기본 정렬 설정
+    @Query("""
+        SELECT * FROM identity_info
+        WHERE (status = 0 AND provider_name LIKE '%' || :query || '%') 
+            AND (:isChecked = 0 OR info_type = 0) 
+        ORDER BY 
+            CASE WHEN :sortType = 'IDASC' THEN info_id END ASC,
+            CASE WHEN :sortType = 'PROVNAME' THEN provider_name END ASC,
+            CASE WHEN :sortType = 'DATEASC' THEN created_at END ASC,
+            CASE WHEN :sortType = 'DATEDESC' THEN created_at END DESC,
+            CASE WHEN :sortType = 'TAGCOLOR' THEN tag_color END ASC,
+            CASE WHEN :sortType = 'INFTYPE' THEN info_type END ASC, 
+            info_id DESC
+            LIMIT :limit OFFSET :offset
+    """)
+    suspend fun readPageQuerySortList(
+        query: String?,
+        sortType: String?,
+        isChecked:Boolean,
+        limit: Int, offset: Int
+    ): List<IdentityInfo>
 
 
     @Query("SELECT * FROM identity_info WHERE date(created_at) = date(:mDate)")

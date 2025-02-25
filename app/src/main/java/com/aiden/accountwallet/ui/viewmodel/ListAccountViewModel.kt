@@ -24,8 +24,13 @@ class ListAccountViewModel : ViewModel() {
     private val _sortOption = MutableLiveData("")
     val sortOptionList = ObservableArrayList<String>()
 
+    // 정렬 옵션 어댑터
     var sortOptionAdapter:ArrayAdapter<String>? = null
+    // 정렬 옵션 콜백
     private var sortCallback: SortOptionCallback? = null
+
+    // 정렬 옵션 Live Data
+    val _sortIdx =	MutableLiveData<Int>();
 
 
     // * --------------------------------------------------------
@@ -58,6 +63,10 @@ class ListAccountViewModel : ViewModel() {
         this.sortCallback = callback
     }
 
+    val sortIdx: LiveData<Int> get() = _sortIdx
+    fun setSortIdx(value: Int) {
+        _sortIdx.value = value
+    }
 
     // * ------------------------------------------------
     // *    ViewModel's Callback

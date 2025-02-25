@@ -42,14 +42,15 @@ class IdentityInfoViewModel @Inject constructor(
         return list
     }
 
-    fun readPageEntityList(): Flow<PagingData<IdentityInfo>> {
-        return repository.readPageEntityItems()
-            .cachedIn(viewModelScope)
-    }
-
-    fun readPageQueryEntityList(query:String): Flow<PagingData<IdentityInfo>> {
-        return repository.readPageEntityQueryItems(query)
-            .cachedIn(viewModelScope)
+    // 쿼리 정렬 옵션 적용 레포지토리
+    fun readPageQuerySortCheckList(
+        query: String?,
+        sortType: String?,
+        isChecked:Boolean = false
+    ): Flow<PagingData<IdentityInfo>> {
+        return repository.readPageQuerySortCheckItems(
+            query, sortType, isChecked
+        ).cachedIn(viewModelScope)
     }
 
 

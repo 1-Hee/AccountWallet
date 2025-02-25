@@ -28,18 +28,22 @@ class IdentityInfoRepository @Inject constructor(
         return list
     }
 
-
-    fun readPageEntityItems(): Flow<PagingData<IdentityInfo>> {
+    // 검색어, 정렬, 적용 레포지토리
+    fun readPageQuerySortCheckItems(
+        query: String?,
+        sortType: String?,
+        isChecked:Boolean = false
+    ): Flow<PagingData<IdentityInfo>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { IdentityAdapter.IdentityPageSource(identityInfoDao) }
-        ).flow
-    }
-
-    fun readPageEntityQueryItems(query:String): Flow<PagingData<IdentityInfo>> {
-        return Pager(
-            config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { IdentityAdapter.IdentityQueryPageSource(query, identityInfoDao) }
+            pagingSourceFactory = { IdentityAdapter
+                .QuerySortCheckPageSource(
+                    query,
+                    sortType,
+                    isChecked,
+                    identityInfoDao
+                )
+            }
         ).flow
     }
 
