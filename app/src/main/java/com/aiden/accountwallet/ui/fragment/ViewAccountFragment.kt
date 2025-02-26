@@ -3,6 +3,7 @@ package com.aiden.accountwallet.ui.fragment
 import android.content.Context
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -19,8 +20,10 @@ import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
+import com.aiden.accountwallet.data.vo.DownloadType
 import com.aiden.accountwallet.databinding.FragmentViewAccountBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
+import com.aiden.accountwallet.ui.dialog.DownloadItemDialog
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
@@ -32,7 +35,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
-    ViewClickListener, AlertDialog.OnDialogClickListener {
+    ViewClickListener, AlertDialog.OnDialogClickListener, DownloadItemDialog.DownloadItemCallBack {
 
     // vm
     private lateinit var infoItemViewModel: InfoItemViewModel
@@ -112,12 +115,21 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                 }
             }
         }
+
+
     }
 
     override fun onViewClick(view: View) {
         when(view.id) {
             R.id.btn_edit_account -> {
                 nav().navigate(R.id.editAccountFragment)
+            }
+            R.id.btn_download_data -> {
+                // BottomSheetDialog Pop up
+                val modal = DownloadItemDialog(this)
+                val fragmentManager:FragmentManager = requireActivity().supportFragmentManager
+                modal.show(fragmentManager, modal::class.java.simpleName)
+
             }
             R.id.iv_delete -> {
                 // 삭제 경고창 띄움
@@ -162,5 +174,15 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
 
     override fun onCancel(view: View) {
 
+    }
+
+    override fun onItemSelected(selectedItem: DownloadType, position: Int) {
+        Toast.makeText(
+            requireContext(),
+            "선택 아이템 [${selectedItem.typeIdx}] : ${selectedItem.typeValue}",
+            Toast.LENGTH_SHORT
+        ).show()
+
+        // TODO : Device Checker 참고해서 파일 저장 기능 추가하기
     }
 }

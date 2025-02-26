@@ -86,6 +86,19 @@
         <item>제품 키</item>
     </string-array>
 
+    <array name="icons_download_type">
+        <item>@drawable/ic_text_black</item>
+        <item>@drawable/ic_html_black</item>
+        <item>@drawable/ic_json_black</item>
+    </array>
+
+    <string-array name="items_download_type">
+        <item>텍스트 파일 저장하기</item>
+        <item>HTML 문서 저장하기</item>
+        <item>JSON 파일 저장하기</item>
+    </string-array>
+
+
     <string name="txt_guide_modify_permission"><![CDATA[애플리케이션 정보 > 권한 에서 설정을 변경해주세요]]></string>
     <string name="app_play_store_url">https://play.google.com/store/apps/details?id=kr.co.devicechecker</string>
     <string name="msg_invalid_vending">플레이 스토어로 이동할 수 없습니다.</string>
@@ -118,5 +131,6 @@
     <string name="btn_dialog_cancel">Cancel</string>
     <string name="msg_change_nickname">닉네임이 수정되었습니다 : %s</string>
     <string name="msg_notify_edit_user_info">사용자 정보를 수정합니다...</string>
+    <string name="title_download_type">다운로드 파일 형식</string>
 
 </resources>

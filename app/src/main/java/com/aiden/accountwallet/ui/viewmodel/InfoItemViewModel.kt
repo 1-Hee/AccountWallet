@@ -23,6 +23,11 @@ class InfoItemViewModel : ViewModel() {
     }
 
     // * ------------------------------------------------
+    // *    ViewModel's Getter
+    // * ------------------------------------------------
+
+
+    // * ------------------------------------------------
     // *    ViewModel's Setter
     // * ------------------------------------------------
     fun setDisplayAccountInfo(displayAccountInfo : DisplayAccountInfo){
@@ -36,6 +41,8 @@ class InfoItemViewModel : ViewModel() {
     fun setIdProductKey(idProductKey : IdProductKey){
         this.mIdProductKey.set(idProductKey)
     }
+
+
 
 
 
