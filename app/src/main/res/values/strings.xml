@@ -99,6 +99,33 @@
     </string-array>
 
 
+    <!-- string 저장을 위한 프리셋 리스트 -->
+    <string-array name="items_identity_header">
+        <item>Information Type</item>
+        <item>Provider Name</item>
+        <item>Create At</item>
+        <item>Latest Update</item>
+        <item>User Memo</item>
+        <item>Tag Color</item>
+    </string-array>
+
+    <string-array name="items_account_header">
+        <item>User Account</item>
+        <item>User Password</item>
+        <item>Account Create At</item>
+        <item>Official URL</item>
+    </string-array>
+
+    <string-array name="items_product_header">
+        <item>Product Key</item>
+        <item>Official URL</item>
+    </string-array>
+
+    <string name="txt_h_save_file">파일 저장 완료 :</string>
+    <string name="txt_h_fail_save">파일 생성 중 오류가 발생하였습니다.</string>
+    <string name="txt_error_log_result">%1$s\nError details saved in %2$s</string>
+    <string name="txt_error_log_create">%1$s\nFailed to save error details</string>
+
     <string name="txt_guide_modify_permission"><![CDATA[애플리케이션 정보 > 권한 에서 설정을 변경해주세요]]></string>
     <string name="app_play_store_url">https://play.google.com/store/apps/details?id=kr.co.devicechecker</string>
     <string name="msg_invalid_vending">플레이 스토어로 이동할 수 없습니다.</string>

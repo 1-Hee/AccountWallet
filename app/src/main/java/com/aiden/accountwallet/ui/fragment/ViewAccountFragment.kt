@@ -14,8 +14,10 @@ import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.dto.AlertInfo
+import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
@@ -27,6 +29,8 @@ import com.aiden.accountwallet.ui.dialog.DownloadItemDialog
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.FileManager
+import com.aiden.accountwallet.util.RoomTool
 import com.aiden.accountwallet.util.UIManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
@@ -182,6 +186,42 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
             "선택 아이템 [${selectedItem.typeIdx}] : ${selectedItem.typeValue}",
             Toast.LENGTH_SHORT
         ).show()
+
+        val context:Context = requireContext()
+        val mBaseInfo:IdentityInfo
+        val infoList:List<Info> = when(selectedItem.typeIdx){
+            0 -> { // acount
+                val item:IdAccountInfo = infoItemViewModel.mIdAccountInfo.get()?:return
+                mBaseInfo = item.baseInfo
+                RoomTool.parseIdAccountInfo(context, item)
+            }
+            1 -> { // product
+                val item:IdProductKey = infoItemViewModel.mIdProductKey.get()?:return
+                mBaseInfo = item.baseInfo
+                RoomTool.parseIdProductKey(context, item)
+            }
+            else -> return
+        }
+
+        when(position) { // 저장 유형
+            0 -> { // text
+                val sb = StringBuilder()
+                infoList.forEach { item ->
+                    sb.append("${item.name}\t\t: ${item.value}\n")
+                }
+                FileManager.saveFile(context, mBaseInfo.providerName, sb.toString())
+            }
+            1 ->  { // html
+
+                return
+            }
+            2 -> { // json
+
+                return
+            }
+
+        }
+
 
         // TODO : Device Checker 참고해서 파일 저장 기능 추가하기
     }
