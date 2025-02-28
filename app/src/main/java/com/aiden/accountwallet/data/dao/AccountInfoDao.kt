@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdentityInfo
+import java.util.Date
 
 @Dao
 interface AccountInfoDao {
@@ -67,6 +68,21 @@ interface AccountInfoDao {
 
 
     // Update
+    @Query("""
+        UPDATE account_info SET
+        fk_info_id = :fkInfoId,
+        user_account = :userAccount,
+        user_password = :userPassword,
+        ac_created_at = :acCreatedAt,
+        official_url = :officialUrl
+        WHERE account_id = :accountId
+    """)
+    fun modifyAccountInfo(
+        accountId:Long, fkInfoId:Long?,
+        userAccount:String, userPassword: String,
+        acCreatedAt: Date, officialUrl: String
+    )
+
     @Update
     fun modifyAccountInfo(accountInfo : AccountInfo)
 

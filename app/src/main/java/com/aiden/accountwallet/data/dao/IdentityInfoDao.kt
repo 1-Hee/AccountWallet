@@ -64,6 +64,21 @@ interface IdentityInfoDao {
     fun getIdentityInfoCnt():Long
 
     // Update
+    @Query("""
+        UPDATE identity_info SET
+        fk_user_id = :fkUserId,
+        info_type = :infoType,
+        provider_name = :providerName,
+        updated_at = :updatedAt,
+        memo = :memo,
+        tag_color = :tagColor
+        WHERE info_id = :infoId ; 
+    """)
+    fun modifyIdentityInfo(
+        infoId:Long, fkUserId:Long?, infoType:Int, providerName:String,
+        updatedAt:Date, memo:String, tagColor:String,
+    )
+
     @Update
     fun modifyIdentityInfo(identityInfo : IdentityInfo)
 

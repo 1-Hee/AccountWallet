@@ -8,6 +8,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
+import java.util.Date
 
 @Dao
 interface ProductKeyDao {
@@ -46,6 +47,18 @@ interface ProductKeyDao {
 
 
     // Update
+    @Query("""
+        UPDATE product_info SET
+        fk_info_id = :fkInfoId,
+        product_key = :productKey, 
+        official_url = :officialUrl
+        WHERE product_id = :productId
+    """)
+    fun modifyProductKey(
+        productId:Long, fkInfoId:Long?, productKey:String, officialUrl: String
+    )
+
+
     @Update
     fun modifyProductKey(productKey : ProductKey)
 

@@ -5,6 +5,7 @@ import com.aiden.accountwallet.base.repository.ExtraEntityHandler
 import com.aiden.accountwallet.data.dao.ProductKeyDao
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
+import com.aiden.accountwallet.util.Logger
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,8 +42,16 @@ class ProductKeyRepository @Inject constructor(
     }
 
     override suspend fun modifyEntity(entity: ProductKey) {
-        Timber.d("repo modifyEntity : %s", entity)
-        productKeyDao.modifyProductKey(entity)
+        Logger.d("repo modifyEntity : %s", entity)
+        val productId:Long = entity.productId
+        val fkInfoId:Long? = entity.fkInfoId
+        val productKey:String = entity.productKey
+        val officialUrl: String = entity.officialUrl
+
+        this.productKeyDao.modifyProductKey(
+            productId, fkInfoId, productKey, officialUrl
+        )
+        // productKeyDao.modifyProductKey(entity)
     }
 
     override suspend fun deleteEntity(entityId: Long) {

@@ -9,6 +9,7 @@ import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.ui.adapter.IdentityAdapter
 import com.aiden.accountwallet.util.Logger
 import kotlinx.coroutines.flow.Flow
+import java.util.Date
 import javax.inject.Inject
 
 class IdentityInfoRepository @Inject constructor(
@@ -64,7 +65,18 @@ class IdentityInfoRepository @Inject constructor(
     // Update
     override suspend fun modifyEntity(entity: IdentityInfo) {
         Logger.d("repo modifyEntity : %s", entity)
-        this.identityInfoDao.modifyIdentityInfo(entity)
+        val infoId:Long = entity.infoId
+        val fkUserId:Long? = entity.fkUserId
+        val infoType:Int = entity.infoType
+        val providerName:String = entity.providerName
+        val updatedAt: Date = Date()
+        val memo:String = entity.memo
+        val tagColor:String = entity.tagColor
+        // this.identityInfoDao.modifyIdentityInfo(entity)
+        this.identityInfoDao.modifyIdentityInfo(
+            infoId, fkUserId, infoType,
+            providerName, updatedAt, memo, tagColor
+        )
     }
 
     // Delete

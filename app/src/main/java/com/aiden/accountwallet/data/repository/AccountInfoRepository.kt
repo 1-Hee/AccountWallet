@@ -6,6 +6,7 @@ import com.aiden.accountwallet.data.dao.AccountInfoDao
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import timber.log.Timber
+import java.util.Date
 import javax.inject.Inject
 
 class AccountInfoRepository @Inject constructor(
@@ -41,7 +42,18 @@ class AccountInfoRepository @Inject constructor(
 
     override suspend fun modifyEntity(entity: AccountInfo) {
         Timber.d("repo modifyEntity : %s", entity)
-        accountInfoDao.modifyAccountInfo(entity)
+        val accountId:Long = entity.accountId
+        val fkInfoId:Long? = entity.fkInfoId
+        val userAccount:String = entity.userAccount
+        val userPassword: String = entity.userPassword
+        val acCreatedAt: Date = entity.acCreatedAt
+        val officialUrl: String = entity.officialUrl
+
+        // accountInfoDao.modifyAccountInfo(entity)
+        this.accountInfoDao.modifyAccountInfo(
+            accountId, fkInfoId,
+            userAccount, userPassword, acCreatedAt, officialUrl
+        )
     }
 
     override suspend fun deleteEntity(entityId: Long) {

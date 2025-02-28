@@ -137,6 +137,8 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
 
     // 사용자 계정 수정 작업
     private fun editUserAccountTask() {
+        // TODO : 사용자 정보를 어딘가에 저장해둬서 그걸 기반으로 저장하게 하기
+
         accountFormViewModel.updateStatus.postValue(true)
         val context: Context = requireContext()
 
