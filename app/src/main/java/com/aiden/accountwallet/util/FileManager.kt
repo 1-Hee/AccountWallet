@@ -1,10 +1,17 @@
 package com.aiden.accountwallet.util
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import com.aiden.accountwallet.R
+import com.aiden.accountwallet.data.dto.Info
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileOutputStream
@@ -12,6 +19,8 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
+import java.text.SimpleDateFormat
+import java.util.Date
 
 object FileManager {
 
@@ -26,11 +35,102 @@ object FileManager {
         return output.toString()
     }
 
+    private fun readRawTextFile(context: Context, resId: Int): String {
+        val inputStream = context.resources.openRawResource(resId)
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        val stringBuilder = StringBuilder()
+        var line: String?
+        try {
+            while (reader.readLine().also { line = it } != null) {
+                stringBuilder.append(line)
+                stringBuilder.append("\n")
+            }
+            reader.close()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return stringBuilder.toString()
+    }
+
+    // save HTML File
+    @SuppressLint("SimpleDateFormat")
+    fun saveHTMLFile(mActivity: Activity, providerName:String = "", saveInfoList:List<Info>) {
+        val context: Context = mActivity.baseContext
+        val resolver: ContentResolver = mActivity.contentResolver
+
+        val htmlBuilder = StringBuilder()
+        // header init
+        val mHtmlHeader = readRawTextFile(context, R.raw.html_head)
+        htmlBuilder.append(mHtmlHeader)
+
+        saveInfoList.forEach { item ->
+            htmlBuilder.append(
+            """
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.value}</td>
+                </tr>
+            """.trimIndent()
+            )
+        }
+        htmlBuilder.append("</table>")
+
+
+        // 현재 날짜 형식 설정
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss") // 원하는 형식으로 변경 가능
+        val currentDate = dateFormat.format(Date())
+
+        val timeStampHtml =  """
+                <div class="signature">
+                    <p>Account Wallet Developer</p>
+                    <p>Date : ${currentDate}</p>
+                </div>
+        """.trimIndent()
+
+        val mHtmlTail:String = readRawTextFile(context, R.raw.html_tail)
+        htmlBuilder.append(timeStampHtml)
+        htmlBuilder.append(mHtmlTail)
+        saveFile(context, providerName, htmlBuilder.toString(), ".html") // 저장 시작!
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    fun saveJsonFile(context: Context, providerName:String = "", saveInfoList:List<Info>) {
+
+        val mInfoTitle = "UserInfo"
+        val mJsonParent = JsonObject()
+        // Device Info -> Json Data!
+        try {
+            val deviceObjList:MutableList<JsonObject> = mutableListOf()
+            saveInfoList.forEach { info ->
+                val jsonObj : JsonObject = info.toJsonObject()
+                deviceObjList.add(jsonObj)
+            }
+            val deviceJsonArray: JsonArray = JsonParser.toJsonArray(deviceObjList)
+            mJsonParent.add(mInfoTitle, deviceJsonArray)
+        }catch (e:Exception){
+            Logger.e("[msg] %s", e.message)
+        }
+
+        // 현재 날짜 형식 설정
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss") // 원하는 형식으로 변경 가능
+        val currentDate = dateFormat.format(Date())
+
+        // 날짜 데이터 추가
+        mJsonParent.addProperty("Date", currentDate)
+        val mJsonString:String = mJsonParent.toString()
+
+        Logger.i("JSON Data : %s", mJsonString)
+
+        // Json 파일로 저장
+        saveFile(context, providerName, mJsonString, ".json")
+    }
+
 
     fun saveFile(context: Context, providerName:String = "", content:String, format:String = ".txt"){
         val path:String = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
         val prefixName:String = if(providerName.isBlank() ) "None" else providerName
-        val fileName = "device_info_${prefixName}_${Build.MODEL.replace(" ", "").lowercase()}$format"
+        val fileName = "user_info_${prefixName}$format"
         val file = File(path, fileName)
         // Timber.i("[저장 경로] : %s", file.path)
         val preClearCmd = "rm -r ${file.path}"

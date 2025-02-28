@@ -30,6 +30,7 @@ import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.FileManager
+import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.RoomTool
 import com.aiden.accountwallet.util.UIManager
 import com.google.android.material.snackbar.Snackbar
@@ -130,7 +131,9 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
             }
             R.id.btn_download_data -> {
                 // BottomSheetDialog Pop up
-                val modal = DownloadItemDialog(this)
+                val infoItem:DisplayAccountInfo = infoItemViewModel.mDisplayAccountInfo.value?:return
+                val mTypeIdx:Int = infoItem.typeIdx
+                val modal = DownloadItemDialog(mTypeIdx, this)
                 val fragmentManager:FragmentManager = requireActivity().supportFragmentManager
                 modal.show(fragmentManager, modal::class.java.simpleName)
 
@@ -181,11 +184,8 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     }
 
     override fun onItemSelected(selectedItem: DownloadType, position: Int) {
-        Toast.makeText(
-            requireContext(),
-            "선택 아이템 [${selectedItem.typeIdx}] : ${selectedItem.typeValue}",
-            Toast.LENGTH_SHORT
-        ).show()
+
+        Logger.i( "선택 아이템 [${selectedItem.typeIdx}] : ${selectedItem.typeValue} , position : $position")
 
         val context:Context = requireContext()
         val mBaseInfo:IdentityInfo
@@ -212,11 +212,11 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                 FileManager.saveFile(context, mBaseInfo.providerName, sb.toString())
             }
             1 ->  { // html
-
+                FileManager.saveHTMLFile(requireActivity(), mBaseInfo.providerName, infoList)
                 return
             }
             2 -> { // json
-
+                FileManager.saveJsonFile(context, mBaseInfo.providerName, infoList)
                 return
             }
 

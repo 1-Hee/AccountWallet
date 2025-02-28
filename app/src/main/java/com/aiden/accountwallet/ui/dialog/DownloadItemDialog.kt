@@ -17,6 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class DownloadItemDialog(
+    private val downType:Int = 0,
     private val callBack:DownloadItemCallBack? = null
 ) : BaseBottomSheetDialog<DialogDownloadItemBinding>(),
         ViewClickListener, ItemClickListener<DownloadType> {
@@ -38,7 +39,7 @@ class DownloadItemDialog(
         for(i in downTypeArray.indices){
             val downTypeStr:String = downTypeArray[i]
             val drawable: Drawable? = iconArray.getDrawable(i)
-            val mDownloadType = DownloadType(i, drawable, downTypeStr)
+            val mDownloadType = DownloadType(downType, drawable, downTypeStr)
             this.mDownloadTypeList.add(mDownloadType)
         }
         iconArray.recycle()
