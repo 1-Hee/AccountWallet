@@ -1,13 +1,18 @@
 package com.aiden.accountwallet.util
 
+import android.content.Context
+import androidx.room.Room
 import com.aiden.accountwallet.data.dto.Info
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.model.IdentityInfo
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 
-object JsonParser {
+object AppJsonParser {
     private fun gsonWithoutHtmlEscaping(): Gson {
         return GsonBuilder()
             .disableHtmlEscaping()
@@ -43,4 +48,25 @@ object JsonParser {
         )
         return backupJson
     }
+
+    fun getJsonObject(itemList : List<Info>) : JsonObject {
+        val mJsonObject = JsonObject()
+        itemList.forEach { item ->
+            mJsonObject.addProperty(item.name, item.value)
+        }
+        return mJsonObject
+    }
+
+    fun getJsonObject(context: Context, item: IdAccountInfo) : JsonObject {
+        val mProductInfoList:List<Info> = RoomTool.parseIdAccountInfo(context, item)
+        return getJsonObject(mProductInfoList)
+    }
+
+
+    fun getJsonObject(context: Context, item: IdProductKey) : JsonObject {
+        val mProductInfoList:List<Info> = RoomTool.parseIdProductKey(context, item)
+        return getJsonObject(mProductInfoList)
+    }
+
+
 }

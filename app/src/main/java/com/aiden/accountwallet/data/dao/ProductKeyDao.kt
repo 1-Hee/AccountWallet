@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Update
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
-import java.util.Date
 
 @Dao
 interface ProductKeyDao {

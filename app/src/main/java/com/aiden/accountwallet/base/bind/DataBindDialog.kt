@@ -29,6 +29,11 @@ abstract class DataBindDialog<D:ViewDataBinding>:DialogFragment() {
     // 다이얼로그 레이아웃 초기화 시
     protected abstract fun initView()
 
+    // 꺼지지 않게 강제하는 함수
+    protected fun setCanceledOutside(flag:Boolean) {
+        this.isCancelable = flag
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         // Dialog가 화면에 추가되었을 때 뷰모델을 추가한다.

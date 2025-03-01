@@ -55,8 +55,8 @@
         <item>언어 설정</item>
         <item>앱 업데이트</item>
         <item>오픈 소스 라이선스</item>
-        <item>데이터 백업 하기</item>
-        <item>데이터 불러 오기</item>
+        <item>데이터 내보내기</item>
+        <item>데이터 불러오기</item>
         <item>데이터 초기화</item>
     </string-array>
 
@@ -122,6 +122,7 @@
     </string-array>
 
     <string name="txt_h_save_file">파일 저장 완료 :</string>
+    <string name="txt_h_save_backup_file">파일 저장 : /Download/</string>
     <string name="txt_h_fail_save">파일 생성 중 오류가 발생하였습니다.</string>
     <string name="txt_error_log_result">%1$s\nError details saved in %2$s</string>
     <string name="txt_error_log_create">%1$s\nFailed to save error details</string>
@@ -159,5 +160,14 @@
     <string name="msg_change_nickname">닉네임이 수정되었습니다 : %s</string>
     <string name="msg_notify_edit_user_info">사용자 정보를 수정합니다...</string>
     <string name="title_download_type">다운로드 파일 형식</string>
+    <string name="title_data_export">데이터 백업 하기</string>
+    <string name="btn_delete_database">Delete</string>
+    <string name="content_export_database">정말로 저장된 데이터를 내보내시겠습니까?\n [확인]을 누르면 내보내기 작업을 시작합니다.</string>
+    <string name="btn_start">Start</string>
+    <string name="txt_init_progress">init progress…</string>
+    <string name="title_data_xport">Data Export Manager</string>
+    <string name="load_user_account">Loading user account information…</string>
+    <string name="load_product_key">Loading product key information…</string>
+    <string name="msg_fin_export_path">파일 내보내기 완료\npath : %1$s</string>
 
 </resources>

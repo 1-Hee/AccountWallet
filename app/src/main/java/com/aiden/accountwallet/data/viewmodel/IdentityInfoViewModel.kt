@@ -4,6 +4,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.repository.IdentityInfoRepository
 import com.aiden.accountwallet.util.Logger
@@ -60,6 +62,20 @@ class IdentityInfoViewModel @Inject constructor(
         Logger.d("vm getIdentityInfoCnt : %d", cnt)
         return cnt
     }
+
+    // 백업용 메서드들
+    suspend fun readAllAccountList(): List<IdAccountInfo> {
+        val accountList:List<IdAccountInfo> = repository.readAllAccountList()
+        Logger.i("[READ ALL] repo read size : %d", accountList.size)
+        return accountList
+    }
+
+    suspend fun readAllProductList(): List<IdProductKey> {
+        val productKeyList:List<IdProductKey> = repository.readAllProductList()
+        Logger.i("[READ ALL] repo read size : %d", productKeyList.size)
+        return productKeyList
+    }
+
 
     // Update
     override suspend fun editEntity(entity: IdentityInfo) {

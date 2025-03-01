@@ -12,6 +12,10 @@
             type="com.aiden.accountwallet.data.dto.AlertInfo" />
 
         <variable
+            name="statusMsg"
+            type="String" />
+
+        <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
     </data>
@@ -61,7 +65,6 @@
                     android:progressDrawable="@drawable/bg_base_progressbar"
                     android:layout_marginTop="16dp"
                     android:max="100"
-                    android:progress="50"
                     />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -73,7 +76,7 @@
                     app:layout_constraintTop_toBottomOf="@id/pg_dialog"
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="@id/pg_dialog"
-                    android:text="@{alertInfo.alertContent}"
+                    android:text="@{statusMsg}"
                     tools:text="now install data..."
                     />
 

@@ -7,22 +7,9 @@ import com.google.gson.JsonObject
 data class Info(
     val name:String,
     val value:String
-) {
-    fun toJsonString():String{
-        val gson = GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-            .create()
-        return gson.toJson(this)
-    }
+) : BaseJsonModel<Info>() {
 
-    fun toJsonObject(): JsonObject {
-        val gson = GsonBuilder()
-            .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
-            .create()
-        return gson.toJsonTree(this).asJsonObject
-    }
-
-    fun fromJson(jsonString: String):Info{
+    override fun fromJson(jsonString: String): Info {
         val gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE)
             .create()

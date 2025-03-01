@@ -6,6 +6,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
 import java.util.Date
 
@@ -79,6 +81,40 @@ interface IdentityInfoDao {
         updatedAt:Date, memo:String, tagColor:String,
     )
 
+    // 전체 조회하기
+    @Query("""
+        SELECT 
+            ii.info_id, ii.fk_user_id, ii.info_type,
+            ii.provider_name, ii.created_at, ii.updated_at, ii.memo,
+            ii.tag_color, ii.status,
+            ai.account_id, ai.fk_info_id,
+            ai.user_account, ai.user_password,
+            ai.ac_created_at, ai.official_url
+        FROM identity_info ii
+        JOIN account_info ai 
+        ON ii.info_id = ai.fk_info_id
+        WHERE ii.status = 0
+        ORDER BY ii.created_at DESC;
+    """)
+    fun readAllAccountList(): List<IdAccountInfo>
+
+    @Query("""
+        SELECT 
+            ii.info_id, ii.fk_user_id, ii.info_type,
+            ii.provider_name, ii.created_at, ii.updated_at, ii.memo,
+            ii.tag_color, ii.status,
+            pi.product_id, pi.fk_info_id, pi.product_key, pi.official_url
+        FROM identity_info ii
+        JOIN product_info pi 
+        ON ii.info_id = pi.fk_info_id
+        WHERE ii.status = 0
+        ORDER BY ii.created_at DESC;
+    """)
+    fun readAllProductList(): List<IdProductKey>
+
+
+
+    // Update
     @Update
     fun modifyIdentityInfo(identityInfo : IdentityInfo)
 

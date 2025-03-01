@@ -112,8 +112,6 @@ object RoomTool {
         context: Context, baseInfo : IdentityInfo
     ) : List<Info> {
 
-        val arrInfoType:Array<String> = context.resources
-            .getStringArray(R.array.spinner_info_type)
         val arrIdentity:Array<String> = context.resources
             .getStringArray(R.array.items_identity_header)
         // 현재 날짜 형식 설정
@@ -124,14 +122,9 @@ object RoomTool {
         // Set Info Type
         val infoIdx:Int = baseInfo.infoType
         val mInfoList:MutableList<Info> = mutableListOf()
-        val strInfoType:String = if(infoIdx > arrInfoType.size) {
-            "None"
-        } else {
-            arrInfoType[infoIdx]
-        }
 
         // set up Identity Info
-        mInfoList.add(Info(arrIdentity[idx++], strInfoType))
+        mInfoList.add(Info(arrIdentity[idx++], infoIdx.toString()))
         mInfoList.add(Info(arrIdentity[idx++], baseInfo.providerName))
 
         // set date...

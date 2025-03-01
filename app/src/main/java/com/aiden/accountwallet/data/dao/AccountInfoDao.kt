@@ -8,7 +8,6 @@ import androidx.room.Query
 import androidx.room.Update
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
-import com.aiden.accountwallet.data.model.IdentityInfo
 import java.util.Date
 
 @Dao

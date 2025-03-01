@@ -201,11 +201,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
 
         when(position) { // 저장 유형
             0 -> { // text
-                val sb = StringBuilder()
-                infoList.forEach { item ->
-                    sb.append("${item.name}\t\t: ${item.value}\n")
-                }
-                FileManager.saveFile(context, mBaseInfo.providerName, sb.toString())
+                FileManager.saveTextFile(context, mBaseInfo.providerName, infoList)
             }
             1 ->  { // html
                 FileManager.saveHTMLFile(requireActivity(), mBaseInfo.providerName, infoList)

@@ -5,6 +5,8 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.ui.adapter.IdentityAdapter.BasePageSource
 import com.aiden.accountwallet.util.Logger
@@ -53,11 +55,25 @@ class IdentityInfoRepository @Inject constructor(
         return entity
     }
 
-    suspend fun getIdentityInfoCnt():Long {
+    fun getIdentityInfoCnt():Long {
         val cnt:Long = identityInfoDao.getIdentityInfoCnt()
         Logger.d("repo getIdentityInfoCnt : %d", cnt)
         return cnt
     }
+
+    // 백업용 메서드들
+    fun readAllAccountList(): List<IdAccountInfo> {
+        val accountList:List<IdAccountInfo> = identityInfoDao.readAllAccountList()
+        Logger.i("[READ ALL] repo read size : %d", accountList.size)
+        return accountList
+    }
+
+    fun readAllProductList(): List<IdProductKey> {
+        val productKeyList:List<IdProductKey> = identityInfoDao.readAllProductList()
+        Logger.i("[READ ALL] repo read size : %d", productKeyList.size)
+        return productKeyList
+    }
+
 
     // Update
     override suspend fun modifyEntity(entity: IdentityInfo) {

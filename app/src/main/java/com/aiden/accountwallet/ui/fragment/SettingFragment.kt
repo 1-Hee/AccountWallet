@@ -31,20 +31,25 @@ import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.dto.AlertInfo
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
+import com.aiden.accountwallet.data.model.IdAccountInfo
+import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentSettingBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.dialog.ProgressDialog
 import com.aiden.accountwallet.ui.dialog.SelectDialog
+import com.aiden.accountwallet.util.FileManager
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Locale
 
-class SettingFragment : BaseFragment<FragmentSettingBinding>(),
-    AlertDialog.OnDialogClickListener {
+class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
     // 다른 액티비티 이동후 결과 값을 받아 핸들링할 런쳐
     private lateinit var launcher: ActivityResultLauncher<Intent>;
@@ -230,6 +235,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
                     launcher.launch(intent)
                 }
                 settingArray[3] -> { // 데이터 백업 하기
+                    val title:String = getString(R.string.title_data_export)
+                    val content:String = getString(R.string.content_export_database)
+                    val mBtnOk:String = getString(R.string.btn_start)
+                        getString(R.string.btn_delete_database)
+                    val mBtnCancel:String = getString(R.string.btn_cancel)
+                    val alertInfo = AlertInfo(title, content, mBtnCancel, mBtnOk)
+                    val dialog = AlertDialog(alertInfo, exportDialogListener)
+                    dialog.show(requireActivity().supportFragmentManager, null)
+                    /*
                     val alertInfo = AlertInfo(
                         "Title", "Install Data..."
                     )
@@ -241,6 +255,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
                         }
                     )
                     dialog.show(requireActivity().supportFragmentManager, null)
+                     */
                 }
                 settingArray[4] -> { // 데이터 불러오기
 
@@ -270,11 +285,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
                 settingArray[5] -> { // 데이터 초기화
                     val title:String = getString(R.string.title_warning)
                     val content:String = getString(R.string.content_delete_database)
-                    val mBtnOk:String = "Delete"
+                    val mBtnOk:String = getString(R.string.btn_delete_database)
+                    val mBtnCancel:String = getString(R.string.btn_cancel)
                     val alertInfo = AlertInfo(
-                        title, content, txtOk = mBtnOk, flag = true
+                        title, content, mBtnCancel, mBtnOk, true
                    )
-                    val dialog = AlertDialog(alertInfo, this@SettingFragment)
+                    val dialog = AlertDialog(alertInfo, resetDialogListener)
                     dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 else -> {
@@ -284,34 +300,145 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
         }
     }
 
-    // Dialog Listener
-    override fun onOk(view: View) {
-        when(view.id){
-            R.id.btn_ok -> {
-                lifecycleScope.launch(Dispatchers.IO) {
-                    identityInfoViewModel.removeAll()
-                    userInfoViewModel.removeAll()
+    // 데이터 내보내기 함수 (실제 내보내기 작업을 처리하는 핸들러)
+    private fun startExportData(dialog: ProgressDialog){
+        val msgLoadAccount:String = getString(R.string.load_user_account)
+        val msgLoadProduct:String = getString(R.string.load_product_key)
+        val context:Context = requireContext()
+        var currentProgress = 0;
+        val finView:View = mBinding.spBottom
 
-                    // Notify to User...
-                    withContext(Dispatchers.Main){
-                        val msg:String = getString(R.string.msg_database_delete_all)
-                        val context:Context = requireContext()
-                        Toast.makeText(
-                            context,
-                            msg,
-                            Toast.LENGTH_SHORT
-                        ).show()
+        lifecycleScope.launch(Dispatchers.IO) {
+            while(!(dialog.getIsInitView())){ // 준비 될때까지 대기!
+                delay(200)
+            }
+            currentProgress += 5
+            dialog.setDialogStatus(msgLoadAccount)
+            dialog.setDialogProgress(currentProgress)
 
-                        nav().popBackStack(R.id.settingFragment, true)
-                        nav().navigate(R.id.introFragment)
+            // 계정 준비 작업
+            val accountList:List<IdAccountInfo> = identityInfoViewModel.readAllAccountList()
+            delay(100)
+            currentProgress += 5
+            dialog.setDialogProgress(currentProgress)
+
+            // 제품키 준비 작업
+            currentProgress += 5
+            dialog.setDialogStatus(msgLoadProduct)
+            dialog.setDialogProgress(currentProgress)
+
+            val productList:List<IdProductKey> = identityInfoViewModel.readAllProductList()
+            delay(100)
+            currentProgress += 5
+            dialog.setDialogProgress(currentProgress)
+
+            /*
+            for (i in currentProgress..100 step 10) {
+                delay(100)
+                dialog.setDialogProgress(i)
+                dialog.setDialogStatus("save data... ${i}")
+            }
+             */
+
+
+            for (i in currentProgress..90 step 5) {
+                delay(10)
+                dialog.setDialogProgress(i)
+                dialog.setDialogStatus("Exporting file... (${i}%)")
+            }
+
+            // 실제 파일 저장 작업!
+            FileManager.exportJsonData(
+                context, accountList, productList,
+                object : FileManager.FileListener {
+                    override fun onFileSaved(savePath:String) {
+                        val snackMsg:String = getString(R.string.msg_fin_export_path, savePath)
+                        CoroutineScope(Dispatchers.Main).launch {
+                            Snackbar.make(finView, snackMsg, Snackbar.LENGTH_LONG).show()
+                        }
+                        dialog.notifyFinishTask(100)
                     }
+
+                    override fun onFileSaveFail() {
+                        dialog.notifyFinishTask()
+                    }
+                }
+            )
+
+
+
+
+            /*
+            for (i in 10..100 step 10) {
+                delay(100)
+                dialog.setDialogProgress(i)
+                dialog.setDialogStatus("Hello ${i}")
+            }
+             */
+
+            //                 val accountList
+
+
+
+
+        }
+    }
+
+
+
+    // Dialog Listener
+    // 데이터 내보내기 리스너
+    private val exportDialogListener = object :AlertDialog.OnDialogClickListener{
+        override fun onOk(view: View) {
+            when(view.id){
+                R.id.btn_ok -> {
+                    val titleDataExport:String = getString(R.string.title_data_xport)
+                    val alertInfo = AlertInfo(titleDataExport, flag = true)
+                    val dialog = ProgressDialog(
+                        alertInfo, object : ProgressDialog.OnProgressListener {
+                            // 사용자에 의한 작업 중단 요청
+                            override fun onAction(view: View) {
+
+                            }
+                        }
+                    )
+                    dialog.show(requireActivity().supportFragmentManager, null)
+                    startExportData(dialog)
                 }
             }
         }
-
+        override fun onCancel(view: View) {}
     }
 
-    override fun onCancel(view: View) {
+    // 데이터 초기화 리스너
+    private val resetDialogListener = object : AlertDialog.OnDialogClickListener {
+        override fun onOk(view: View) {
+            when(view.id){
+                R.id.btn_ok -> {
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        identityInfoViewModel.removeAll()
+                        userInfoViewModel.removeAll()
 
+                        // Notify to User...
+                        withContext(Dispatchers.Main){
+                            val msg:String = getString(R.string.msg_database_delete_all)
+                            val context:Context = requireContext()
+                            Toast.makeText(
+                                context,
+                                msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            nav().popBackStack(R.id.settingFragment, true)
+                            nav().navigate(R.id.introFragment)
+                        }
+                    }
+                }
+            }
+
+        }
+        override fun onCancel(view: View) {}
     }
+
+
 }
