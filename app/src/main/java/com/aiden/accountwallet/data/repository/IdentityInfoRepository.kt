@@ -5,9 +5,13 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
+import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
+import com.aiden.accountwallet.data.model.ProductKey
+import com.aiden.accountwallet.data.vo.ImportProductKey
+import com.aiden.accountwallet.data.vo.ImportUserAccount
 import com.aiden.accountwallet.ui.adapter.IdentityAdapter.BasePageSource
 import com.aiden.accountwallet.util.Logger
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +27,57 @@ class IdentityInfoRepository @Inject constructor(
         Logger.d("repo addEntity.. %s", entity)
         return this.identityInfoDao.addIdentityInfo(entity)
     }
+
+    suspend fun addImportUserAccount(item: ImportUserAccount) : Long  {
+        Logger.d("repo addImportUserAccount.. %s", item.toString())
+        val parentItem = IdentityInfo(
+            fkUserId = null,
+            infoType =  item.infoType,
+            providerName = item.providerName,
+            createAt = item.createAt,
+            updatedAt = item.lastUpdate,
+            memo = item.userMemo,
+            tagColor = item.tagColor
+        );
+        val parentId:Long = identityInfoDao.addIdentityInfo(parentItem)
+
+        val childItem:AccountInfo = AccountInfo(
+            fkInfoId = parentId,
+            userAccount = item.usrAccount,
+            userPassword = item.usrPwd,
+            acCreatedAt = item.acCreateAt,
+            officialUrl = item.offUrl
+        )
+
+        identityInfoDao.addAccountInfo(childItem)
+        // return this.identityInfoDao.addImportUserAccount(account)
+        return parentId
+    }
+
+
+    suspend fun addImportProductKey(item : ImportProductKey) : Long {
+        val parentItem = IdentityInfo(
+            fkUserId = null,
+            infoType =  item.infoType,
+            providerName = item.providerName,
+            createAt = item.createAt,
+            updatedAt = item.lastUpdate,
+            memo = item.userMemo,
+            tagColor = item.tagColor
+        );
+        val parentId:Long = identityInfoDao.addIdentityInfo(parentItem)
+
+        val childItem:ProductKey = ProductKey(
+            fkInfoId = parentId,
+            productKey = item.productKey,
+            officialUrl = item.offUrl
+        )
+
+        identityInfoDao.addProductKey(childItem)
+        // return this.identityInfoDao.addImportUserAccount(account)
+        return parentId
+    }
+
 
     // Read
     override suspend fun readEntityList(): List<IdentityInfo> {

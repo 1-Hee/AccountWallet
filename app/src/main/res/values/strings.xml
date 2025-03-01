@@ -160,14 +160,23 @@
     <string name="msg_change_nickname">닉네임이 수정되었습니다 : %s</string>
     <string name="msg_notify_edit_user_info">사용자 정보를 수정합니다...</string>
     <string name="title_download_type">다운로드 파일 형식</string>
-    <string name="title_data_export">데이터 백업 하기</string>
+    <string name="title_data_export">Data Export</string>
+    <string name="title_data_import">Data Import</string>
     <string name="btn_delete_database">Delete</string>
     <string name="content_export_database">정말로 저장된 데이터를 내보내시겠습니까?\n [확인]을 누르면 내보내기 작업을 시작합니다.</string>
     <string name="btn_start">Start</string>
     <string name="txt_init_progress">init progress…</string>
-    <string name="title_data_xport">Data Export Manager</string>
     <string name="load_user_account">Loading user account information…</string>
     <string name="load_product_key">Loading product key information…</string>
     <string name="msg_fin_export_path">파일 내보내기 완료\npath : %1$s</string>
+    <string name="btn_data_import">Import</string>
+    <string name="status_detect_backup">Backup File Detected.</string>
+    <string name="status_not_fount_backup">File Not Found....</string>
+    <string name="btn_stop">Stop</string>
+    <string name="msg_export_file_progress">Exporting file…</string>
+    <string name="load_backup_data">Preparing to read data for backup…</string>
+    <string name="key_user_account">UserAccount</string>
+    <string name="key_product">ProductKey</string>
+
 
 </resources>

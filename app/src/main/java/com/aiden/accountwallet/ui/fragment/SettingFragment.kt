@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.TypedArray
 import android.graphics.drawable.Drawable
+import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -33,20 +34,28 @@ import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
+import com.aiden.accountwallet.data.vo.ImportProductKey
+import com.aiden.accountwallet.data.vo.ImportUserAccount
 import com.aiden.accountwallet.databinding.FragmentSettingBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
+import com.aiden.accountwallet.ui.dialog.ImportDataDialog
 import com.aiden.accountwallet.ui.dialog.ProgressDialog
-import com.aiden.accountwallet.ui.dialog.SelectDialog
 import com.aiden.accountwallet.util.FileManager
+import com.aiden.accountwallet.util.Logger
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 import java.util.Locale
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(){
@@ -89,7 +98,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         val settingArray:Array<String> = context.resources
             .getStringArray(R.array.arr_setting_option); // 메뉴 명
 
-        // TODO : 실제 설정 다이얼로그와 연계하여 기능 구현...
         for(i in 0..5) {
             val settingItem = SettingItem(settingArray[i], "")
             when(i){
@@ -245,29 +253,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                     dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 settingArray[4] -> { // 데이터 불러오기
-
-                    val alertInfo = AlertInfo(
-                        "Title", "Content..."
-                    )
-
-                    val dialog = SelectDialog (
-                        alertInfo,
-                        object : SelectDialog.OnSelectListener {
-                            override fun onSelect(position: Int) {
-                                Toast.makeText(
-                                    requireContext(),
-                                    "user select idx = $position",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-
-                            override fun onCancel() {
-
-                            }
-                        }
+                    val titleDataImport:String = getString(R.string.title_data_import)
+                    val btnImport:String = getString(R.string.btn_data_import)
+                    val alertInfo = AlertInfo(titleDataImport, txtOk = btnImport)
+                    val dialog = ImportDataDialog (
+                        alertInfo, importDialogListener
                     )
                     dialog.show(requireActivity().supportFragmentManager, null)
-
                 }
                 settingArray[5] -> { // 데이터 초기화
                     val title:String = getString(R.string.title_warning)
@@ -333,6 +325,10 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
                     override fun onFileSaveListener(progress: Int) {
                         dialog.setDialogProgress(progress)
+                        val statusMSg:String = context.getString(
+                            R.string.msg_export_file_progress
+                        ) + "\t( $progress% )"
+                        dialog.setDialogStatus(statusMSg)
                     }
 
                     override fun onFileSaveFail() {
@@ -343,16 +339,298 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         }
     }
 
+    // 데이터 불러오기
+    private fun startImportData(filePath:String, dialog: ProgressDialog){
+        val msgPrepareImport:String = getString(R.string.load_backup_data)
+        val context:Context = requireContext()
+        var currentProgress = 0;
+        val finView:View = mBinding.spBottom
 
+        lifecycleScope.launch(Dispatchers.IO) {
+            while(!(dialog.getIsInitView())){ // 준비 될때까지 대기!
+                delay(200)
+            }
+            currentProgress += 5
+            dialog.setDialogStatus(msgPrepareImport)
+            dialog.setDialogProgress(currentProgress)
+
+            // 실제 파일 불러오기 작업!
+            // FileManager ...
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                FileManager.importJsonFile(filePath, object : FileManager.ReadListener {
+                    override fun onFileRead(readData: String) {
+                        // Logger.i("Read Data : %s", readData)
+                        currentProgress += 15;
+                        CoroutineScope(Dispatchers.Main).launch {
+                            dialog.setDialogProgress(currentProgress)
+                            dialog.setDialogStatus("백업 데이터를 불러오는데 성공하였습니다.")
+                        }
+
+                        val jsonString:String = readData
+                        val jsonObject:JsonObject = Gson()
+                            .fromJson(jsonString, JsonObject::class.java) // JSON 파싱
+
+                        val mAccountTag:String = context.getString(R.string.key_user_account)
+                        val mProductTag:String = context.getString(R.string.key_product)
+
+                        // "UserAccount" 배열 꺼내기
+                        val userAccounts: JsonArray = jsonObject
+                            .getAsJsonArray(mAccountTag)
+                        currentProgress += 5
+                        CoroutineScope(Dispatchers.Main).launch {
+                            dialog.setDialogProgress(currentProgress)
+                            dialog.setDialogStatus("사용자 계정 정보 불러오는 중 ...")
+                        }
+
+                        // ProductKey
+                        val productKey: JsonArray = jsonObject
+                            .getAsJsonArray(mProductTag)
+                        currentProgress += 5
+                        CoroutineScope(Dispatchers.Main).launch {
+                            dialog.setDialogProgress(currentProgress)
+                            dialog.setDialogStatus("제품키 정보 불러오는 중 ...")
+                        }
+
+
+                        val progressUnit:Int = (100 - currentProgress)
+                        val totalSize:Int = productKey.size() + userAccounts.size()
+                        val progress:Int = (1 * progressUnit / totalSize)
+
+                        val dateFormat = SimpleDateFormat(
+                            "yyyy-MM-dd HH:mm:ss",
+                            Locale.getDefault()) // 날짜 형식 지정
+
+                        val arrIdentity:Array<String> = context.resources
+                            .getStringArray(R.array.items_identity_header)
+
+                        val arrAccount:Array<String> = context.resources
+                            .getStringArray(R.array.items_account_header)
+
+                        val arrProduct:Array<String> = context.resources
+                            .getStringArray(R.array.items_account_header)
+
+                        val delayGap:Long = 500
+
+                        userAccounts.forEach { element ->
+                            val userObject:JsonObject = element.asJsonObject
+                            currentProgress += progress
+                            dialog.setDialogProgress(currentProgress)
+                            val importAccount = ImportUserAccount()
+
+                            userObject.entrySet().forEach { entry ->
+                                val key = entry.key
+                                val value = entry.value
+
+                                // 데이터 타입 판별
+                                /*
+                                val parsedValue = when {
+                                    value.isJsonPrimitive -> {
+                                        when {
+                                            value.asJsonPrimitive.isNumber -> value.asInt // 정수형
+                                            value.asJsonPrimitive.isBoolean -> value.asBoolean // 불리언
+                                            value.asJsonPrimitive.isString -> {
+                                                val stringValue = value.asString
+                                                if (stringValue.matches(Regex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"))) { // 날짜 형식이면 Date로 변환
+                                                    dateFormat.parse(stringValue)
+                                                } else {
+                                                    stringValue // 일반 문자열
+                                                }
+                                            }
+                                            else -> value.toString()
+                                        }
+                                    }
+                                    value.isJsonArray -> "Array(${value.asJsonArray.size()})" // 배열 크기 출력
+                                    value.isJsonObject -> "Object" // JSON 객체 표시
+                                    else -> "Unknown"
+                                }
+                                 */
+
+                                when(key){
+                                    arrIdentity[0] -> {
+                                        importAccount.infoType = value.asInt
+                                    }
+                                    arrIdentity[1] -> {
+                                        importAccount.providerName = value.asString
+                                    }
+                                    arrIdentity[2] -> {
+                                        val stringValue:String = value.asString
+                                        if (stringValue.matches(Regex(
+                                                "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"
+                                            ))) { // 날짜 형식 변환
+                                            importAccount.createAt = dateFormat.parse(stringValue)
+                                        }
+                                    }
+                                    arrIdentity[3] -> {
+                                        val stringValue:String = value.asString
+                                        if (stringValue.matches(Regex(
+                                                "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"
+                                            ))) { // 날짜 형식 변환
+                                            importAccount.lastUpdate = dateFormat.parse(stringValue)
+                                        }
+                                    }
+                                    arrIdentity[4] -> {
+                                        importAccount.userMemo = value.asString
+                                    }
+                                    arrIdentity[5] -> {
+                                        importAccount.tagColor = value.asString
+                                    }
+                                    arrAccount[0] -> {
+                                        importAccount.usrAccount = value.asString
+                                    }
+                                    arrAccount[1] -> {
+                                        importAccount.usrPwd = value.asString
+                                    }
+                                    arrAccount[2] -> {
+                                        val stringValue:String = value.asString
+                                        if (stringValue.matches(Regex(
+                                                "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"
+                                            ))) { // 날짜 형식 변환
+                                            importAccount.acCreateAt = dateFormat.parse(stringValue)
+                                        }
+                                    }
+                                    arrAccount[3] -> {
+                                        importAccount.offUrl = value.asString
+                                    }
+                                }
+                            }
+
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                identityInfoViewModel.addImportUserAccount(importAccount)
+                            }
+
+                            Thread.sleep(delayGap)
+                            // delay(delayGap)
+                        }
+
+
+                        productKey.forEach { element ->
+                            val productObject:JsonObject = element.asJsonObject
+
+                            currentProgress += progress
+                            dialog.setDialogProgress(currentProgress)
+                            val importProductKey = ImportProductKey()
+
+                            productObject.entrySet().forEach { entry ->
+                                val key = entry.key
+                                val value = entry.value
+
+                                // 데이터 타입 판별
+                                /*
+                                val parsedValue = when {
+                                    value.isJsonPrimitive -> {
+                                        when {
+                                            value.asJsonPrimitive.isNumber -> value.asInt // 정수형
+                                            value.asJsonPrimitive.isBoolean -> value.asBoolean // 불리언
+                                            value.asJsonPrimitive.isString -> {
+                                                val stringValue = value.asString
+                                                if (stringValue.matches(Regex("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"))) { // 날짜 형식이면 Date로 변환
+                                                    dateFormat.parse(stringValue)
+                                                } else {
+                                                    stringValue // 일반 문자열
+                                                }
+                                            }
+                                            else -> value.toString()
+                                        }
+                                    }
+                                    value.isJsonArray -> "Array(${value.asJsonArray.size()})" // 배열 크기 출력
+                                    value.isJsonObject -> "Object" // JSON 객체 표시
+                                    else -> "Unknown"
+                                }
+                                 */
+
+                                when(key){
+                                    arrIdentity[0] -> {
+                                        importProductKey.infoType = value.asInt
+                                    }
+                                    arrIdentity[1] -> {
+                                        importProductKey.providerName = value.asString
+                                    }
+                                    arrIdentity[2] -> {
+                                        val stringValue:String = value.asString
+                                        if (stringValue.matches(Regex(
+                                                "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"
+                                            ))) { // 날짜 형식 변환
+                                            importProductKey.createAt = dateFormat.parse(stringValue)
+                                        }
+                                    }
+                                    arrIdentity[3] -> {
+                                        val stringValue:String = value.asString
+                                        if (stringValue.matches(Regex(
+                                                "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}"
+                                            ))) { // 날짜 형식 변환
+                                            importProductKey.lastUpdate = dateFormat.parse(stringValue)
+                                        }
+                                    }
+                                    arrIdentity[4] -> {
+                                        importProductKey.userMemo = value.asString
+                                    }
+                                    arrIdentity[5] -> {
+                                        importProductKey.tagColor = value.asString
+                                    }
+                                    arrAccount[0] -> {
+                                        importProductKey.productKey = value.asString
+                                    }
+                                    arrProduct[1] -> {
+                                        importProductKey.offUrl = value.asString
+                                    }
+                                }
+                            }
+
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                identityInfoViewModel.addImportProductKey(importProductKey)
+                            }
+                            // delay(delayGap)
+                            Thread.sleep(delayGap)
+                        }
+
+                    }
+
+                    override fun onFileReadFail() {
+                        // Fail to import data...
+                        dialog.notifyFinishTask()
+                    }
+
+                })
+            }
+
+            // dialog.notifyFinishTask(100)
+        }
+    }
 
     // Dialog Listener
+
+    // 데이터 불러오가 리스너
+    private val importDialogListener = object : ImportDataDialog.OnDialogClickListener {
+        override fun onImport(fileName: String) {
+            val titleDataImport:String = getString(R.string.title_data_import)
+            val txtStop:String = getString(R.string.btn_stop)
+            val alertInfo = AlertInfo(titleDataImport, txtOk = txtStop, flag = true)
+            val dialog = ProgressDialog(
+                alertInfo, object : ProgressDialog.OnProgressListener {
+                    // 사용자에 의한 작업 중단 요청
+                    override fun onAction(view: View) {
+
+                    }
+                }
+            )
+            dialog.show(requireActivity().supportFragmentManager, null)
+            startImportData(fileName, dialog)
+        }
+
+        override fun onCancel() {
+
+        }
+    }
+
     // 데이터 내보내기 리스너
     private val exportDialogListener = object :AlertDialog.OnDialogClickListener{
         override fun onOk(view: View) {
             when(view.id){
                 R.id.btn_ok -> {
-                    val titleDataExport:String = getString(R.string.title_data_xport)
-                    val alertInfo = AlertInfo(titleDataExport, flag = true)
+                    val titleDataExport:String = getString(R.string.title_data_export)
+                    val txtStop:String = getString(R.string.btn_stop)
+                    val alertInfo = AlertInfo(titleDataExport, txtOk = txtStop, flag = true)
                     val dialog = ProgressDialog(
                         alertInfo, object : ProgressDialog.OnProgressListener {
                             // 사용자에 의한 작업 중단 요청

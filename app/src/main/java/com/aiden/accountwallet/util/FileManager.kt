@@ -29,6 +29,19 @@ import java.util.Date
 
 object FileManager {
 
+    // 콜백 함수 추가된 버전
+    interface FileListener {
+        fun onFileSaved(savePath:String)
+        fun onFileSaveListener(progress:Int)
+        fun onFileSaveFail()
+    }
+
+    // 콜백 함수 추가된 버전
+    interface ReadListener {
+        fun onFileRead(readData:String)
+        fun onFileReadFail()
+    }
+
     private fun execute(command: String): String {
         val process = Runtime.getRuntime().exec(command)
         val reader = BufferedReader(InputStreamReader(process.inputStream))
@@ -148,8 +161,8 @@ object FileManager {
         currentProgress:Int = 0
     ) {
 
-        val mAccountTag = "UserAccount"
-        val mProductTag = "ProductKey"
+        val mAccountTag:String = context.getString(R.string.key_user_account)
+        val mProductTag:String = context.getString(R.string.key_product)
         val mJsonParent = JsonObject()
 
         // 계정 정보 저장
@@ -161,7 +174,7 @@ object FileManager {
 
             }
             val deviceJsonArray: JsonArray = AppJsonParser.toJsonArray(deviceObjList)
-            mJsonParent.add(mProductTag, deviceJsonArray)
+            mJsonParent.add(mAccountTag, deviceJsonArray)
         }catch (e:Exception){
             Logger.e("[msg] %s", e.message)
         }
@@ -175,7 +188,7 @@ object FileManager {
 
             }
             val deviceJsonArray: JsonArray = AppJsonParser.toJsonArray(deviceObjList)
-            mJsonParent.add(mAccountTag, deviceJsonArray)
+            mJsonParent.add(mProductTag, deviceJsonArray)
         }catch (e:Exception){
             Logger.e("[msg] %s", e.message)
         }
@@ -196,6 +209,20 @@ object FileManager {
         // Json 파일로 저장
         saveBackupFile(context, mFileName, mJsonString, callBack, currentProgress)
     }
+
+    fun importJsonFile(
+        filePath:String,
+        callBack:ReadListener
+    ) {
+        val file = File(filePath)
+        if (file.exists()) {
+            val data:String = file.readText()  // 파일의 내용을 문자열로 읽기
+            callBack.onFileRead(data)
+        } else {
+            callBack.onFileReadFail()
+        }
+    }
+
 
     private fun saveFile(context: Context, mfileName:String = "", content:String, format:String = ".txt"){
         val path:String = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
@@ -240,12 +267,6 @@ object FileManager {
         }
     }
 
-    // 콜백 함수 추가된 버전
-    interface FileListener {
-        fun onFileSaved(savePath:String)
-        fun onFileSaveListener(progress:Int)
-        fun onFileSaveFail()
-    }
 
     // 파일 경로 불러오게 하는 함수
     fun getSavePath():String{
@@ -295,8 +316,7 @@ object FileManager {
                     }
                 }
 
-                val saveHeader:String = context.getString(R.string.txt_h_save_backup_file)
-                val mSavedPath = "$saveHeader$fileName"
+                val mSavedPath = "/Download/$fileName"
                 callBack.onFileSaved(mSavedPath) // 저장 경로 넘겨줌.
 
             } catch (e: IOException) {
@@ -336,4 +356,5 @@ object FileManager {
             }
         }
     }
+
 }

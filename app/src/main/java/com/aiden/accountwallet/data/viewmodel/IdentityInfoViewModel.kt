@@ -8,6 +8,8 @@ import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.repository.IdentityInfoRepository
+import com.aiden.accountwallet.data.vo.ImportProductKey
+import com.aiden.accountwallet.data.vo.ImportUserAccount
 import com.aiden.accountwallet.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +34,21 @@ class IdentityInfoViewModel @Inject constructor(
         this@IdentityInfoViewModel.setAddEntityStatus(result)
         return result
     }
+
+    suspend fun addImportUserAccount(item: ImportUserAccount) : Long {
+        Logger.d("vm addImportUserAccount %s", item.toString())
+        val result = repository.addImportUserAccount(item)
+        this@IdentityInfoViewModel.setAddEntityStatus(result)
+        return result
+    }
+
+    suspend fun addImportProductKey(item : ImportProductKey) : Long {
+        Logger.d("vm addImportProductKey %s", item.toString())
+        val result = repository.addImportProductKey(item)
+        this@IdentityInfoViewModel.setAddEntityStatus(result)
+        return result
+    }
+
 
     // Read
     override suspend fun readEntityList(): List<IdentityInfo> {

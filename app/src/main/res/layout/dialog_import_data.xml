@@ -6,18 +6,22 @@
     >
 
     <data>
-
         <variable
             name="alertInfo"
             type="com.aiden.accountwallet.data.dto.AlertInfo" />
 
         <variable
+            name="statusMsg"
+            type="String" />
+
+        <variable
+            name="backupFileName"
+            type="String" />
+
+        <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
 
-        <variable
-            name="spinnerAdapter"
-            type="android.widget.ArrayAdapter" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -56,19 +60,24 @@
                     />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/l_select_type"
+                    android:id="@+id/l_backup_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/bg_all_line"
                     app:layout_constraintTop_toBottomOf="@id/tv_alert_title"
                     >
-                    <androidx.appcompat.widget.AppCompatSpinner
-                        android:id="@+id/sp_select_type"
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_backup_data"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:adapter="@{spinnerAdapter}"
+                        android:paddingVertical="14dp"
+                        android:paddingHorizontal="12dp"
+                        android:ellipsize="start"
+                        android:maxLines="1"
+                        android:text="@{backupFileName}"
+                        tools:text="_backup_accountwallet.json"
                         />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -79,10 +88,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    app:layout_constraintTop_toBottomOf="@id/l_select_type"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintStart_toStartOf="@id/l_select_type"
-                    android:text="@{alertInfo.alertContent}"
+                    android:text="@{statusMsg}"
+                    app:layout_constraintTop_toBottomOf="@id/l_backup_data"
+                    android:layout_marginTop="10dp"
+                    app:layout_constraintStart_toStartOf="@id/l_backup_data"
                     tools:text="now install data..."
                     />
 
@@ -90,28 +99,28 @@
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_cancel"
                     style="@style/baseTextStyle"
-                    android:text="@{alertInfo.txtCancel}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/none"
+                    android:text="@{alertInfo.txtCancel}"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
                     app:layout_constraintEnd_toStartOf="@id/btn_ok"
                     app:layout_constraintBottom_toBottomOf="parent"
                     android:layout_marginEnd="8dp"
-                    android:onClick="@{(v)->click.onViewClick(v)}"
                     tools:text="Cancel"
                     />
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btn_ok"
                     style="@style/baseTextStyle"
-                    android:text="@{alertInfo.txtOk}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@{alertInfo.flag ? @color/red400 : @color/sky_blue600}"
                     android:background="@color/none"
+                    android:textColor="@{alertInfo.flag ? @color/red400 : @color/sky_blue600}"
+                    android:text="@{alertInfo.txtOk}"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    android:onClick="@{(v)->click.onViewClick(v)}"
                     tools:text="OK"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>

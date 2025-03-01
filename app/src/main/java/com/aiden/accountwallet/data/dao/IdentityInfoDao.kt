@@ -6,9 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.IdentityInfo
+import com.aiden.accountwallet.data.model.ProductKey
+import com.aiden.accountwallet.data.vo.ImportUserAccount
 import java.util.Date
 
 @Dao
@@ -19,6 +22,12 @@ interface IdentityInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.NONE)
     fun addAllIdentityInfo(vararg identityInfo : IdentityInfo)
+
+    @Insert(onConflict = OnConflictStrategy.NONE)
+    fun addAccountInfo(accountInfo: AccountInfo):Long
+
+    @Insert(onConflict = OnConflictStrategy.NONE)
+    fun addProductKey(productKey: ProductKey):Long
 
     // Read
     @Query("SELECT * FROM identity_info WHERE status = 0")
