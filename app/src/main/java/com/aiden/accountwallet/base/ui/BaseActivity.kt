@@ -11,8 +11,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aiden.accountwallet.base.bind.DataBindingActivity
+import com.aiden.accountwallet.util.Logger
 import io.reactivex.rxjava3.annotations.NonNull
-import timber.log.Timber
 
 abstract class BaseActivity<D:ViewDataBinding> : DataBindingActivity<D>() {
 
@@ -42,7 +42,7 @@ abstract class BaseActivity<D:ViewDataBinding> : DataBindingActivity<D>() {
 
     @Suppress("DEPRECATION")
     protected fun hideSystemUI(){
-        Timber.w("at %s, System UI is hidden....", this.javaClass.simpleName)
+        Logger.w("at %s, System UI is hidden....", this.javaClass.simpleName)
         val window: Window = window
 
         // Android 11(R) 대응

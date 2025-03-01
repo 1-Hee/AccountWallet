@@ -5,7 +5,7 @@ import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
-import timber.log.Timber
+import com.aiden.accountwallet.util.Logger
 
 abstract class BaseRoomViewModel<T> : ViewModel() {
 
@@ -16,8 +16,8 @@ abstract class BaseRoomViewModel<T> : ViewModel() {
     // * ----------------------------------------
     val addStatus: MutableLiveData<Long> = MutableLiveData<Long>(0)
     val entity:ObservableField<T> = ObservableField()
-    val entityList: ObservableArrayList<T> = ObservableArrayList<T>()
-    val isEntityEmpty: MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
+    protected val entityList: ObservableArrayList<T> = ObservableArrayList<T>()
+    protected val isEntityEmpty: MutableLiveData<Boolean> = MutableLiveData<Boolean>(true)
 
     fun initVariables() {
         this.addStatus.postValue(0)
@@ -64,7 +64,7 @@ abstract class BaseRoomViewModel<T> : ViewModel() {
 
     fun setAddEntityStatus(result:Long) {
         this.addStatus.postValue(result)
-        Timber.d("vm.. addEntity result : %s", result)
+        Logger.d("vm.. addEntity result : %s", result)
     }
 
     fun addEntityList(entityList: List<T>) {

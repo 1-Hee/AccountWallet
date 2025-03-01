@@ -3,10 +3,8 @@ package com.aiden.accountwallet.base.ui
 import android.util.Log
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
-import androidx.multidex.BuildConfig
 import androidx.multidex.MultiDexApplication
 import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
 
 @HiltAndroidApp
 class AppApplication(

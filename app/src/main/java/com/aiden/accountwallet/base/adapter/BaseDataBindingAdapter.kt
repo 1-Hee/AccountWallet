@@ -11,7 +11,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import timber.log.Timber
+import com.aiden.accountwallet.util.Logger
 
 abstract class BaseDataBindingAdapter<M, B : ViewDataBinding>(private val mContext: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -32,9 +32,8 @@ abstract class BaseDataBindingAdapter<M, B : ViewDataBinding>(private val mConte
     // set Item List
     @SuppressLint("NotifyDataSetChanged")
     fun setItemList(list: List<M>?) {
-        Timber.d("onSetItemList... %s", list?.isEmpty())
+        Logger.d("onSetItemList... %s", list?.isEmpty())
         requireNotNull(list)
-        // Timber.d("setItemList list = $list")
         itemList.clear()
         itemList.addAll(list)
         notifyDataSetChanged()
@@ -45,7 +44,7 @@ abstract class BaseDataBindingAdapter<M, B : ViewDataBinding>(private val mConte
 
     // Create View Holder
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-//        Timber.d("onCreateViewHolder")
+        Logger.d("onCreateViewHolder...")
         // config load
         val dbConfig:DataBindingConfig = getDataBindingConfig()
         val binding: B = DataBindingUtil.inflate(

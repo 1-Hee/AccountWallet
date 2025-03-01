@@ -2,15 +2,13 @@ package com.aiden.accountwallet.ui.fragment
 
 import android.content.Context
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
+import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.dto.AlertInfo
@@ -37,7 +35,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     ViewClickListener, AlertDialog.OnDialogClickListener, DownloadItemDialog.DownloadItemCallBack {
@@ -80,7 +77,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_view_form) as NavHostFragment).navController
 
-        infoItemViewModel.mDisplayAccountInfo.observe(viewLifecycleOwner) { it ->
+        infoItemViewModel.mDisplayAccountInfo.observe(viewLifecycleOwner) {
             if (it != null && it.providerName.isNotBlank()) {
                 mBinding.setVariable(BR.typeName, it.tagName)
                 mBinding.notifyChange()
@@ -100,7 +97,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                         lifecycleScope.launch(Dispatchers.IO) {
                             val infoId:Long = it.keyIndex
                             val entity:IdAccountInfo =  accountInfoViewModel.readExtraEntity(infoId)
-                            Timber.i("View Read Entity (Account) : %s", entity)
+                            Logger.i("View Read Entity (Account) : %s", entity)
                             accountFormViewModel.initVariables(entity)
                             this@ViewAccountFragment.infoItemViewModel.setIdAccountInfo(entity)
 
@@ -111,7 +108,7 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
                         lifecycleScope.launch(Dispatchers.IO) {
                             val infoId:Long = it.keyIndex
                             val entity:IdProductKey =  productKeyViewModel.readExtraEntity(infoId)
-                            Timber.i("View Read Entity (Product) : %s", entity)
+                            Logger.i("View Read Entity (Product) : %s", entity)
                             productFormViewModel.initVariables(entity)
                             this@ViewAccountFragment.infoItemViewModel.setIdProductKey(entity)
                         }
@@ -184,13 +181,12 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     }
 
     override fun onItemSelected(selectedItem: DownloadType, position: Int) {
-
         Logger.i( "선택 아이템 [${selectedItem.typeIdx}] : ${selectedItem.typeValue} , position : $position")
 
         val context:Context = requireContext()
         val mBaseInfo:IdentityInfo
         val infoList:List<Info> = when(selectedItem.typeIdx){
-            0 -> { // acount
+            0 -> { // account
                 val item:IdAccountInfo = infoItemViewModel.mIdAccountInfo.get()?:return
                 mBaseInfo = item.baseInfo
                 RoomTool.parseIdAccountInfo(context, item)
@@ -221,8 +217,5 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
             }
 
         }
-
-
-        // TODO : Device Checker 참고해서 파일 저장 기능 추가하기
     }
 }

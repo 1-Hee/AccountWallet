@@ -18,11 +18,11 @@ import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentProductFormBinding
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.UIManager
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import timber.log.Timber
 
 class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
     ViewClickListener, OnEditorActionListener, OnKeyListener {
@@ -130,13 +130,13 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
     }
 
     override fun onEditorAction(view: TextView?, actionEvent: Int, keyEvent: KeyEvent?): Boolean {
-        Timber.i("event(action) : %s", keyEvent)
+        Logger.i("event(action) : %s", keyEvent)
         if(view == null) return false
         val inputText:String = view.text.toString()
 
         if (BuildConfig.DEBUG) {
-            Timber.i("Input Text : %s", inputText)
-            Timber.i("Action Event : %d", actionEvent)
+            Logger.i("Input Text : %s", inputText)
+            Logger.i("Action Event : %d", actionEvent)
         }
 
         hideKeyPad(requireActivity())
@@ -221,10 +221,8 @@ class ProductFormFragment : BaseFragment<FragmentProductFormBinding>(),
 
             true
         } else {
-            if (BuildConfig.DEBUG) {
-                Timber.i("Input Text : %s", inputText)
-                Timber.i("Key Code : %d", keyCode)
-            }
+            Logger.i("Input Text : %s", inputText)
+            Logger.i("Key Code : %d", keyCode)
             false
         }
     }

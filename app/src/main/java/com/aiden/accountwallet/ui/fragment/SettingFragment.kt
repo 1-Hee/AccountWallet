@@ -22,17 +22,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
+import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.BuildConfig
 import com.aiden.accountwallet.R
-import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
-import com.aiden.accountwallet.data.db.AppDataBase
 import com.aiden.accountwallet.data.dto.AlertInfo
-import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
@@ -124,7 +120,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(),
                 /*
                 val intent = result.data
                 val resultState = intent?.getStringExtra("newAlbumName")
-                Timber.i("resultState : %s", resultState)
+                Logger.i("resultState : %s", resultState)
                  */
             }
         }

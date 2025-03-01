@@ -4,10 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.aiden.accountwallet.base.viewmodel.BaseRoomViewModel
 import com.aiden.accountwallet.data.model.UserInfo
 import com.aiden.accountwallet.data.repository.UserInfoRepository
+import com.aiden.accountwallet.util.Logger
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,7 +21,7 @@ class UserInfoViewModel @Inject constructor(
 
     // Create
     override suspend fun addEntity(entity: UserInfo): Long {
-        Timber.d("vm.. addUserInfo : %s", entity)
+        Logger.d("vm.. addUserInfo : %s", entity)
         val result = repository.addEntity(entity)
         this@UserInfoViewModel.setAddEntityStatus(result)
         return result
@@ -30,7 +30,7 @@ class UserInfoViewModel @Inject constructor(
     // Read
     override suspend fun readEntityList(): List<UserInfo> {
         val list:List<UserInfo> = repository.readEntityList()
-        Timber.d("vm.. readUserInfoList : %s", list)
+        Logger.d("vm.. readUserInfoList : %s", list)
         this@UserInfoViewModel.addEntityList(list)
         return list
     }
@@ -41,13 +41,13 @@ class UserInfoViewModel @Inject constructor(
 
     suspend fun getLastUserInfo():UserInfo? {
         val userInfo:UserInfo? = (repository as UserInfoRepository).getLastUserInfo()
-        Timber.d("vm getLastUserInfo : %s", userInfo)
+        Logger.d("vm getLastUserInfo : %s", userInfo)
         return userInfo
     }
 
     // Update
     override suspend fun editEntity(entity: UserInfo) {
-        Timber.d("vm editEntity : %s", entity)
+        Logger.d("vm editEntity : %s", entity)
         repository.modifyEntity(entity)
     }
 
@@ -61,7 +61,7 @@ class UserInfoViewModel @Inject constructor(
     }
 
     override suspend fun removeAll() {
-        Timber.d("vm removeAll")
+        Logger.d("vm removeAll")
         repository.deleteAll()
     }
 
@@ -72,7 +72,7 @@ class UserInfoViewModel @Inject constructor(
     // Create
     override fun addAsyncEntity(entity: UserInfo) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm.. addUserInfo : %s", entity)
+            Logger.d("vm.. addUserInfo : %s", entity)
             val result =  repository.addEntity(entity)
             this@UserInfoViewModel.setAddEntityStatus(result)
         }
@@ -82,7 +82,7 @@ class UserInfoViewModel @Inject constructor(
     override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
             val userInfoList:List<UserInfo> = repository.readEntityList()
-            Timber.d("vm.. readUserInfoList : %s", userInfoList)
+            Logger.d("vm.. readUserInfoList : %s", userInfoList)
             this@UserInfoViewModel.addEntityList(userInfoList)
         }
     }
@@ -94,7 +94,7 @@ class UserInfoViewModel @Inject constructor(
     fun getAsyncLastUserInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val userInfo:UserInfo? = (repository as UserInfoRepository).getLastUserInfo()
-            Timber.d("repo getLastUserInfo : %s", userInfo)
+            Logger.d("repo getLastUserInfo : %s", userInfo)
             this@UserInfoViewModel.entity.set(userInfo)
         }
     }
@@ -115,7 +115,7 @@ class UserInfoViewModel @Inject constructor(
 
     override fun removeAsyncAll() {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm removeAll")
+            Logger.d("vm removeAll")
             repository.deleteAll()
         }
     }

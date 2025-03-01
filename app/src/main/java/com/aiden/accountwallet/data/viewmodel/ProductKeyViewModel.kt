@@ -9,11 +9,11 @@ import com.aiden.accountwallet.base.viewmodel.SubEntityHandler
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.repository.ProductKeyRepository
+import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.RoomTool.checkInstance
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +31,7 @@ class ProductKeyViewModel @Inject constructor (
     // *        Sync Task API
     // * ----------------------------------------
     override suspend fun addEntity(entity: ProductKey): Long {
-        Timber.d("vm addEntity %s", entity)
+        Logger.d("vm addEntity %s", entity)
         val result = repository.addEntity(entity)
         this@ProductKeyViewModel.setAddEntityStatus(result)
         return result
@@ -39,7 +39,7 @@ class ProductKeyViewModel @Inject constructor (
 
     override suspend fun readEntityList(): List<ProductKey> {
         val list:List<ProductKey> = repository.readEntityList()
-        Timber.d("vm readEntityList : %s", list)
+        Logger.d("vm readEntityList : %s", list)
         this@ProductKeyViewModel.addEntityList(list)
         return list
     }
@@ -52,10 +52,10 @@ class ProductKeyViewModel @Inject constructor (
         if(!checkInstance<ExtraEntityHandler<IdProductKey>>(repository)){
             throw RuntimeException("Invalid Repository Casting")
         }
-        Timber.d("vm readExtraEntity id : %d", entityId)
+        Logger.d("vm readExtraEntity id : %d", entityId)
         val entity: IdProductKey = (repository as ExtraEntityHandler<IdProductKey>)
             .readExtraEntity(entityId)
-        Timber.d("vm readExtraEntity : %s", entity)
+        Logger.d("vm readExtraEntity : %s", entity)
         this@ProductKeyViewModel.extraEntity.set(entity)
         return entity
     }
@@ -65,12 +65,12 @@ class ProductKeyViewModel @Inject constructor (
     }
 
     override suspend fun editEntity(entity: ProductKey) {
-        Timber.d("vm editEntity : %s", entity)
+        Logger.d("vm editEntity : %s", entity)
         repository.modifyEntity(entity)
     }
 
     override suspend fun removeEntity(entityId: Long) {
-        Timber.d("vm removeEntity (id) : %s", entityId)
+        Logger.d("vm removeEntity (id) : %s", entityId)
         repository.deleteEntity(entityId)
     }
 
@@ -79,7 +79,7 @@ class ProductKeyViewModel @Inject constructor (
     }
 
     override suspend fun removeEntity(entity: ProductKey) {
-        Timber.d("vm removeEntity  : %s", entity)
+        Logger.d("vm removeEntity  : %s", entity)
         repository.deleteEntity(entity.productId)
     }
 
@@ -90,7 +90,7 @@ class ProductKeyViewModel @Inject constructor (
 
     override fun addAsyncEntity(entity: ProductKey) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm addEntity %s", entity)
+            Logger.d("vm addEntity %s", entity)
             val result = repository.addEntity(entity)
             this@ProductKeyViewModel.setAddEntityStatus(result)
         }
@@ -99,7 +99,7 @@ class ProductKeyViewModel @Inject constructor (
     override fun readAsyncEntityList() {
         viewModelScope.launch(Dispatchers.IO) {
             val list:List<ProductKey> = repository.readEntityList()
-            Timber.d("vm readEntityList : %s", list)
+            Logger.d("vm readEntityList : %s", list)
             this@ProductKeyViewModel.addEntityList(list)
         }
     }
@@ -113,10 +113,10 @@ class ProductKeyViewModel @Inject constructor (
             if(!checkInstance<ExtraEntityHandler<IdProductKey>>(repository)){
                 throw RuntimeException("Invalid Repository Casting")
             }
-            Timber.d("vm readExtraEntity id : %d", entityId)
+            Logger.d("vm readExtraEntity id : %d", entityId)
             val entity: IdProductKey = (repository as ExtraEntityHandler<IdProductKey>)
                 .readExtraEntity(entityId)
-            Timber.d("vm readExtraEntity : %s", entity)
+            Logger.d("vm readExtraEntity : %s", entity)
             this@ProductKeyViewModel.extraEntity.set(entity)
         }
     }
@@ -128,21 +128,21 @@ class ProductKeyViewModel @Inject constructor (
 
     override fun editAsyncEntity(entity: ProductKey) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm editEntity : %s", entity)
+            Logger.d("vm editEntity : %s", entity)
             repository.modifyEntity(entity)
         }
     }
 
     override fun removeAsyncEntity(entityId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm removeEntity (id) : %s", entityId)
+            Logger.d("vm removeEntity (id) : %s", entityId)
             repository.deleteEntity(entityId)
         }
     }
 
     override fun removeAsyncEntity(entity: ProductKey) {
         viewModelScope.launch(Dispatchers.IO) {
-            Timber.d("vm removeEntity  : %s", entity)
+            Logger.d("vm removeEntity  : %s", entity)
             repository.deleteEntity(entity.productId)
         }
     }

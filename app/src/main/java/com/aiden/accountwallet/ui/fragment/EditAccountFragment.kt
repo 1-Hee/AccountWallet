@@ -7,11 +7,9 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.base.bind.DataBindingConfig
-import com.aiden.accountwallet.base.factory.ApplicationFactory
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.data.model.AccountInfo
@@ -28,17 +26,14 @@ import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
+import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.RoomTool
 import com.aiden.accountwallet.util.RoomTool.getDisplayAccountInfo
-import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
-import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import com.aiden.accountwallet.util.UIManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
-import java.text.SimpleDateFormat
 
 class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
     ViewClickListener {
@@ -178,9 +173,9 @@ class EditAccountFragment : BaseFragment<FragmentEditAccountBinding>(),
             aInfo.accountId = accountId
 
             identityInfoViewModel.editEntity(iInfo)
-            Timber.i("[EDIT] parent entity : %s", iInfo)
+            Logger.i("[EDIT] parent entity : %s", iInfo)
             accountInfoViewModel.editEntity(aInfo)
-            Timber.i("[EDIT] child entity : %s", aInfo)
+            Logger.i("[EDIT] child entity : %s", aInfo)
 
             // 변화 기록
             infoItemViewModel.setIdAccountInfo(item)

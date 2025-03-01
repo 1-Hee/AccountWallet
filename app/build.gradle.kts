@@ -162,10 +162,6 @@ dependencies {
     val rx_android_version = "3.0.2";
     implementation("io.reactivex.rxjava3:rxandroid:$rx_android_version")
 
-    // timber implements
-    val timer_version = "5.0.1"
-    implementation("com.jakewharton.timber:timber:$timer_version")
-
     // ViewModel implements
     val lifecycle_version = "2.8.7"
 

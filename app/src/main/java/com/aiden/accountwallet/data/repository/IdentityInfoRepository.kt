@@ -6,7 +6,7 @@ import androidx.paging.PagingData
 import com.aiden.accountwallet.base.repository.BaseRoomRepository
 import com.aiden.accountwallet.data.dao.IdentityInfoDao
 import com.aiden.accountwallet.data.model.IdentityInfo
-import com.aiden.accountwallet.ui.adapter.IdentityAdapter
+import com.aiden.accountwallet.ui.adapter.IdentityAdapter.BasePageSource
 import com.aiden.accountwallet.util.Logger
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -37,12 +37,9 @@ class IdentityInfoRepository @Inject constructor(
     ): Flow<PagingData<IdentityInfo>> {
         return Pager(
             config = PagingConfig(pageSize = 10),
-            pagingSourceFactory = { IdentityAdapter
-                .QuerySortCheckPageSource(
-                    query,
-                    sortType,
-                    isChecked,
-                    identityInfoDao
+            pagingSourceFactory = {
+                BasePageSource(
+                    query, sortType, isChecked, identityInfoDao
                 )
             }
         ).flow

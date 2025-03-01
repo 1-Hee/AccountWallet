@@ -23,13 +23,13 @@ import com.aiden.accountwallet.base.ui.BaseFragment
 import com.aiden.accountwallet.databinding.FragmentAccountFormBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
+import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.TimeParser.DATE_TIME_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
 import com.aiden.accountwallet.util.UIManager
 import com.aiden.accountwallet.util.UIManager.hideKeyPad
 import com.skydoves.colorpickerview.ColorPickerDialog
 import com.skydoves.colorpickerview.listeners.ColorEnvelopeListener
-import timber.log.Timber
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.cos
@@ -86,7 +86,7 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
         val urlStr:String = mBinding.etSiteUrl.text.toString()
         val memoStr:String = mBinding.etMemo.text.toString()
 
-        Timber.i("[Account Date] : %s", accountFormViewModel.createDate.get())
+        Logger.i("[Account Date] : %s", accountFormViewModel.createDate.get())
 
         accountFormViewModel.setSiteName(providerName)
         accountFormViewModel.setPersonalAccount(personalAccount)
@@ -188,13 +188,13 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
     }
 
     override fun onEditorAction(view: TextView?, actionEvent: Int, keyEvent: KeyEvent?): Boolean {
-        Timber.i("event(action) : %s", keyEvent)
+        Logger.i("event(action) : %s", keyEvent)
         if(view == null) return false
         val inputText:String = view.text.toString()
 
         if (BuildConfig.DEBUG) {
-            Timber.i("Input Text : %s", inputText)
-            Timber.i("Action Event : %d", actionEvent)
+            Logger.i("Input Text : %s", inputText)
+            Logger.i("Action Event : %d", actionEvent)
         }
 
         hideKeyPad(requireActivity())
@@ -282,8 +282,8 @@ class AccountFormFragment : BaseFragment<FragmentAccountFormBinding>(),
             true
         } else {
             if (BuildConfig.DEBUG) {
-                Timber.i("Input Text : %s", inputText)
-                Timber.i("Key Code : %d", keyCode)
+                Logger.i("Input Text : %s", inputText)
+                Logger.i("Key Code : %d", keyCode)
             }
             false
         }

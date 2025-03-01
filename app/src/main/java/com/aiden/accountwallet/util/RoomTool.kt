@@ -15,7 +15,6 @@ import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.ProductFormViewModel
 import com.aiden.accountwallet.util.TimeParser.DATE_FORMAT
 import com.aiden.accountwallet.util.TimeParser.getSimpleDateFormat
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -104,7 +103,7 @@ object RoomTool {
             tagInfo.tagColor,
             sFormat.format(item.createAt)
         )
-        Timber.i("item info : %s", mAccountInfo)
+        Logger.i("item info : %s", mAccountInfo)
         return mAccountInfo
     }
 

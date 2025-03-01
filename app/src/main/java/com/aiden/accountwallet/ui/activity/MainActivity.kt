@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.multidex.BuildConfig
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -17,7 +16,6 @@ import com.aiden.accountwallet.base.ui.BaseActivity
 import com.aiden.accountwallet.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -43,7 +41,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 /*
                 val intent = result.data
                 val resultState = intent?.getStringExtra("newAlbumName")
-                Timber.i("resultState : %s", resultState)
+                Logger.i("resultState : %s", resultState)
                  */
             }
         }

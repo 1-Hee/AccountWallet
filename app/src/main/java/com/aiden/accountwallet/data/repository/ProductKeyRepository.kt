@@ -6,7 +6,6 @@ import com.aiden.accountwallet.data.dao.ProductKeyDao
 import com.aiden.accountwallet.data.model.IdProductKey
 import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.util.Logger
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProductKeyRepository @Inject constructor(
@@ -14,7 +13,7 @@ class ProductKeyRepository @Inject constructor(
 ) : BaseRoomRepository<ProductKey>(), ExtraEntityHandler<IdProductKey> {
 
     override suspend fun addEntity(entity: ProductKey): Long {
-        Timber.d("repo addEntity : %s ", entity)
+        Logger.d("repo addEntity : %s ", entity)
         val result = productKeyDao.addProductKey(entity)
         return result
 
@@ -26,14 +25,14 @@ class ProductKeyRepository @Inject constructor(
 
     override suspend fun readEntityList(): List<ProductKey> {
         val list:List<ProductKey> = productKeyDao.readProductKeyList()
-        Timber.d("repo eadEntityList : %s ", list)
+        Logger.d("repo eadEntityList : %s ", list)
         return list
     }
 
     override suspend fun readExtraEntity(entityId: Long): IdProductKey {
-        Timber.d("repo readCombineEntity id : %d", entityId)
+        Logger.d("repo readCombineEntity id : %d", entityId)
         val entity: IdProductKey = productKeyDao.readIdProductKeyById(entityId)
-        Timber.d("repo readCombineEntity : %s", entity)
+        Logger.d("repo readCombineEntity : %s", entity)
         return entity
     }
 
@@ -55,12 +54,12 @@ class ProductKeyRepository @Inject constructor(
     }
 
     override suspend fun deleteEntity(entityId: Long) {
-        Timber.d("repo deleteEntity (id) : %s", entityId)
+        Logger.d("repo deleteEntity (id) : %s", entityId)
         productKeyDao.removeProductKey(entityId)
     }
 
     override suspend fun deleteEntity(entity: ProductKey) {
-        Timber.d("repo deleteEntity : %s", entity)
+        Logger.d("repo deleteEntity : %s", entity)
         productKeyDao.removeProductKey(entity.productId)
     }
 

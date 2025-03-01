@@ -5,7 +5,7 @@ import com.aiden.accountwallet.base.repository.ExtraEntityHandler
 import com.aiden.accountwallet.data.dao.AccountInfoDao
 import com.aiden.accountwallet.data.model.AccountInfo
 import com.aiden.accountwallet.data.model.IdAccountInfo
-import timber.log.Timber
+import com.aiden.accountwallet.util.Logger
 import java.util.Date
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class AccountInfoRepository @Inject constructor(
 ) : BaseRoomRepository<AccountInfo>(), ExtraEntityHandler<IdAccountInfo> {
 
     override suspend fun addEntity(entity: AccountInfo): Long {
-        Timber.d("repo addEntity : %s ", entity)
+        Logger.d("repo addEntity : %s ", entity)
         val result = accountInfoDao.addAccountInfo(entity)
         return result
     }
@@ -25,14 +25,14 @@ class AccountInfoRepository @Inject constructor(
 
     override suspend fun readEntityList(): List<AccountInfo> {
         val list:List<AccountInfo> = accountInfoDao.readAccountInfoList()
-        Timber.d("repo eadEntityList : %s ", list)
+        Logger.d("repo eadEntityList : %s ", list)
         return list
     }
 
     override suspend fun readExtraEntity(entityId: Long): IdAccountInfo {
-        Timber.d("repo readCombineEntity id : %d", entityId)
+        Logger.d("repo readCombineEntity id : %d", entityId)
         val entity:IdAccountInfo = accountInfoDao.readIdAccountInfoById(entityId)
-        Timber.d("repo readCombineEntity : %s", entity)
+        Logger.d("repo readCombineEntity : %s", entity)
         return entity
     }
 
@@ -41,7 +41,7 @@ class AccountInfoRepository @Inject constructor(
     }
 
     override suspend fun modifyEntity(entity: AccountInfo) {
-        Timber.d("repo modifyEntity : %s", entity)
+        Logger.d("repo modifyEntity : %s", entity)
         val accountId:Long = entity.accountId
         val fkInfoId:Long? = entity.fkInfoId
         val userAccount:String = entity.userAccount
@@ -57,12 +57,12 @@ class AccountInfoRepository @Inject constructor(
     }
 
     override suspend fun deleteEntity(entityId: Long) {
-        Timber.d("repo deleteEntity (id) : %s", entityId)
+        Logger.d("repo deleteEntity (id) : %s", entityId)
         accountInfoDao.removeAccountInfo(entityId)
     }
 
     override suspend fun deleteEntity(entity: AccountInfo) {
-        Timber.d("repo deleteEntity : %s", entity)
+        Logger.d("repo deleteEntity : %s", entity)
         accountInfoDao.removeAccountInfo(entity.accountId)
     }
 

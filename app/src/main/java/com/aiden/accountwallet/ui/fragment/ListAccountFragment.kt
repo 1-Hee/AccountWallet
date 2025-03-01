@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aiden.accountwallet.BR
@@ -15,10 +14,10 @@ import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ItemClickListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseFragment
-import com.aiden.accountwallet.ui.adapter.IdentityAdapter
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.vo.DisplayAccountInfo
 import com.aiden.accountwallet.databinding.FragmentListAccountBinding
+import com.aiden.accountwallet.ui.adapter.IdentityAdapter
 import com.aiden.accountwallet.ui.viewmodel.InfoItemViewModel
 import com.aiden.accountwallet.ui.viewmodel.ListAccountViewModel
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +57,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
 
         // 정렬 배열
         val items:Array<String> = resources.getStringArray(R.array.arr_sort_option)
-        // ArrayAdapter에 커스텀 레이아웃 적용
+        // Array Adapter 에 커스텀 레이 아웃 적용
         val adapter: ArrayAdapter<String> = ArrayAdapter(
             requireContext(),
             R.layout.custom_spinner_item,
@@ -75,7 +74,7 @@ class ListAccountFragment : BaseFragment<FragmentListAccountBinding>(),
     }
 
     override fun initView() {
-        // Paging 라이브러리를 사용한 어댑터 init
+        // Paging Library 를 사용한 어댑터 init
         val context:Context = requireContext()
         identityAdapter = IdentityAdapter(context, this)
         mBinding.rvAccountList.apply {
