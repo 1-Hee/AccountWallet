@@ -243,19 +243,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                     val alertInfo = AlertInfo(title, content, mBtnCancel, mBtnOk)
                     val dialog = AlertDialog(alertInfo, exportDialogListener)
                     dialog.show(requireActivity().supportFragmentManager, null)
-                    /*
-                    val alertInfo = AlertInfo(
-                        "Title", "Install Data..."
-                    )
-                    val dialog = ProgressDialog(
-                        alertInfo,
-                        object : ProgressDialog.OnProgressListener {
-                            override fun onOk(view: View) {
-                            }
-                        }
-                    )
-                    dialog.show(requireActivity().supportFragmentManager, null)
-                     */
                 }
                 settingArray[4] -> { // 데이터 불러오기
 
@@ -332,21 +319,6 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
             currentProgress += 5
             dialog.setDialogProgress(currentProgress)
 
-            /*
-            for (i in currentProgress..100 step 10) {
-                delay(100)
-                dialog.setDialogProgress(i)
-                dialog.setDialogStatus("save data... ${i}")
-            }
-             */
-
-
-            for (i in currentProgress..90 step 5) {
-                delay(10)
-                dialog.setDialogProgress(i)
-                dialog.setDialogStatus("Exporting file... (${i}%)")
-            }
-
             // 실제 파일 저장 작업!
             FileManager.exportJsonData(
                 context, accountList, productList,
@@ -359,28 +331,15 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                         dialog.notifyFinishTask(100)
                     }
 
+                    override fun onFileSaveListener(progress: Int) {
+                        dialog.setDialogProgress(progress)
+                    }
+
                     override fun onFileSaveFail() {
                         dialog.notifyFinishTask()
                     }
                 }
             )
-
-
-
-
-            /*
-            for (i in 10..100 step 10) {
-                delay(100)
-                dialog.setDialogProgress(i)
-                dialog.setDialogStatus("Hello ${i}")
-            }
-             */
-
-            //                 val accountList
-
-
-
-
         }
     }
 

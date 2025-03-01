@@ -14,6 +14,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.BufferedReader
@@ -143,7 +144,8 @@ object FileManager {
         context: Context,
         saveAccountList:List<IdAccountInfo>,
         saveProductList:List<IdProductKey>,
-        callBack: FileListener
+        callBack: FileListener,
+        currentProgress:Int = 0
     ) {
 
         val mAccountTag = "UserAccount"
@@ -192,7 +194,7 @@ object FileManager {
         val lastSegment = packageName.substringAfterLast(".")
         val mFileName = "_backup_$lastSegment"
         // Json 파일로 저장
-        saveBackupFile(context, mFileName, mJsonString, callBack)
+        saveBackupFile(context, mFileName, mJsonString, callBack, currentProgress)
     }
 
     private fun saveFile(context: Context, mfileName:String = "", content:String, format:String = ".txt"){
@@ -241,6 +243,7 @@ object FileManager {
     // 콜백 함수 추가된 버전
     interface FileListener {
         fun onFileSaved(savePath:String)
+        fun onFileSaveListener(progress:Int)
         fun onFileSaveFail()
     }
 
@@ -255,7 +258,8 @@ object FileManager {
         context: Context,
         mfileName:String = "",
         content:String,
-        callBack:FileListener
+        callBack:FileListener,
+        currentProgress: Int
     ){
         CoroutineScope(Dispatchers.IO).launch {
             val path:String = Environment
@@ -269,9 +273,25 @@ object FileManager {
             this@FileManager.execute(preClearCmd)
             try {
                 // 파일 쓰기
-                FileOutputStream(file).use{ fileOutputStream ->
-                    OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
-                        outputStreamWriter.write(content)
+                val totalSize = content.toByteArray().size  // 전체 데이터 크기
+                val bufferSize = 1024  // 1KB씩 저장
+                var writtenSize = 0
+                val progressUnit:Int = (100 - currentProgress)
+
+                FileOutputStream(file).use { fos ->
+                    content.toByteArray().inputStream().use { input ->
+                        val buffer = ByteArray(bufferSize)
+                        var bytesRead: Int
+
+                        while (input.read(buffer).also { bytesRead = it } != -1) {
+                            fos.write(buffer, 0, bytesRead)
+                            writtenSize += bytesRead
+
+                            // 진행률 계산 (소수점 제거)
+                            val progress:Int = (writtenSize * progressUnit / totalSize)
+                            callBack.onFileSaveListener(currentProgress + progress)
+
+                        }
                     }
                 }
 
