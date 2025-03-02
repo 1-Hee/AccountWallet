@@ -48,6 +48,13 @@ import com.aiden.accountwallet.ui.dialog.ProgressDialog
 import com.aiden.accountwallet.ui.viewmodel.SettingViewModel
 import com.aiden.accountwallet.util.AppJsonParser
 import com.aiden.accountwallet.util.FileManager
+import com.aiden.accountwallet.util.Logger
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
@@ -74,6 +81,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
     // dialog instance
     private var importDataDialog:ImportDataDialog? = null
+
+    // 전면 광고 런처
+    private var mInterstitialAd: InterstitialAd? = null
 
     override fun initViewModel() {
         userInfoViewModel = getApplicationScopeViewModel(UserInfoViewModel::class.java)
@@ -146,6 +156,8 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         }
         hideSettingMenu() // 세팅 메뉴 숨김
         checkUserPermission() // 사용자 권한 체크
+        // 광고 준비
+        loadInterstitialAd()
     }
 
     // 권한 변경 페이지로 이동
@@ -406,7 +418,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                             val delayedTask = Runnable {
                                 Snackbar.make(finView, finMsg, Snackbar.LENGTH_LONG).show()
                             }
-                            handler.postDelayed(delayedTask, 200) // 300ms 뒤 실행
+                            handler.postDelayed(delayedTask, 100) // 300ms 뒤 실행
+
+                            val adDelayedTask = Runnable {
+                                requestAdScreen()
+                            }
+                            handler.postDelayed(adDelayedTask, 500) // 500ms 뒤 실행
                         }
                     }
                 }
@@ -503,5 +520,57 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         override fun onCancel(view: View) {}
     }
 
+    // * ----------------------------------------------------------------------------
+    // *    광고 호출을 위한 함수
+    // * ----------------------------------------------------------------------------
+    // 광고 호출 함수
+    private fun requestAdScreen() {
+        if(mInterstitialAd != null){
+            Logger.i("mInterstitialAd null 아님!!!")
+            mInterstitialAd?.show(requireActivity())
+        }else {
+            Logger.i("mInterstitialAd null....!!!!!!!!!!")
+        }
+    }
 
+    // 광로 로드
+    private fun loadInterstitialAd() {
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(requireActivity(), BuildConfig.ADMOB_SCREEN_SDK_KEY, adRequest, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                Logger.e("%s", adError.toString())
+                mInterstitialAd = null
+            }
+            override fun onAdLoaded(interstitialAd: InterstitialAd) {
+                Logger.d("Ad was loaded.")
+                mInterstitialAd = interstitialAd
+            }
+        })
+
+        // 광고 호출 콜백
+        mInterstitialAd?.fullScreenContentCallback = object: FullScreenContentCallback() {
+            override fun onAdClicked() {
+                // Called when a click is recorded for an ad.
+                Logger.i("Ad was clicked...!!!!!!!!!!!")
+            }
+            override fun onAdDismissedFullScreenContent() {
+                // Called when ad is dismissed.
+                Logger.i("Ad dismissed fullscreen content...!!!!!!!!!")
+                mInterstitialAd = null
+            }
+            override fun onAdFailedToShowFullScreenContent(adError: AdError) {
+                // Called when ad fails to show.
+                Logger.e("Ad failed to show fullscreen content...!!!!!!!!")
+                mInterstitialAd = null
+            }
+            override fun onAdImpression() {
+                // Called when an impression is recorded for an ad.
+                Logger.e("Ad recorded an impression...!!!!!!!!!!!")
+            }
+            override fun onAdShowedFullScreenContent() {
+                // Called when ad is shown.
+                Logger.e("Ad showed fullscreen content...!!!!!!!!!!!!!")
+            }
+        }
+    }
 }

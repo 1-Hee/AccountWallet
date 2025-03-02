@@ -3,12 +3,20 @@ package com.aiden.accountwallet.ui.dialog
 import android.view.View
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
+import com.aiden.accountwallet.BuildConfig
 import com.aiden.accountwallet.base.bind.DataBindingConfig
 import com.aiden.accountwallet.base.listener.ProgressListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseDialog
 import com.aiden.accountwallet.data.dto.AlertInfo
 import com.aiden.accountwallet.databinding.DialogProgressBinding
+import com.aiden.accountwallet.util.Logger
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 
 class ProgressDialog(
     private val alertInfo: AlertInfo,
@@ -17,8 +25,6 @@ class ProgressDialog(
     ViewClickListener, ProgressListener {
 
     override var isInitView: Boolean = false
-
-    // private var isInitView:Boolean = false
 
     override fun getDataBindingConfig(): DataBindingConfig {
         setCanceledOutside(false) // 꺼지지 않게 세팅
@@ -62,7 +68,6 @@ class ProgressDialog(
         dismiss()
     }
 
-
     interface OnProgressListener {
         // 텍스트 변화
         // 프로그레스 변화
@@ -77,6 +82,5 @@ class ProgressDialog(
                 dismiss()
             }
         }
-
     }
 }

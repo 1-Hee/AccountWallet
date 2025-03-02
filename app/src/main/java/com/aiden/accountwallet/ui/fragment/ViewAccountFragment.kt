@@ -31,6 +31,7 @@ import com.aiden.accountwallet.util.FileManager
 import com.aiden.accountwallet.util.Logger
 import com.aiden.accountwallet.util.RoomTool
 import com.aiden.accountwallet.util.UIManager
+import com.google.android.gms.ads.AdRequest
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,6 +75,10 @@ class ViewAccountFragment : BaseFragment<FragmentViewAccountBinding>(),
     }
 
     override fun initView() {
+        // 배너 광고 로드
+        val adRequest: AdRequest = AdRequest.Builder().build()
+        mBinding.avView.loadAd(adRequest)
+
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_view_form) as NavHostFragment).navController
 

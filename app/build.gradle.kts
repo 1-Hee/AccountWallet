@@ -12,6 +12,10 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
 }
 
+fun getPropertiesValue(propertyKey: String): String {
+    return gradleLocalProperties(rootDir, providers).getProperty(propertyKey)
+}
+
 fun getApiKey(propertyKey: String): String {
     /*
         if gradle AGP version under 8.3.0 , can use these method,
@@ -36,29 +40,20 @@ android {
     }
 
     signingConfigs {
-        /*
+        val keyPath = getPropertiesValue("keyPath")
         create("debugSignedKey") {
-            /*
-             */
+            storeFile = file(keyPath)
+            storePassword = getPropertiesValue("storePassword")
+            keyAlias = getPropertiesValue("keyAlias")
+            keyPassword = getPropertiesValue("keyPassword")
         }
 
         create("releaseSignedKey") {
-            /*
-             */
+            storeFile = file(keyPath)
+            storePassword = getPropertiesValue("storePassword")
+            keyAlias = getPropertiesValue("keyAlias")
+            keyPassword = getPropertiesValue("keyPassword")
         }
-
-        create("release") {
-            val keystorePropertiesFile = rootProject.file("local.properties")
-            val keystoreProperties = Properties().apply {
-                load(FileInputStream(keystorePropertiesFile))
-            }
-
-            keyAlias = keystoreProperties["KEY_ALIAS"] as String
-            keyPassword = keystoreProperties["KEY_PASSWORD"] as String
-            storeFile = file(keystoreProperties["KEYSTORE_PATH"] as String)
-            storePassword = keystoreProperties["KEYSTORE_PASSWORD"] as String
-        }
-        */
     }
 
     buildTypes {

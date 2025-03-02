@@ -53,10 +53,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(),
         (requireActivity() as MainActivity).supportActionBar?.show()
 
         // 배너 광고 로드
-        /*
-        val adRequest = AdRequest.Builder().build()
+        val adRequest:AdRequest = AdRequest.Builder().build()
         mBinding.avHome.loadAd(adRequest)
-         */
 
         initUserNickName()
         initCurrentDate()
