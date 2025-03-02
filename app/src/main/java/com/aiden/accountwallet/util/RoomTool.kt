@@ -27,7 +27,7 @@ object RoomTool {
     fun getIdentifyInfo(
         context:Context,
         typeIdx:Int = -1,
-        fkUserId:Long,
+        fkUserId:Long?,
         accountVm:AccountFormViewModel,
         productVm:ProductFormViewModel
     ): IdentityInfo {

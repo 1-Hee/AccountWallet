@@ -40,7 +40,8 @@ class UserInfoViewModel @Inject constructor(
     }
 
     suspend fun getLastUserInfo():UserInfo? {
-        val userInfo:UserInfo? = (repository as UserInfoRepository).getLastUserInfo()
+        val userInfo:UserInfo? = repository.getLastUserInfo()
+        this.entity.set(userInfo)
         Logger.d("vm getLastUserInfo : %s", userInfo)
         return userInfo
     }

@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -38,7 +37,6 @@ import com.aiden.accountwallet.data.dto.Permission
 import com.aiden.accountwallet.data.dto.SettingItem
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
-import com.aiden.accountwallet.data.model.IdentityInfo
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.data.vo.ImportProductKey
@@ -47,22 +45,17 @@ import com.aiden.accountwallet.databinding.FragmentSettingBinding
 import com.aiden.accountwallet.ui.dialog.AlertDialog
 import com.aiden.accountwallet.ui.dialog.ImportDataDialog
 import com.aiden.accountwallet.ui.dialog.ProgressDialog
+import com.aiden.accountwallet.ui.viewmodel.SettingViewModel
 import com.aiden.accountwallet.util.AppJsonParser
 import com.aiden.accountwallet.util.FileManager
-import com.aiden.accountwallet.util.Logger
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Date
 import java.util.Locale
-import java.util.Timer
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(){
 
@@ -76,15 +69,17 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
     private lateinit var userInfoViewModel:UserInfoViewModel
     private lateinit var identityInfoViewModel: IdentityInfoViewModel
 
+    // vm
+    private lateinit var settingViewModel: SettingViewModel
+
     // dialog instance
     private var importDataDialog:ImportDataDialog? = null
-
-    private var isStopImportTask:Boolean = false
-    private var isStopExportTask:Boolean = false
 
     override fun initViewModel() {
         userInfoViewModel = getApplicationScopeViewModel(UserInfoViewModel::class.java)
         identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
+        settingViewModel = getFragmentScopeViewModel(SettingViewModel::class.java)
+        settingViewModel.initVariables()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -267,7 +262,12 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                 settingArray[4] -> { // 데이터 불러오기
                     val titleDataImport:String = getString(R.string.title_data_import)
                     val btnImport:String = getString(R.string.btn_data_import)
-                    val alertInfo = AlertInfo(titleDataImport, txtOk = btnImport)
+                    val btnCancel:String = getString(R.string.btn_cancel)
+                    val alertInfo = AlertInfo(
+                        titleDataImport,
+                        txtOk = btnImport,
+                        txtCancel = btnCancel
+                    )
                     val dialog = ImportDataDialog (
                         alertInfo, importDialogListener, importStopListener
                     )
@@ -297,9 +297,9 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
         val msgLoadAccount:String = getString(R.string.load_user_account)
         val msgLoadProduct:String = getString(R.string.load_product_key)
         val context:Context = requireContext()
-        var currentProgress = 0;
+        // var currentProgress = 0;
         val finView:View = mBinding.spBottom
-        this@SettingFragment.isStopExportTask = false
+        settingViewModel.setIsStopExportTask(false)
 
         lifecycleScope.launch(Dispatchers.IO) {
             while(!(dialog.getIsInitView())){ // 준비 될때까지 대기!
@@ -338,7 +338,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                     }
 
                     override fun isStopSaveTask(): Boolean {
-                        return this@SettingFragment.isStopExportTask
+                        return settingViewModel.isStopExportTask.get()
                     }
 
                     override fun onFileSaveFail() {
@@ -390,7 +390,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                     }
 
                     override fun isStopTask(): Boolean {
-                        return this@SettingFragment.isStopImportTask
+                        return settingViewModel.isStopImportTask.get()
                     }
 
                     override fun onParseFail() {
@@ -401,7 +401,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                         dialog.setDialogStatus(finMsg)
                         dialog.notifyFinishTask(200)
 
-                        if(!(this@SettingFragment.isStopImportTask)){
+                        if(!(settingViewModel.isStopImportTask.get())){
                             val handler = Handler(Looper.getMainLooper())
                             val delayedTask = Runnable {
                                 Snackbar.make(finView, finMsg, Snackbar.LENGTH_LONG).show()
@@ -434,17 +434,13 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
     // 데이터 불러오기 리스너
     private val importStopListener = object : StopTaskListener {
         override fun onRequestStop(flag: Boolean) {
-            this@SettingFragment.isStopImportTask = flag
+            settingViewModel.setIsStopImportTask(flag)
         }
     }
 
     private val importDialogListener = object : ImportDataDialog.OnDialogClickListener {
         override fun onImport(fileUri:Uri?) {
             startImportData(fileUri, this@SettingFragment.importDataDialog)
-            /*
-            dialog.show(requireActivity().supportFragmentManager, null)
-            startImportData(fileUri, dialog)
-             */
         }
         override fun onCancel(view:View) {
             val finView:View = requireView().findViewById(R.id.sp_bottom)
@@ -465,7 +461,7 @@ class SettingFragment : BaseFragment<FragmentSettingBinding>(){
                         alertInfo, object : ProgressDialog.OnProgressListener {
                             // 사용자에 의한 작업 중단 요청
                             override fun onAction(view: View) {
-                                this@SettingFragment.isStopExportTask = true
+                                settingViewModel.setIsStopExportTask(true)
                             }
                         }
                     )

@@ -19,6 +19,7 @@ import com.aiden.accountwallet.data.model.ProductKey
 import com.aiden.accountwallet.data.viewmodel.AccountInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.IdentityInfoViewModel
 import com.aiden.accountwallet.data.viewmodel.ProductKeyViewModel
+import com.aiden.accountwallet.data.viewmodel.UserInfoViewModel
 import com.aiden.accountwallet.databinding.FragmentAddAccountBinding
 import com.aiden.accountwallet.ui.viewmodel.AccountFormViewModel
 import com.aiden.accountwallet.ui.viewmodel.InfoTypeViewModel
@@ -37,6 +38,7 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
     private lateinit var identityInfoViewModel: IdentityInfoViewModel
     private lateinit var accountInfoViewModel:AccountInfoViewModel
     private lateinit var productKeyViewModel: ProductKeyViewModel
+    private lateinit var userInfoViewModel: UserInfoViewModel
 
     // ui vm
     private lateinit var accountFormViewModel: AccountFormViewModel
@@ -75,6 +77,10 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
         identityInfoViewModel = getApplicationScopeViewModel(IdentityInfoViewModel::class.java)
         accountInfoViewModel = getApplicationScopeViewModel(AccountInfoViewModel::class.java)
         productKeyViewModel = getApplicationScopeViewModel(ProductKeyViewModel::class.java)
+        userInfoViewModel = getApplicationScopeViewModel(UserInfoViewModel::class.java)
+        lifecycleScope.launch(Dispatchers.IO) {
+            userInfoViewModel.getLastUserInfo()
+        }
 
         accountFormViewModel.initVariables()
         productFormViewModel.initVariables()
@@ -83,8 +89,6 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
     override fun initView() {
         navController = (childFragmentManager
             .findFragmentById(R.id.fragment_add_form) as NavHostFragment).navController
-        // navController.navigate(R.id.productFormFragment)
-
     }
 
     override fun onDestroyView() {
@@ -113,8 +117,9 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
             }
         }
 
+        val mFkUserId: Long? = userInfoViewModel.entity.get()?.userId
         return IdentityInfo(
-            fkUserId = 1, // todo user 모델과 연계
+            fkUserId = mFkUserId,
             infoType = mInfoType,
             providerName = mProviderName,
             memo = mMemo,
@@ -149,9 +154,11 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
 
         lifecycleScope.launch(Dispatchers.IO) {
             delay(100)
+            val mFkUserId: Long? = userInfoViewModel.entity.get()?.userId
             val iInfo:IdentityInfo = RoomTool.getIdentifyInfo(
-                context, 0,
-                fkUserId = 1,
+                context,
+                typeIdx = 0,
+                fkUserId = mFkUserId,
                 accountFormViewModel,
                 productFormViewModel
             )
@@ -196,10 +203,12 @@ class AddAccountFragment : BaseFragment<FragmentAddAccountBinding>(),
 
         lifecycleScope.launch(Dispatchers.IO) {
             delay(100)
+            // here
+            val mFkUserId: Long? = userInfoViewModel.entity.get()?.userId
             val iInfo:IdentityInfo = RoomTool.getIdentifyInfo(
                 context,
-                1,
-                fkUserId = 1,
+                typeIdx = 1,
+                fkUserId = mFkUserId,
                 accountFormViewModel, productFormViewModel
             )
             var pInfo:ProductKey = RoomTool.getProductKey(

@@ -1,0 +1,192 @@
+<resources>
+    <string name="app_name">Account Wallet</string>
+    <string name="str_start_wallet">Account Wallet</string>
+    <string name="str_start_description">Easy way to managing your account!</string>
+    <string name="btn_start_app">Start Managing Account</string>
+    <string name="hint_enter_nick_name">닉네임을 입력해주세요.</string>
+    <string name="str_card_description1">In this App,</string>
+    <string name="str_card_description2">You manage</string>
+    <string name="str_card_description3">accounts!</string>
+    <string name="str_card_tail">stored by your device</string>
+    <string name="btn_add_account">Add Your Account (New)</string>
+    <string name="btn_see_account">See Your Accounts</string>
+    <string name="str_info_type">Information Type</string>
+    <string name="str_form_input">Input Your Information</string>
+    <string name="btn_save_account">Save Your Account</string>
+    <string name="hint_search_account">Search Account…</string>
+    <string name="cb_account_only">계정 정보만 보기</string>
+    <string name="h_site_name">사이트 명</string>
+    <string name="hint_site_name">서비스 제공자 입력</string>
+    <string name="hint_personal_account">계정 정보 입력 (ID or Email)</string>
+    <string name="h_personal_account">계정 정보</string>
+    <string name="hint_password">비밀번호 입력…</string>
+    <string name="h_password">비밀 번호</string>
+    <string name="h_create_date">생성 일자</string>
+    <string name="hint_create_date">날짜 선택</string>
+    <string name="h_site_url">공식 사이트</string>
+    <string name="hint_site_url">공식 사이트 URL 입력</string>
+    <string name="h_memo">메모 사항</string>
+    <string name="hint_memo">메모 입력…</string>
+    <string name="suffix_registered">&#160;등록됨</string>
+    <string name="h_provider_name">공급사</string>
+    <string name="hint_provider_name">Enter Provider…(eg. Microsoft)</string>
+    <string name="h_product_key">제품키</string>
+    <string name="hint_product_key">제품키를 입력해주세요…</string>
+    <string name="btn_edit_account">정보 수정하기</string>
+    <string name="btn_download_data">정보 다운로드</string>
+    <string name="str_form_view">계정 정보 (Account Information)</string>
+    <string name="permission_guide">앱 사용에 필요한 권한을 허용합니다.</string>
+
+
+    <!-- 사용자 권한 -->
+    <array name="arr_user_permission">
+        <item>저장소 권한</item>
+    </array>
+
+    <array name="arr_user_permission_desc">
+        <item>앱에서 외부 저장소의 접근을 허용합니다.</item>
+    </array>
+
+    <array name="icon_user_permissions">
+        <item>@drawable/ic_folder</item>
+    </array>
+
+    <string-array name="arr_setting_option">
+        <item>언어 설정</item>
+        <item>앱 업데이트</item>
+        <item>오픈 소스 라이선스</item>
+        <item>데이터 내보내기</item>
+        <item>데이터 불러오기</item>
+        <item>데이터 초기화</item>
+    </string-array>
+
+    <!-- 정렬 옵션 -->
+    <string-array name="arr_sort_option">
+        <item>내림차순</item>
+        <item>오름차순</item>
+        <item>사이트 명</item>
+        <item>과거순</item>
+        <item>최신순</item>
+        <item>태그 색상</item>
+        <item>정보 유형</item>
+    </string-array>
+
+    <string-array name="key_sort_option">
+        <item>IDDESC</item>
+        <item>IDASC</item>
+        <item>PROVNAME</item>
+        <item>DATEASC</item>
+        <item>DATEDESC</item>
+        <item>TAGCOLOR</item>
+        <item>INFTYPE</item>
+    </string-array>
+
+    <string-array name="spinner_info_type">
+        <item>개인 계정</item>
+        <item>제품 키</item>
+    </string-array>
+
+    <array name="icons_download_type">
+        <item>@drawable/ic_text_black</item>
+        <item>@drawable/ic_html_black</item>
+        <item>@drawable/ic_json_black</item>
+    </array>
+
+    <string-array name="items_download_type">
+        <item>텍스트 파일 저장하기</item>
+        <item>HTML 문서 저장하기</item>
+        <item>JSON 파일 저장하기</item>
+    </string-array>
+
+
+    <!-- string 저장을 위한 프리셋 리스트 -->
+    <string-array name="items_identity_header">
+        <item>Information Type</item>
+        <item>Provider Name</item>
+        <item>Create At</item>
+        <item>Latest Update</item>
+        <item>User Memo</item>
+        <item>Tag Color</item>
+    </string-array>
+
+    <string-array name="items_account_header">
+        <item>User Account</item>
+        <item>User Password</item>
+        <item>Account Create At</item>
+        <item>Official URL</item>
+    </string-array>
+
+    <string-array name="items_product_header">
+        <item>Product Key</item>
+        <item>Official URL</item>
+    </string-array>
+
+    <string name="txt_h_save_file">파일 저장 완료 :</string>
+    <string name="txt_h_save_backup_file">파일 저장 : /Download/</string>
+    <string name="txt_h_fail_save">파일 생성 중 오류가 발생하였습니다.</string>
+    <string name="txt_error_log_result">%1$s\nError details saved in %2$s</string>
+    <string name="txt_error_log_create">%1$s\nFailed to save error details</string>
+
+    <string name="txt_guide_modify_permission"><![CDATA[애플리케이션 정보 > 권한 에서 설정을 변경해주세요]]></string>
+    <string name="app_play_store_url">https://play.google.com/store/apps/details?id=kr.co.devicechecker</string>
+    <string name="msg_invalid_vending">플레이 스토어로 이동할 수 없습니다.</string>
+    <string name="h_item_tag">태그 색상</string>
+    <string name="btn_select">선택</string>
+    <string name="btn_cancel">취소</string>
+    <string name="btn_ok">확인</string>
+    <string name="title_select_tag">태그 색상 선택</string>
+    <string name="msg_success_nickname">닉네임이 성공적으로 등록되었습니다.</string>
+    <string name="str_empty">없음</string>
+    <string name="def_tag_color">#93534C</string>
+    <string name="tag_str_account">개인 계정</string>
+    <string name="tag_str_product_key">제품키</string>
+    <string name="title_warning">경고</string>
+    <string name="content_delete_info">정말로 현재 등록된 정보를 삭제하시겠습니까?\n삭제한 데이터는 복원할 수 없습니다.</string>
+    <string name="msg_delete_complete">선택하신 정보가 삭제되었습니다.</string>
+    <string name="msg_add_fail">입력하신 정보 등록에 실패하였습니다…</string>
+    <string name="msg_add_success">입력하신 정보 등록에 성공하였습니다.</string>
+    <string name="msg_edit_success">입력하신 정보 수정이 완료되었습니다.</string>
+    <string name="msg_edit_fail">입력하신 정보 수정에 실패하였습니다…</string>
+    <string name="content_delete_database">정말로 저장된 모든 데이터를 삭제하시겠습니까?\n삭제된 데이터는 복구하실 수 없습니다.</string>
+    <string name="msg_database_delete_all">모든 정보가 초기화되었습니다.</string>
+    <string name="msg_input_nickname">닉네임을 입력해주세요.</string>
+    <string name="msg_refresh_tag_color">태그 색상이 초기화되었습니다.</string>
+    <string name="msg_invalid_color_value">유효하지 않은 색상입니다. 다시 입력해주세요.</string>
+    <string name="title_dialog_user_profile">사용자 정보 수정</string>
+    <string name="tv_profile_guide">아래의 정보를 수정합니다.</string>
+    <string name="tv_label_nickname">닉네임 :</string>
+    <string name="btn_dialog_edit">Edit</string>
+    <string name="btn_dialog_cancel">Cancel</string>
+    <string name="msg_change_nickname">닉네임이 수정되었습니다 : %s</string>
+    <string name="msg_notify_edit_user_info">사용자 정보를 수정합니다…</string>
+    <string name="title_download_type">다운로드 파일 형식</string>
+    <string name="title_data_export">Data Export</string>
+    <string name="title_data_import">Data Import</string>
+    <string name="btn_delete_database">Delete</string>
+    <string name="content_export_database">정말로 저장된 데이터를 내보내시겠습니까?\n[내보내기]을 누르면 내보내기 작업을 시작합니다.</string>
+    <string name="btn_start">내보내기</string>
+    <string name="txt_init_progress">init progress…</string>
+    <string name="load_user_account">Loading user account information…</string>
+    <string name="load_product_key">Loading product key information…</string>
+    <string name="msg_fin_export_path">파일 내보내기 완료\npath : %1$s</string>
+    <string name="btn_data_import">불러오기</string>
+    <string name="status_detect_backup">백업 파일 준비 완료.</string>
+    <string name="btn_stop">중단</string>
+    <string name="msg_export_file_progress">파일 내보내는 중…</string>
+    <string name="load_backup_data">Preparing to read data for backup…</string>
+    <string name="key_user_account">UserAccount</string>
+    <string name="key_product">ProductKey</string>
+    <string name="hint_click_file">여기를 클릭하세요!</string>
+    <string name="hint_select_backup_file">데이터를 불러올 파일은 선택해주세요. (JSON 형식)</string>
+    <string name="msg_occur_err_import_data">데이터를 내보내는 중 오류가 발생하였습니다. 잠시후 다시 시도해주십시오.</string>
+    <string name="status_ready_load_data">백업 데이터를 불러오는데 성공하였습니다.</string>
+    <string name="status_load_user_account">사용자 계정 정보 불러오는 중…</string>
+    <string name="status_load_product_key">제품키 정보 불러오는 중…</string>
+    <string name="status_import_user_account">사용자 계정 정보 입력중…</string>
+    <string name="status_import_product_key">제품키 정보 입력중…</string>
+    <string name="status_fail_load_data">데이터 불러오기 작업 취소 됨…</string>
+    <string name="status_success_load_data">데이터 불러오기 성공</string>
+    <string name="status_fail_export_data">데이터 내보내기 작업 취소 됨…</string>
+
+
+</resources>
