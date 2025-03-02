@@ -2,7 +2,9 @@ package com.aiden.accountwallet.util
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
 import android.os.Environment
 import android.widget.Toast
 import com.aiden.accountwallet.BuildConfig
@@ -10,6 +12,9 @@ import com.aiden.accountwallet.R
 import com.aiden.accountwallet.data.dto.Info
 import com.aiden.accountwallet.data.model.IdAccountInfo
 import com.aiden.accountwallet.data.model.IdProductKey
+import com.aiden.accountwallet.data.vo.ImportProductKey
+import com.aiden.accountwallet.data.vo.ImportUserAccount
+import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +31,7 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 object FileManager {
 
@@ -33,6 +39,7 @@ object FileManager {
     interface FileListener {
         fun onFileSaved(savePath:String)
         fun onFileSaveListener(progress:Int)
+        fun isStopSaveTask():Boolean
         fun onFileSaveFail()
     }
 
@@ -85,7 +92,11 @@ object FileManager {
 
     // save HTML File
     @SuppressLint("SimpleDateFormat")
-    fun saveHTMLFile(mActivity: Activity, providerName:String = "", saveInfoList:List<Info>) {
+    fun saveHTMLFile(
+        mActivity: Activity,
+        providerName:String = "",
+        saveInfoList:List<Info>
+    ) {
         val context: Context = mActivity.baseContext
         val htmlBuilder = StringBuilder()
         // header init
@@ -94,7 +105,7 @@ object FileManager {
 
         saveInfoList.forEach { item ->
             htmlBuilder.append(
-            """
+                """
                 <tr>
                     <td>${item.name}</td>
                     <td>${item.value}</td>
@@ -125,8 +136,11 @@ object FileManager {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun saveJsonFile(context: Context, providerName:String = "", saveInfoList:List<Info>) {
-
+    fun saveJsonFile(
+        context: Context,
+        providerName:String = "",
+        saveInfoList:List<Info>
+    ) {
         val mInfoTitle = "UserInfo"
         val mJsonParent = JsonObject()
         // Device Info -> Json Data!
@@ -150,6 +164,143 @@ object FileManager {
         val mFileName = "${BuildConfig.APPLICATION_ID}_$providerName"
         // Json 파일로 저장
         saveFile(context, mFileName, mJsonString, ".json")
+    }
+
+    // * ----------------------------------------------------
+    // *    Export Backup Data ...
+    // * ----------------------------------------------------
+
+    private fun saveFile(
+        context: Context,
+        mfileName:String = "",
+        content:String,
+        format:String = ".txt"
+    ){
+        val path:String = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+        val fileName = "$mfileName$format"
+        val file = File(path, fileName)
+        Logger.i("[저장 경로] : %s", file.path)
+        val preClearCmd = "rm -r ${file.path}"
+        this.execute(preClearCmd)
+        try {
+            // 파일 쓰기
+            FileOutputStream(file).use{ fileOutputStream ->
+                OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
+                    outputStreamWriter.write(content)
+                }
+            }
+            val saveHeader = context.getString(R.string.txt_h_save_file)
+            Toast.makeText(context, "$saveHeader $fileName", Toast.LENGTH_SHORT).show()
+        } catch (e: IOException) {
+            // e.printStackTrace()
+            // 오류가 발생했을 때 오류 로그를 log.txt에 저장
+            val errorLogFileName = "account_wallet_error_log.txt"
+            val errorLogFile = File(path, errorLogFileName)
+            try {
+                FileOutputStream(errorLogFile).use { fileOutputStream ->
+                    OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
+                        outputStreamWriter.write("Error Log:\n${e.message}\n\n")
+                        // Stack Trace:${Log.getStackTraceString(e)}
+                    }
+                }
+                val failHeader = context.getString(R.string.txt_h_fail_save)
+                Toast.makeText(context,
+                    context.getString(R.string.txt_error_log_result, failHeader, errorLogFileName), Toast.LENGTH_SHORT).show()
+            } catch (e: IOException) {
+                // 오류 로그를 저장하는 도중에 또 다른 오류가 발생한 경우
+                // e.printStackTrace()
+                val failHeader = context.getString(R.string.txt_h_fail_save)
+                Toast.makeText(context,
+                    context.getString(R.string.txt_error_log_create, failHeader), Toast.LENGTH_SHORT).show()
+            }
+            val failHeader = context.getString(R.string.txt_h_fail_save)
+            Toast.makeText(context, failHeader, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveBackupFile(
+        context: Context,
+        mfileName:String = "",
+        content:String,
+        callBack:FileListener,
+        currentProgress: Int
+    ){
+        CoroutineScope(Dispatchers.IO).launch {
+            val path:String = Environment
+                .getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOWNLOADS
+                ).absolutePath
+            val fileName = "$mfileName.json"
+            val file = File(path, fileName)
+            Logger.i("[저장 경로] : %s", file.path)
+            val preClearCmd = "rm -r ${file.path}"
+            this@FileManager.execute(preClearCmd)
+            try {
+                // 파일 쓰기
+                val totalSize = content.toByteArray().size  // 전체 데이터 크기
+                val bufferSize = 1024  // 1KB씩 저장
+                var writtenSize = 0
+                val progressUnit:Int = (100 - currentProgress)
+
+                FileOutputStream(file).use { fos ->
+                    content.toByteArray().inputStream().use { input ->
+                        val buffer = ByteArray(bufferSize)
+                        var bytesRead: Int
+
+                        while (input.read(buffer).also { bytesRead = it } != -1) {
+                            fos.write(buffer, 0, bytesRead)
+                            writtenSize += bytesRead
+
+                            // 진행률 계산 (소수점 제거)
+                            val progress:Int = (writtenSize * progressUnit / totalSize)
+                            callBack.onFileSaveListener(currentProgress + progress)
+
+                            if(callBack.isStopSaveTask()){
+                                throw IOException("User Request Stop Save Task...")
+                            }
+                        }
+                    }
+                }
+
+                val mSavedPath = "/Download/$fileName"
+                callBack.onFileSaved(mSavedPath) // 저장 경로 넘겨줌.
+
+            } catch (e: IOException) {
+                callBack.onFileSaveFail()
+                // e.printStackTrace()
+                // 오류가 발생했을 때 오류 로그를 log.txt에 저장
+                val errorLogFileName = "account_wallet_error_log.txt"
+                val errorLogFile = File(path, errorLogFileName)
+                try {
+                    FileOutputStream(errorLogFile).use { fileOutputStream ->
+                        OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
+                            outputStreamWriter.write("Error Log:\n${e.message}\n\n")
+                            // Stack Trace:${Log.getStackTraceString(e)}
+                        }
+                    }
+                    val failHeader = context.getString(R.string.txt_h_fail_save)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context,
+                            context.getString(R.string.txt_error_log_result,
+                                failHeader, errorLogFileName), Toast.LENGTH_SHORT).show()
+                    }
+
+                } catch (e: IOException) {
+                    // 오류 로그를 저장하는 도중에 또 다른 오류가 발생한 경우
+                    // e.printStackTrace()
+                    val failHeader = context.getString(R.string.txt_h_fail_save)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context,
+                            context.getString(R.string.txt_error_log_create,
+                                failHeader), Toast.LENGTH_SHORT).show()
+                    }
+                }
+                val failHeader:String = context.getString(R.string.txt_h_fail_save)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, failHeader, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -210,151 +361,21 @@ object FileManager {
         saveBackupFile(context, mFileName, mJsonString, callBack, currentProgress)
     }
 
-    fun importJsonFile(
-        filePath:String,
-        callBack:ReadListener
-    ) {
-        val file = File(filePath)
-        if (file.exists()) {
-            val data:String = file.readText()  // 파일의 내용을 문자열로 읽기
-            callBack.onFileRead(data)
-        } else {
-            callBack.onFileReadFail()
+
+    // * ----------------------------------------------------
+    // *    Import Backup Data ...
+    // * ----------------------------------------------------
+
+    fun readJsonFromUri(
+        contentResolver: ContentResolver,
+        uri: Uri
+    ) : String {
+        contentResolver.openInputStream(uri)?.use { inputStream ->
+            val json:String = inputStream.bufferedReader().use { it.readText() }
+            Logger.d("data : $json")
+            return json
         }
-    }
-
-
-    private fun saveFile(context: Context, mfileName:String = "", content:String, format:String = ".txt"){
-        val path:String = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-        val fileName = "$mfileName$format"
-        val file = File(path, fileName)
-        Logger.i("[저장 경로] : %s", file.path)
-        val preClearCmd = "rm -r ${file.path}"
-        this.execute(preClearCmd)
-        try {
-            // 파일 쓰기
-            FileOutputStream(file).use{ fileOutputStream ->
-                OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
-                    outputStreamWriter.write(content)
-                }
-            }
-            val saveHeader = context.getString(R.string.txt_h_save_file)
-            Toast.makeText(context, "$saveHeader $fileName", Toast.LENGTH_SHORT).show()
-        } catch (e: IOException) {
-            // e.printStackTrace()
-            // 오류가 발생했을 때 오류 로그를 log.txt에 저장
-            val errorLogFileName = "account_wallet_error_log.txt"
-            val errorLogFile = File(path, errorLogFileName)
-            try {
-                FileOutputStream(errorLogFile).use { fileOutputStream ->
-                    OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
-                        outputStreamWriter.write("Error Log:\n${e.message}\n\n")
-                        // Stack Trace:${Log.getStackTraceString(e)}
-                    }
-                }
-                val failHeader = context.getString(R.string.txt_h_fail_save)
-                Toast.makeText(context,
-                    context.getString(R.string.txt_error_log_result, failHeader, errorLogFileName), Toast.LENGTH_SHORT).show()
-            } catch (e: IOException) {
-                // 오류 로그를 저장하는 도중에 또 다른 오류가 발생한 경우
-                // e.printStackTrace()
-                val failHeader = context.getString(R.string.txt_h_fail_save)
-                Toast.makeText(context,
-                    context.getString(R.string.txt_error_log_create, failHeader), Toast.LENGTH_SHORT).show()
-            }
-            val failHeader = context.getString(R.string.txt_h_fail_save)
-            Toast.makeText(context, failHeader, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-
-    // 파일 경로 불러오게 하는 함수
-    fun getSavePath():String{
-        return Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_DOWNLOADS
-        ).absolutePath
-    }
-
-    private fun saveBackupFile(
-        context: Context,
-        mfileName:String = "",
-        content:String,
-        callBack:FileListener,
-        currentProgress: Int
-    ){
-        CoroutineScope(Dispatchers.IO).launch {
-            val path:String = Environment
-                .getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS
-                ).absolutePath
-            val fileName = "$mfileName.json"
-            val file = File(path, fileName)
-            Logger.i("[저장 경로] : %s", file.path)
-            val preClearCmd = "rm -r ${file.path}"
-            this@FileManager.execute(preClearCmd)
-            try {
-                // 파일 쓰기
-                val totalSize = content.toByteArray().size  // 전체 데이터 크기
-                val bufferSize = 1024  // 1KB씩 저장
-                var writtenSize = 0
-                val progressUnit:Int = (100 - currentProgress)
-
-                FileOutputStream(file).use { fos ->
-                    content.toByteArray().inputStream().use { input ->
-                        val buffer = ByteArray(bufferSize)
-                        var bytesRead: Int
-
-                        while (input.read(buffer).also { bytesRead = it } != -1) {
-                            fos.write(buffer, 0, bytesRead)
-                            writtenSize += bytesRead
-
-                            // 진행률 계산 (소수점 제거)
-                            val progress:Int = (writtenSize * progressUnit / totalSize)
-                            callBack.onFileSaveListener(currentProgress + progress)
-
-                        }
-                    }
-                }
-
-                val mSavedPath = "/Download/$fileName"
-                callBack.onFileSaved(mSavedPath) // 저장 경로 넘겨줌.
-
-            } catch (e: IOException) {
-                callBack.onFileSaveFail()
-                // e.printStackTrace()
-                // 오류가 발생했을 때 오류 로그를 log.txt에 저장
-                val errorLogFileName = "account_wallet_error_log.txt"
-                val errorLogFile = File(path, errorLogFileName)
-                try {
-                    FileOutputStream(errorLogFile).use { fileOutputStream ->
-                        OutputStreamWriter(fileOutputStream, StandardCharsets.UTF_8).use { outputStreamWriter ->
-                            outputStreamWriter.write("Error Log:\n${e.message}\n\n")
-                            // Stack Trace:${Log.getStackTraceString(e)}
-                        }
-                    }
-                    val failHeader = context.getString(R.string.txt_h_fail_save)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context,
-                            context.getString(R.string.txt_error_log_result,
-                                failHeader, errorLogFileName), Toast.LENGTH_SHORT).show()
-                    }
-
-                } catch (e: IOException) {
-                    // 오류 로그를 저장하는 도중에 또 다른 오류가 발생한 경우
-                    // e.printStackTrace()
-                    val failHeader = context.getString(R.string.txt_h_fail_save)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context,
-                            context.getString(R.string.txt_error_log_create,
-                                failHeader), Toast.LENGTH_SHORT).show()
-                    }
-                }
-                val failHeader:String = context.getString(R.string.txt_h_fail_save)
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, failHeader, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+        return ""
     }
 
 }

@@ -84,6 +84,4 @@ class AccountFormViewModel : ViewModel() {
     fun setMemo(memo:String){
         this.memo.set(memo)
     }
-
-
 }

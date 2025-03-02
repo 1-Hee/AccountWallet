@@ -1,10 +1,10 @@
 package com.aiden.accountwallet.ui.dialog
 
 import android.view.View
-import android.widget.ProgressBar
 import com.aiden.accountwallet.R
 import com.aiden.accountwallet.BR
 import com.aiden.accountwallet.base.bind.DataBindingConfig
+import com.aiden.accountwallet.base.listener.ProgressListener
 import com.aiden.accountwallet.base.listener.ViewClickListener
 import com.aiden.accountwallet.base.ui.BaseDialog
 import com.aiden.accountwallet.data.dto.AlertInfo
@@ -13,9 +13,12 @@ import com.aiden.accountwallet.databinding.DialogProgressBinding
 class ProgressDialog(
     private val alertInfo: AlertInfo,
     private val listener: OnProgressListener,
-) : BaseDialog<DialogProgressBinding>(), ViewClickListener {
+) : BaseDialog<DialogProgressBinding>(),
+    ViewClickListener, ProgressListener {
 
-    private var isInitView:Boolean = false
+    override var isInitView: Boolean = false
+
+    // private var isInitView:Boolean = false
 
     override fun getDataBindingConfig(): DataBindingConfig {
         setCanceledOutside(false) // 꺼지지 않게 세팅
@@ -36,23 +39,23 @@ class ProgressDialog(
     }
 
     // 다이얼로그가 준비 되었는지 리턴하는 함수
-    fun getIsInitView():Boolean { return isInitView }
+    override fun getIsInitView():Boolean { return isInitView }
 
     // 다이얼로그 진행율 반영 함수
-    fun setDialogProgress(progress:Int) {
+    override fun setDialogProgress(progress:Int) {
         if(!this.isInitView) return
         mBinding.pgDialog.progress = progress
         mBinding.notifyChange()
     }
 
-    fun setDialogStatus(msg:String){
+    override fun setDialogStatus(msg:String){
         if(!this.isInitView) return
         mBinding.setVariable(BR.statusMsg, msg)
         mBinding.notifyChange()
     }
 
     // 종료 알림 함수
-    fun notifyFinishTask(sleep:Long = 0) {
+    override fun notifyFinishTask(sleep:Long) {
         if(!this.isInitView) return
         mBinding.pgDialog.progress = 100
         Thread.sleep(sleep)

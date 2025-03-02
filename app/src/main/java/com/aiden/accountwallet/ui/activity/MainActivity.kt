@@ -1,12 +1,15 @@
 package com.aiden.accountwallet.ui.activity
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -16,6 +19,7 @@ import com.aiden.accountwallet.base.ui.BaseActivity
 import com.aiden.accountwallet.databinding.ActivityMainBinding
 import com.google.android.gms.ads.MobileAds
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity<ActivityMainBinding>() {
@@ -53,6 +57,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         //admob init
         MobileAds.initialize(this) {}
 
+        verifyStoragePermissions(this)
     }
 
     // 액션 바 메뉴
@@ -76,6 +81,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             else -> {
                 super.onOptionsItemSelected(item)
             }
+        }
+    }
+
+
+    // TODO : 권한들 요청하게 할 때 쓰도록 개량
+    val REQUEST_EXTERNAL_STORAGE: Int = 1
+    var PERMISSIONS_STORAGE: Array<String> = arrayOf<String>(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    )
+
+    fun verifyStoragePermissions(activity: Activity?) {
+        val permission = ActivityCompat.checkSelfPermission(
+            activity!!,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                activity!!,
+                PERMISSIONS_STORAGE,
+                REQUEST_EXTERNAL_STORAGE
+            )
         }
     }
 }

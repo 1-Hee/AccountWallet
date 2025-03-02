@@ -171,12 +171,22 @@
     <string name="msg_fin_export_path">파일 내보내기 완료\npath : %1$s</string>
     <string name="btn_data_import">Import</string>
     <string name="status_detect_backup">Backup File Detected.</string>
-    <string name="status_not_fount_backup">File Not Found....</string>
     <string name="btn_stop">Stop</string>
     <string name="msg_export_file_progress">Exporting file…</string>
     <string name="load_backup_data">Preparing to read data for backup…</string>
     <string name="key_user_account">UserAccount</string>
     <string name="key_product">ProductKey</string>
+    <string name="hint_click_file">Click here!</string>
+    <string name="hint_select_backup_file">Please choose a backup file (JSON format)</string>
+    <string name="msg_occur_err_import_data">An error occurred during data import. Please try again.</string>
+    <string name="status_ready_load_data">백업 데이터를 불러오는데 성공하였습니다.</string>
+    <string name="status_load_user_account">사용자 계정 정보 불러오는 중 ...</string>
+    <string name="status_load_product_key">제품키 정보 불러오는 중 ...</string>
+    <string name="status_import_user_account">사용자 계정 정보 입력중...</string>
+    <string name="status_import_product_key">제품키 정보 입력중...</string>
+    <string name="status_fail_load_data">Canceled loading data…</string>
+    <string name="status_success_load_data">Data loading completed</string>
+    <string name="status_fail_export_data">Canceled export data…</string>
 
 
 </resources>

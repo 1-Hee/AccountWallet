@@ -6,18 +6,10 @@
     >
 
     <data>
+        <import type="android.view.View"/>
         <variable
-            name="alertInfo"
-            type="com.aiden.accountwallet.data.dto.AlertInfo" />
-
-        <variable
-            name="statusMsg"
-            type="String" />
-
-        <variable
-            name="backupFileName"
-            type="String" />
-
+            name="vm"
+            type="com.aiden.accountwallet.ui.viewmodel.ImportDataViewModel" />
         <variable
             name="click"
             type="com.aiden.accountwallet.base.listener.ViewClickListener" />
@@ -50,7 +42,7 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_alert_title"
                     style="@style/boldTextStyle"
-                    android:text="@{alertInfo.alertTitle}"
+                    android:text="@{vm.alertInfo.alertTitle}"
                     android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -59,14 +51,36 @@
                     tools:text="Title"
                     />
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_horizontal1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintGuide_percent="0.25"
+                    />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/gl_horizontal2"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintGuide_percent="0.6"
+                    />
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/l_backup_data"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="16dp"
                     android:background="@drawable/bg_all_line"
-                    app:layout_constraintTop_toBottomOf="@id/tv_alert_title"
+                    app:layout_constraintTop_toBottomOf="@id/gl_horizontal1"
+                    app:layout_constraintBottom_toBottomOf="@id/gl_horizontal2"
+                    android:onClick="@{(v)->click.onViewClick(v)}"
+                    android:visibility="@{vm.isImportStart?View.GONE:View.VISIBLE}"
                     >
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_backup_data"
@@ -76,11 +90,25 @@
                         android:paddingHorizontal="12dp"
                         android:ellipsize="start"
                         android:maxLines="1"
-                        android:text="@{backupFileName}"
+                        android:hint="@string/hint_click_file"
+                        android:text="@{vm.backupFileName}"
                         tools:text="_backup_accountwallet.json"
                         />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <ProgressBar
+                    android:id="@+id/pg_dialog"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="12dp"
+                    app:layout_constraintTop_toTopOf="@id/gl_horizontal1"
+                    app:layout_constraintBottom_toBottomOf="@id/gl_horizontal2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:progressDrawable="@drawable/bg_base_progressbar"
+                    android:max="100"
+                    android:visibility="@{vm.isImportStart?View.VISIBLE:View.GONE}"
+                    tools:visibility="gone"
+                    />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_select_status"
@@ -88,9 +116,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="12sp"
-                    android:text="@{statusMsg}"
-                    app:layout_constraintTop_toBottomOf="@id/l_backup_data"
-                    android:layout_marginTop="10dp"
+                    android:text="@{vm.statusMsg}"
+                    android:textColor="@{vm.statusColor}"
+                    app:layout_constraintTop_toBottomOf="@id/gl_horizontal2"
                     app:layout_constraintStart_toStartOf="@id/l_backup_data"
                     tools:text="now install data..."
                     />
@@ -102,7 +130,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/none"
-                    android:text="@{alertInfo.txtCancel}"
+                    android:text="@{vm.alertInfo.txtCancel}"
                     android:onClick="@{(v)->click.onViewClick(v)}"
                     app:layout_constraintEnd_toStartOf="@id/btn_ok"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -116,12 +144,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@color/none"
-                    android:textColor="@{alertInfo.flag ? @color/red400 : @color/sky_blue600}"
-                    android:text="@{alertInfo.txtOk}"
+                    android:textColor="@{vm.alertInfo.flag ? @color/red400 : @color/sky_blue600}"
+                    android:text="@{vm.alertInfo.txtOk}"
                     android:onClick="@{(v)->click.onViewClick(v)}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     tools:text="OK"
+                    android:visibility="@{vm.isImportStart?View.GONE:View.VISIBLE}"
                     />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
